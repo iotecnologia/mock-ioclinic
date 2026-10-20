@@ -1,0 +1,4 @@
+[
+  { "id": "u1", "email": "flavia@ioclinic.exemplo", "nome": "Dra. Flávia", "perfil": "medica", "cargo": "Médica · Administradora" },
+  { "id": "u2", "email": "recepcao@ioclinic.exemplo", "nome": "Recepção", "perfil": "recepcao", "cargo": "Recepcionista" }
+]

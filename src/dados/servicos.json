@@ -1,0 +1,11 @@
+[
+  { "id": "consulta", "nome": "Consulta cardiológica", "curto": "Consulta", "tipo": "consulta", "duracaoMin": 60, "valor": 350, "preparo": "Trazer exames anteriores e a lista de medicamentos em uso." },
+  { "id": "retorno", "nome": "Retorno (até 30 dias)", "curto": "Retorno", "tipo": "retorno", "duracaoMin": 60, "valor": 0, "preparo": "Trazer os exames solicitados na consulta." },
+  { "id": "ecg", "nome": "Eletrocardiograma (ECG)", "curto": "ECG", "tipo": "exame", "duracaoMin": 30, "valor": 90, "preparo": "Sem preparo. Evitar cremes no tórax." },
+  { "id": "eco", "nome": "Ecocardiograma", "curto": "Eco", "tipo": "exame", "duracaoMin": 30, "valor": 420, "preparo": "Sem preparo. Trazer exames anteriores." },
+  { "id": "holter", "nome": "Holter 24h", "curto": "Holter", "tipo": "exame", "duracaoMin": 30, "valor": 280, "preparo": "Tomar banho antes; vir com roupa confortável. Retirada no dia seguinte." },
+  { "id": "mapa", "nome": "MAPA 24h", "curto": "MAPA", "tipo": "exame", "duracaoMin": 30, "valor": 280, "preparo": "Vir com camisa de manga larga. Manter a rotina normal." },
+  { "id": "ergometrico", "nome": "Teste ergométrico", "curto": "Ergométrico", "tipo": "exame", "duracaoMin": 30, "valor": 300, "preparo": "Roupa leve e tênis. Evitar café 12h antes. Refeição leve 2h antes." },
+  { "id": "bioimpedancia", "nome": "Bioimpedância", "curto": "Bioimpedância", "tipo": "exame", "duracaoMin": 30, "valor": 150, "preparo": "Jejum de 4h, bexiga vazia, sem exercício no dia." },
+  { "id": "ecodoppler", "nome": "Ecodoppler", "curto": "Ecodoppler", "tipo": "exame", "duracaoMin": 30, "valor": 400, "preparo": "Sem preparo especial." }
+]
