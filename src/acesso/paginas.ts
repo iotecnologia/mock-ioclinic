@@ -6,7 +6,7 @@ const TODOS: Perfil[] = ['medica', 'recepcao'];
 const MEDICA: Perfil[] = ['medica'];
 
 export const PAGINAS: Pagina[] = [
-  { id: 'hoje', rota: '/hoje', nome: 'Hoje', grupo: '', icone: 'inicio', perfis: TODOS },
+  { id: 'hoje', rota: '/hoje', nome: 'Visão Geral', grupo: '', icone: 'inicio', perfis: TODOS },
   { id: 'agenda', rota: '/agenda', nome: 'Agenda', grupo: 'Atendimento', icone: 'calendario', perfis: TODOS },
   { id: 'pacientes', rota: '/pacientes', nome: 'Pacientes', grupo: 'Atendimento', icone: 'usuarios', perfis: TODOS },
   { id: 'prontuario', rota: '/prontuario', nome: 'Prontuário', grupo: 'Atendimento', icone: 'estetoscopio', perfis: MEDICA },

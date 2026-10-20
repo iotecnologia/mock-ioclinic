@@ -29,10 +29,11 @@ export const doDia = (b: Pick<BaseClinica, 'agendamentos'>, data: string, comCan
     .sort((x, y) => min(x.hora) - min(y.hora));
 
 export function contagem(lista: Agendamento[]) {
-  const c = { total: 0, aguardando: 0, atendidos: 0, aReceber: 0, faltas: 0 };
+  const c = { total: 0, confirmados: 0, aguardando: 0, atendidos: 0, aReceber: 0, faltas: 0 };
   for (const a of lista) {
     if (a.status === 'cancelado') continue;
     c.total++;
+    if (['confirmado', 'chegou', 'em_atendimento', 'atendido'].includes(a.status)) c.confirmados++;   // confirmou presença
     if (a.status === 'chegou') c.aguardando++;
     if (a.status === 'atendido') c.atendidos++;
     if (a.status === 'faltou') c.faltas++;

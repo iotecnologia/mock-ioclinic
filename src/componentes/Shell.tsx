@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Icone } from './Icone';
 import { Logo, Marca } from './Marca';
 import { BuscaGeral } from './BuscaGeral';
-import { Avatar, SeloMock } from './Comuns';
+import { Avatar } from './Comuns';
 import { local } from '../util/formato';
 import { useSessao } from '../acesso/Sessao';
 import { EM_BREVE, GRUPOS, PAGINAS } from '../acesso/paginas';
@@ -47,7 +47,6 @@ export function Shell() {
         <div className="migalha">Início{atual && <> &nbsp;/&nbsp; {sub ? atual.nome : <b>{atual.nome}</b>}</>}{sub && <> &nbsp;/&nbsp; <b>{sub}</b></>}</div>
         <BuscaGeral />
         <div className="topo-dir">
-          <SeloMock />
           <button type="button" className="icone-btn" onClick={trocarTema} title="Tema claro/escuro" aria-label="Alternar tema claro ou escuro"><Icone n="tema" /></button>
           <div className="usuario"><Avatar nome={s.usuario!.nome} /><div><b>{s.usuario!.nome}</b><small>{s.usuario!.cargo}</small></div></div>
           <button type="button" className="icone-btn" onClick={s.sair} title="Sair" aria-label="Sair"><Icone n="sair" /></button>

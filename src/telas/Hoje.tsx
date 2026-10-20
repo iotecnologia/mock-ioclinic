@@ -9,7 +9,7 @@ import { Icone } from '../componentes/Icone';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { aConfirmar, contagem, doDia, proximoPaciente } from '../regras/agenda';
-import { situacaoDia } from '../regras/disponibilidade';
+import { blocosLivres, situacaoDia } from '../regras/disponibilidade';
 import { idade } from '../regras/paciente';
 import { agoraMin, brCurto, extenso, hoje, nomeDiaCurto, somaDias } from '../util/datas';
 import { linkWhats, moeda } from '../util/formato';
@@ -26,6 +26,7 @@ export function Hoje() {
   const lista = doDia(base, hj);
   const c = contagem(lista);
   const sit = situacaoDia(hj, base);
+  const livres = sit.aberto ? blocosLivres(hj, base, agoraMin()) : 0;
   const prox = medica ? proximoPaciente(lista, agoraMin()) : undefined;
 
   // próximos dias de atendimento (até 6)
@@ -46,8 +47,9 @@ export function Hoje() {
 
       <div className="contadores">
         <div><Icone n="calendario" /><b>{c.total}</b><span>pacientes hoje</span></div>
-        <div><Icone n="porta" /><b>{c.aguardando}</b><span>na recepção</span></div>
-        <div><Icone n="check" /><b>{c.atendidos}</b><span>atendidos</span></div>
+        <div><Icone n="check" /><b>{c.confirmados}<small> de {c.total}</small></b><span>confirmados</span></div>
+        <div><Icone n="estetoscopio" /><b>{c.atendidos}</b><span>atendidos</span></div>
+        <div><Icone n="relogio" /><b>{livres}</b><span>horários livres</span></div>
         <div className={c.aReceber ? 'alerta' : ''}><Icone n="carteira" /><b>{c.aReceber}</b><span>a receber</span></div>
       </div>
 
