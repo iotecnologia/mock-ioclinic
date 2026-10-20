@@ -1,7 +1,7 @@
 // Base carregada pelo repositório + ações (criar paciente, agendar, mudar status, receber).
 // No mock tudo fica só na memória da página: recarregou, volta ao início. Fase 3: cada ação chama a API.
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { Agendamento, BaseClinica, FormaPagamento, Paciente, StatusAgendamento } from '../tipos/modelos';
+import type { Agendamento, Atendimento, BaseClinica, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
 import type { Repositorio } from '../repositorio/repositorio';
 import { hoje } from '../util/datas';
 
@@ -10,6 +10,10 @@ interface Acoes {
   agendar(a: Omit<Agendamento, 'id' | 'criadoEm' | 'status' | 'pagamento'>): Agendamento;
   mudarStatus(id: string, status: StatusAgendamento): void;
   receber(id: string, forma: FormaPagamento, valor: number): void;
+  /** Salva a evolução clínica e, se veio de um agendamento, marca como atendido. */
+  finalizarAtendimento(at: Omit<Atendimento, 'id'>): Atendimento;
+  salvarResumo(r: ResumoClinico): void;
+  emitirDocumento(d: Omit<Documento, 'id'>): Documento;
 }
 interface Ctx { base: BaseClinica; acoes: Acoes }
 const C = createContext<Ctx | null>(null);
@@ -50,6 +54,23 @@ export function DadosProvider({ repo, children }: { repo: Repositorio; children:
     },
     receber(id, forma, valor) {
       atualizaAg(id, (a) => ({ ...a, pagamento: { status: 'pago', forma, valor, pagoEm: hoje() } }));
+    },
+    finalizarAtendimento(at) {
+      const novo: Atendimento = { ...at, id: 'n' + Date.now().toString(36) };
+      setBase((b) => b && {
+        ...b,
+        atendimentos: [...b.atendimentos.filter((x) => !(at.agendamentoId && x.agendamentoId === at.agendamentoId)), novo],
+        agendamentos: b.agendamentos.map((a) => (a.id === at.agendamentoId ? { ...a, status: 'atendido' } : a)),
+      });
+      return novo;
+    },
+    salvarResumo(r) {
+      setBase((b) => b && { ...b, resumos: [...b.resumos.filter((x) => x.pacienteId !== r.pacienteId), r] });
+    },
+    emitirDocumento(d) {
+      const novo: Documento = { ...d, id: 'n' + Date.now().toString(36) };
+      setBase((b) => b && { ...b, documentos: [...b.documentos, novo] });
+      return novo;
     },
   };
   return <C.Provider value={{ base, acoes }}>{children}</C.Provider>;

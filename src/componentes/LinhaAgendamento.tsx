@@ -1,7 +1,7 @@
 // Uma linha da agenda (Hoje e Agenda): hora, paciente, serviço, status, pagamento e ações do perfil.
 // Recepção: confirmar, chegou, faltou, cancelar, receber. Médica: iniciar e finalizar o atendimento.
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Agendamento, StatusAgendamento } from '../tipos/modelos';
 import { useDados } from './Dados';
 import { useSessao } from '../acesso/Sessao';
@@ -28,6 +28,7 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
   const { base, acoes } = useDados();
   const { usuario } = useSessao();
   const [receber, setReceber] = useState(false);
+  const nav = useNavigate();
   const pac = base.pacientes.find((p) => p.id === ag.pacienteId)!;
   const serv = base.servicos.find((s) => s.id === ag.servicoId)!;
   const medica = usuario!.perfil === 'medica';
@@ -51,7 +52,11 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
       </div>
       <TagStatus s={ag.status} />
       <div className="la-acoes">
-        {passos.map((s) => <BotaoIcone key={s} icone={ACAO[s].icone} titulo={ACAO[s].titulo} cls={'peq ' + ACAO[s].cls} onClick={() => acoes.mudarStatus(ag.id, s)} />)}
+        {passos.map((s) => (
+          <BotaoIcone key={s} icone={ACAO[s].icone} titulo={ACAO[s].titulo} cls={'peq ' + ACAO[s].cls}
+            onClick={() => { acoes.mudarStatus(ag.id, s); if (medica && s === 'em_atendimento' && serv.tipo !== 'exame') nav(`/prontuario/${pac.id}?ag=${ag.id}`); }} />
+        ))}
+        {medica && serv.tipo !== 'exame' && ag.status !== 'cancelado' && <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" cls="peq" onClick={() => nav(`/prontuario/${pac.id}?ag=${ag.id}`)} />}
         {podeReceber && <button type="button" className="btn2 peq ic sec" title="Receber pagamento" aria-label="Receber pagamento" onClick={() => setReceber(true)}><Icone n="carteira" /></button>}
       </div>
       {receber && <Receber ag={ag} fechar={() => setReceber(false)} />}

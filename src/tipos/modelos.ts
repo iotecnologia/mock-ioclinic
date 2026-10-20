@@ -15,6 +15,12 @@ export interface Clinica {
   gradeMin: number;
   /** Desconto (%) no PIX ou dinheiro. */
   descontoPix: number;
+  /** Desconto extra máximo (%) que a recepção pode dar no orçamento. A médica não tem limite. */
+  descontoMaxRecepcao: number;
+  /** Parcelamento no cartão por faixa de valor: até `ate` reais, no máximo `vezes` (ate null = acima disso). */
+  parcelas: { ate: number | null; vezes: number }[];
+  /** Validade do orçamento em dias. */
+  validadeOrcamentoDias: number;
 }
 
 export type TipoServico = 'consulta' | 'retorno' | 'exame';
@@ -51,7 +57,17 @@ export interface Atendimento {
   id: string; agendamentoId: string; pacienteId: string; data: string;
   queixa: string; pa?: string; fc?: number; pesoKg?: number; alturaCm?: number;
   cid?: string; cidDescricao?: string; conduta: string;
+  hda?: string; exameFisico?: string; examesSolicitados?: string[]; retornoDias?: number;
 }
+
+/** Resumo clínico do paciente (fica no prontuário; só a médica vê). */
+export interface ResumoClinico { pacienteId: string; alergias: string; medicamentos: string[]; antecedentes: string[]; atualizadoEm: string }
+
+export type TipoDocumento = 'atestado' | 'receita' | 'pedido_exames' | 'comparecimento';
+/** Documento emitido (impresso em papel timbrado, assinado e carimbado à mão). */
+export interface Documento { id: string; pacienteId: string; data: string; tipo: TipoDocumento; titulo: string; paragrafos: string[]; itens?: string[] }
+
+export interface Cid { codigo: string; descricao: string; grupo: string }
 
 export interface Bloqueio { data: string; motivo: string }
 export interface Feriado { data: string; nome: string }
@@ -63,6 +79,9 @@ export interface BaseClinica {
   pacientes: Paciente[];
   agendamentos: Agendamento[];
   atendimentos: Atendimento[];
+  resumos: ResumoClinico[];
+  documentos: Documento[];
+  cids: Cid[];
   bloqueios: Bloqueio[];
   feriados: Feriado[];
 }

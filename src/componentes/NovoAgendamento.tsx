@@ -14,14 +14,20 @@ import { linkWhats, moeda } from '../util/formato';
 
 const PASSOS = ['Paciente', 'Serviço', 'Dia e horário', 'Confirmar'];
 
-export function NovoAgendamento({ fechar, pacienteId, data, hora }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string }) {
+export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string }) {
   const { base, acoes } = useDados();
   const nav = useNavigate();
   const hj = hoje();
-  const [passo, setPasso] = useState(pacienteId ? 1 : 0);
+  const [passo, setPasso] = useState(pacienteId ? (servicoId ? 2 : 1) : 0);
   const [pac, setPac] = useState<string | undefined>(pacienteId);
-  const [serv, setServ] = useState<string | undefined>();
-  const [dia, setDia] = useState<string>(data && data >= hj ? data : hj);
+  const [serv, setServ] = useState<string | undefined>(servicoId);
+  const [dia, setDia] = useState<string>(() => {
+    let d = data && data >= hj ? data : hj;
+    const s0 = base.servicos.find((x) => x.id === servicoId);
+    // retorno sugerido: vai para o primeiro dia (a partir da data sugerida) que tem horário
+    if (s0) for (let i = 0; i < 90 && !horariosLivres(d, s0.duracaoMin, base, { agoraMin: d === hj ? agoraMin() : undefined }).length; i++) d = somaDias(d, 1);
+    return d;
+  });
   const [hr, setHr] = useState<string | undefined>(hora);
   const [busca, setBusca] = useState('');
   const [feito, setFeito] = useState<Agendamento | null>(null);

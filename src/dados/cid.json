@@ -1,0 +1,387 @@
+[
+ {
+  "codigo": "I10",
+  "descricao": "Hipertensão essencial (primária)",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I11.9",
+  "descricao": "Doença cardíaca hipertensiva sem insuficiência cardíaca",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I15.9",
+  "descricao": "Hipertensão secundária, não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I20.0",
+  "descricao": "Angina instável",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I20.9",
+  "descricao": "Angina pectoris, não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I21.9",
+  "descricao": "Infarto agudo do miocárdio não especificado",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I25.1",
+  "descricao": "Doença aterosclerótica do coração",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I25.2",
+  "descricao": "Infarto antigo do miocárdio",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I25.9",
+  "descricao": "Doença isquêmica crônica do coração não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I34.0",
+  "descricao": "Insuficiência (da valva) mitral",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I34.1",
+  "descricao": "Prolapso (da valva) mitral",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I35.0",
+  "descricao": "Estenose (da valva) aórtica",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I35.1",
+  "descricao": "Insuficiência (da valva) aórtica",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I42.0",
+  "descricao": "Cardiomiopatia dilatada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I42.1",
+  "descricao": "Cardiomiopatia obstrutiva hipertrófica",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I44.7",
+  "descricao": "Bloqueio de ramo esquerdo não especificado",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I45.1",
+  "descricao": "Outros bloqueios de ramo direito",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I47.1",
+  "descricao": "Taquicardia supraventricular",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I48",
+  "descricao": "Fibrilação e flutter atrial",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I49.1",
+  "descricao": "Despolarização atrial prematura (extrassístole atrial)",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I49.3",
+  "descricao": "Despolarização ventricular prematura (extrassístole ventricular)",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I49.9",
+  "descricao": "Arritmia cardíaca não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I50.0",
+  "descricao": "Insuficiência cardíaca congestiva",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I50.9",
+  "descricao": "Insuficiência cardíaca não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I51.7",
+  "descricao": "Cardiomegalia",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I63.9",
+  "descricao": "Infarto cerebral não especificado",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I65.2",
+  "descricao": "Oclusão e estenose da artéria carótida",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I70.2",
+  "descricao": "Aterosclerose das artérias das extremidades",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I73.9",
+  "descricao": "Doença vascular periférica não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I80.2",
+  "descricao": "Flebite e tromboflebite de outros vasos profundos dos membros inferiores",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I83.9",
+  "descricao": "Varizes dos membros inferiores sem úlcera ou inflamação",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I95.1",
+  "descricao": "Hipotensão ortostática",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "I95.9",
+  "descricao": "Hipotensão não especificada",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "Q21.1",
+  "descricao": "Comunicação interatrial",
+  "grupo": "Cardiologia"
+ },
+ {
+  "codigo": "R00.0",
+  "descricao": "Taquicardia não especificada",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R00.1",
+  "descricao": "Bradicardia não especificada",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R00.2",
+  "descricao": "Palpitações",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R01.1",
+  "descricao": "Sopro cardíaco não especificado",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R03.0",
+  "descricao": "Valor elevado da pressão arterial sem diagnóstico de hipertensão",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R06.0",
+  "descricao": "Dispneia",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R07.2",
+  "descricao": "Dor precordial",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R07.4",
+  "descricao": "Dor torácica não especificada",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R42",
+  "descricao": "Tontura e instabilidade",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R53",
+  "descricao": "Mal-estar, fadiga",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R55",
+  "descricao": "Síncope e colapso",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R60.0",
+  "descricao": "Edema localizado",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "R51",
+  "descricao": "Cefaleia",
+  "grupo": "Sintomas"
+ },
+ {
+  "codigo": "E10.9",
+  "descricao": "Diabetes mellitus tipo 1 sem complicações",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E11.9",
+  "descricao": "Diabetes mellitus tipo 2 sem complicações",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E66.9",
+  "descricao": "Obesidade não especificada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E78.0",
+  "descricao": "Hipercolesterolemia pura",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E78.1",
+  "descricao": "Hipergliceridemia pura",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E78.2",
+  "descricao": "Hiperlipidemia mista",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E78.5",
+  "descricao": "Hiperlipidemia não especificada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E03.9",
+  "descricao": "Hipotireoidismo não especificado",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E05.9",
+  "descricao": "Tireotoxicose não especificada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "E87.6",
+  "descricao": "Hipopotassemia",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "F17.2",
+  "descricao": "Tabagismo (síndrome de dependência ao fumo)",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "G47.3",
+  "descricao": "Apneia do sono",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "N18.9",
+  "descricao": "Doença renal crônica não especificada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "J44.9",
+  "descricao": "Doença pulmonar obstrutiva crônica não especificada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "F41.1",
+  "descricao": "Ansiedade generalizada",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "F41.0",
+  "descricao": "Transtorno de pânico",
+  "grupo": "Metabólicas"
+ },
+ {
+  "codigo": "Z00.0",
+  "descricao": "Exame médico geral",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z01.8",
+  "descricao": "Outros exames especiais especificados",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z01.8",
+  "descricao": "Avaliação pré-operatória",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z02.5",
+  "descricao": "Exame de aptidão para prática de esporte",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z02.7",
+  "descricao": "Obtenção de atestado médico",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z09.0",
+  "descricao": "Exame de seguimento após cirurgia",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z13.6",
+  "descricao": "Exame especial de rastreamento de doenças cardiovasculares",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z76.0",
+  "descricao": "Emissão de prescrição de repetição",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z82.4",
+  "descricao": "História familiar de doença isquêmica do coração",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z86.7",
+  "descricao": "História pessoal de doenças do aparelho circulatório",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z95.0",
+  "descricao": "Presença de marca-passo cardíaco",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z95.1",
+  "descricao": "Presença de enxerto de ponte aortocoronária",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z95.5",
+  "descricao": "Presença de implante e enxerto de angioplastia coronária",
+  "grupo": "Rotina"
+ },
+ {
+  "codigo": "Z79.0",
+  "descricao": "Uso prolongado de anticoagulantes",
+  "grupo": "Rotina"
+ }
+]

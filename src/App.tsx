@@ -13,8 +13,11 @@ import { Agenda } from './telas/Agenda';
 import { Pacientes } from './telas/Pacientes';
 import { PacienteFicha } from './telas/PacienteFicha';
 import { PacienteCadastro } from './telas/PacienteCadastro';
+import { Prontuario } from './telas/Prontuario';
+import { ProntuarioPaciente } from './telas/ProntuarioPaciente';
+import { Orcamento } from './telas/Orcamento';
 
-const TELAS: Record<string, ReactNode> = { hoje: <Hoje />, agenda: <Agenda />, pacientes: <Pacientes /> };
+const TELAS: Record<string, ReactNode> = { hoje: <Hoje />, agenda: <Agenda />, pacientes: <Pacientes />, prontuario: <Prontuario />, orcamento: <Orcamento /> };
 
 function Rotas() {
   const s = useSessao();
@@ -29,6 +32,7 @@ function Rotas() {
         ))}
         <Route path="pacientes/novo" element={<PacienteCadastro />} />
         <Route path="pacientes/:id" element={<PacienteFicha />} />
+        <Route path="prontuario/:id" element={perfil === 'medica' ? <ProntuarioPaciente /> : <Vazio>O prontuário é exclusivo da médica (LGPD: dado sensível de saúde).</Vazio>} />
         <Route path="*" element={<Navigate to="/hoje" replace />} />
       </Route>
     </Routes>

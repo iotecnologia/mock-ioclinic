@@ -1,13 +1,15 @@
 // Gera a base FICTÍCIA do mock (pacientes, agenda de ~3 meses para trás e 4 semanas para frente, prontuários).
 // Tudo relativo a "hoje", para a apresentação sempre ter agenda cheia no dia em que for aberta.
 // Sorteio com semente fixa: a mesma data gera sempre a mesma base. Nenhum dado é de pessoa real.
-import type { Agendamento, Atendimento, BaseClinica, Bloqueio, Clinica, Feriado, FormaPagamento, Paciente, Servico, Usuario } from '../tipos/modelos';
+import type { Agendamento, Atendimento, BaseClinica, Bloqueio, Cid, Clinica, Documento, Feriado, FormaPagamento, Paciente, ResumoClinico, Servico, Usuario } from '../tipos/modelos';
+import { comparecimento, pedidoExames, receita } from '../regras/documentos';
 import { situacaoDia, faixasDoDia } from '../regras/disponibilidade';
-import { diaSemana, hhmm, somaDias } from '../util/datas';
+import { diaSemana, hhmm, min, somaDias } from '../util/datas';
 import clinica from '../dados/clinica.json';
 import usuarios from '../dados/usuarios.json';
 import servicos from '../dados/servicos.json';
 import feriados from '../dados/feriados.json';
+import cids from '../dados/cid.json';
 
 /** Sorteio previsível (mulberry32). */
 function sorteador(semente: number) {
@@ -26,6 +28,12 @@ const RUAS = ['Rua das Palmeiras', 'Rua dos Ipês', 'Av. das Amoreiras', 'Rua Ja
 
 const QUEIXAS = ['Palpitações ocasionais há 2 meses', 'Controle de pressão arterial', 'Dor torácica aos esforços moderados', 'Check-up cardiológico anual', 'Cansaço e falta de ar ao subir escadas', 'Avaliação pré-operatória', 'Inchaço nos tornozelos no fim do dia', 'Tontura ao levantar', 'Retorno com resultado de exames', 'Acompanhamento de colesterol alto'];
 const CIDS: [string, string][] = [['I10', 'Hipertensão essencial'], ['R00.2', 'Palpitações'], ['I20.9', 'Angina pectoris'], ['E78.0', 'Hipercolesterolemia pura'], ['I48', 'Fibrilação e flutter atrial'], ['R07.4', 'Dor torácica não especificada'], ['I25.1', 'Doença aterosclerótica do coração'], ['Z00.0', 'Exame médico geral'], ['I50.9', 'Insuficiência cardíaca']];
+const HDAS = ['Refere sintomas há cerca de 2 meses, piora aos esforços, melhora com repouso.', 'Nega dor torácica, dispneia ou síncope. Em uso regular da medicação.', 'Episódios intermitentes, sem relação com esforço. Nega perda de consciência.', 'Assintomático. Vem para acompanhamento de rotina.'];
+const EXAME_FISICO = 'BEG, corado, hidratado, eupneico. ACV: RCR 2T, BNF, sem sopros. AR: MV+ sem RA. Extremidades sem edema, pulsos presentes.';
+const ALERGIAS = ['Nenhuma conhecida', 'Nenhuma conhecida', 'Nenhuma conhecida', 'Nenhuma conhecida', 'Dipirona', 'Penicilina', 'AAS', 'Contraste iodado', 'Sulfa'];
+const MEDICAMENTOS = ['Losartana 50 mg — 1 cp de 12/12h', 'Atenolol 25 mg — 1 cp pela manhã', 'Sinvastatina 20 mg — 1 cp à noite', 'AAS 100 mg — 1 cp após o almoço', 'Anlodipino 5 mg — 1 cp pela manhã', 'Metformina 850 mg — 1 cp após o café e o jantar', 'Rosuvastatina 10 mg — 1 cp à noite', 'Hidroclorotiazida 25 mg — 1 cp pela manhã', 'Rivaroxabana 20 mg — 1 cp no jantar', 'Levotiroxina 50 mcg — 1 cp em jejum'];
+const ANTECEDENTES = ['Hipertensão', 'Diabetes tipo 2', 'Dislipidemia', 'Tabagismo', 'Ex-tabagista', 'Obesidade', 'Sedentarismo', 'IAM prévio', 'História familiar de DAC', 'Hipotireoidismo'];
+const LAB = ['Hemograma completo', 'Perfil lipídico', 'Glicemia de jejum', 'Hemoglobina glicada', 'Creatinina', 'Potássio', 'TSH'];
 const CONDUTAS = ['Mantida medicação. Solicitado ecocardiograma. Retorno em 30 dias.', 'Ajuste de anti-hipertensivo. MAPA 24h solicitado.', 'Solicitado Holter 24h e exames laboratoriais.', 'Orientação de dieta e atividade física. Reavaliar em 6 meses.', 'Solicitado teste ergométrico. Retorno com resultado.', 'Exames normais. Alta do acompanhamento intensivo; revisão anual.'];
 
 function cpfFicticio(s: ReturnType<typeof sorteador>): string {
@@ -175,6 +183,9 @@ export function gerarBase(hojeIso: string, agoraMin: number, semente = 20261024)
           atendimentos.push({
             id: 'at' + id, agendamentoId: id, pacienteId: pac.id, data,
             queixa: serv.tipo === 'retorno' ? 'Retorno com resultado de exames' : s.um(QUEIXAS),
+            hda: s.um(HDAS), exameFisico: EXAME_FISICO,
+            examesSolicitados: s.r() < 0.5 ? [s.um(exames).nome, ...(s.r() < 0.5 ? [s.um(LAB)] : [])] : [],
+            retornoDias: s.r() < 0.6 ? 30 : undefined,
             pa: `${s.ent(11, 16)}${s.um(['0', '5'])}/${s.ent(7, 10)}0`, fc: s.ent(58, 96),
             pesoKg: pesos[pac.id] + s.ent(-2, 2), alturaCm: alturas[pac.id], cid, cidDescricao, conduta: s.um(CONDUTAS),
           });
@@ -184,5 +195,25 @@ export function gerarBase(hojeIso: string, agoraMin: number, semente = 20261024)
     }
   }
 
-  return { clinica: cli, usuarios: usuarios as Usuario[], servicos: servs, pacientes, agendamentos, atendimentos, bloqueios, feriados: fers };
+  // ---- resumo clínico e documentos dos pacientes que já consultaram
+  const resumos: ResumoClinico[] = [];
+  const documentos: Documento[] = [];
+  const comAtendimento = new Set(atendimentos.map((a) => a.pacienteId));
+  for (const p of pacientes) {
+    if (!comAtendimento.has(p.id)) continue;
+    const ant = [...new Set(Array.from({ length: s.ent(0, 3) }, () => s.um(ANTECEDENTES)))];
+    const meds = [...new Set(Array.from({ length: s.ent(0, 3) }, () => s.um(MEDICAMENTOS)))];
+    const ult = atendimentos.filter((a) => a.pacienteId === p.id).sort((x, y) => y.data.localeCompare(x.data))[0];
+    resumos.push({ pacienteId: p.id, alergias: s.um(ALERGIAS), medicamentos: meds, antecedentes: ant, atualizadoEm: ult.data });
+  }
+  for (const at of atendimentos) {
+    const p = pacientes.find((x) => x.id === at.pacienteId)!;
+    const ag = agendamentos.find((x) => x.id === at.agendamentoId)!;
+    if (at.examesSolicitados?.length) documentos.push({ id: 'd' + documentos.length, ...pedidoExames(p, { data: at.data, exames: at.examesSolicitados, indicacao: at.cid ? `${at.cid} · ${at.cidDescricao}` : undefined }) });
+    const r = resumos.find((x) => x.pacienteId === p.id);
+    if (r?.medicamentos.length && s.r() < 0.5) documentos.push({ id: 'd' + documentos.length, ...receita(p, { data: at.data, itens: r.medicamentos.map((m) => { const [nome, uso] = m.split(' — '); return { nome, uso: uso ?? '' }; }) }) });
+    if (s.r() < 0.15) documentos.push({ id: 'd' + documentos.length, ...comparecimento(p, { data: at.data, de: ag.hora, ate: hhmm(min(ag.hora) + ag.duracaoMin) }) });
+  }
+
+  return { clinica: cli, usuarios: usuarios as Usuario[], servicos: servs, pacientes, agendamentos, atendimentos, resumos, documentos, cids: cids as Cid[], bloqueios, feriados: fers };
 }

@@ -32,7 +32,7 @@ Na tela de entrada, use os botões **Recepção** ou **Dra. Flávia** (qualquer 
 | Perfil | E-mail | O que vê |
 |---|---|---|
 | Recepção | recepcao@ioclinic.exemplo | Hoje, Agenda, Pacientes (sem conteúdo clínico), Orçamento |
-| Dra. Flávia | flavia@ioclinic.exemplo | Tudo, inclusive conteúdo clínico, Prontuário, Financeiro, Relatórios, Painel (BI), Usuários |
+| Dra. Flávia | flavia@ioclinic.exemplo | Tudo, inclusive Prontuário e conteúdo clínico (e, nas próximas entregas, Financeiro, Relatórios, Painel e Usuários) |
 
 Itens foscos no menu entram nas próximas entregas.
 
@@ -49,9 +49,18 @@ Itens foscos no menu entram nas próximas entregas.
    **cadastro novo** com validação de CPF, busca de CEP e termo LGPD obrigatório.
 6. Abrir a **ficha** de um paciente: linha do tempo com consultas, exames e pagamentos.
    Destacar o aviso: *conteúdo clínico visível só para a médica (LGPD)*.
-7. **Sair e entrar como Dra. Flávia.** O menu muda (Prontuário, Financeiro, Relatórios, BI, Usuários).
+7. **Orçamento**: clicar nos serviços (ex.: Consulta + Eco + Holter) → o sistema mostra cartão (parcelado) e
+   PIX/dinheiro (com desconto) lado a lado → escolher o paciente → imprimir, WhatsApp ou já **agendar**.
+   A recepção só consegue dar até 10% de desconto extra; a Dra., sem limite.
+8. **Sair e entrar como Dra. Flávia.** O menu muda (Prontuário, Financeiro, Relatórios, BI, Usuários).
    Em **Hoje** aparece o **próximo paciente** com a última consulta (CID e pressão).
-   Na ficha do paciente, a linha do tempo agora mostra a **evolução clínica**.
+9. **Prontuário**: o botão ▶ do próximo paciente chama o paciente e abre o prontuário.
+   Preencher queixa e sinais vitais (o **IMC** e a **classificação da pressão** aparecem sozinhos), clicar em
+   **Normal** no exame físico, buscar o **CID** digitando "palpita" ou "I10", escrever a conduta, marcar exames
+   e **Finalizar atendimento**. Em seguida: **Receita** (repete os medicamentos em uso com um clique),
+   **Pedido de exames**, **Atestado** (CID só com autorização do paciente) e **Agendar retorno**.
+   Todos imprimem preto no branco, com opção de **papel timbrado**.
+10. Na ficha do paciente (como Dra.), a linha do tempo agora mostra a **evolução clínica** e os **documentos**.
 
 ## Estrutura
 
@@ -62,7 +71,7 @@ io-clinic-mock/
 ├── public/favicon.svg
 ├── src/
 │   ├── main.tsx / App.tsx         entrada e rotas (cada rota confere o perfil)
-│   ├── dados/                     1. DADOS — clínica (horários), serviços e preços, usuários, feriados (JSON)
+│   ├── dados/                     1. DADOS — clínica (horários, pagamento), serviços e preços, usuários, feriados, CID-10 (JSON)
 │   ├── tipos/modelos.ts           tipos de todas as tabelas
 │   ├── repositorio/               2. REPOSITÓRIO — de onde vêm os dados
 │   │   ├── repositorio.ts             contrato: carregar(): Promise<BaseClinica>
@@ -71,13 +80,16 @@ io-clinic-mock/
 │   ├── regras/                    3. REGRAS — funções puras, sem tela, testadas
 │   │   ├── disponibilidade.ts         dias de atendimento, feriados, bloqueios, horários livres, grade do dia
 │   │   ├── agenda.ts                  status, próximos passos, contadores, próximo paciente
-│   │   └── paciente.ts                idade, busca sem acento, histórico (recepção x médica), resumo
+│   │   ├── paciente.ts                idade, busca sem acento, histórico (recepção x médica), resumo
+│   │   ├── prontuario.ts              IMC, classificação da PA (diretriz 2020), busca de CID
+│   │   ├── documentos.ts              texto do atestado, receita, pedido de exames, comparecimento
+│   │   └── orcamento.ts               desconto PIX, desconto extra, parcelas por faixa
 │   ├── acesso/                    sessão (login do mock) e catálogo de páginas por perfil
-│   ├── componentes/               4. TELA — Shell, calendário, linha da agenda, novo agendamento, receber, formulário
-│   ├── telas/                     4. TELA — Login, Hoje, Agenda, Pacientes, Ficha, Cadastro
-│   ├── estilos/                   clinica.css (tema e estrutura) + telas.css (peças das telas)
+│   ├── componentes/               4. TELA — Shell, calendário, agenda, agendamento, receber, formulário, CID, documentos, folha A4
+│   ├── telas/                     4. TELA — Login, Hoje, Agenda, Pacientes, Ficha, Cadastro, Prontuário, Orçamento
+│   ├── estilos/                   clinica.css (tema) + telas.css (peças das telas) + impressao.css (folha A4)
 │   └── util/                      datas e formatos (moeda, CPF, telefone, WhatsApp)
-└── tests/                         Vitest: disponibilidade, paciente/LGPD, base fictícia
+└── tests/                         Vitest: disponibilidade, paciente/LGPD, base fictícia, prontuário/documentos, orçamento
 ```
 
 Regra das camadas: **tela só chama `regras/`**, **`regras/` só recebe dados**, e só o `repositorio/` sabe de onde
@@ -89,6 +101,9 @@ os dados vêm.
   (**horários de exemplo** — ajustar em `src/dados/clinica.json`).
 - Consulta e retorno: 1h. Exames: 30 min. Grade de 30 min.
 - Retorno até 30 dias sem custo. PIX ou dinheiro com 5% de desconto.
+- Cartão: até R$ 300 em 2x; de R$ 300 a R$ 500 em 3x; acima de R$ 500 em 6x. Desconto extra da recepção até 10%.
+  Orçamento válido por 30 dias. (**Regras de exemplo** — ajustar em `src/dados/clinica.json`.)
+- Pressão arterial classificada pela Diretriz Brasileira de Hipertensão 2020 (vale a pior entre sistólica e diastólica).
 - **Valores ilustrativos** em `src/dados/servicos.json` — substituir pelos valores da Dra.
 - Feriados nacionais e de Campinas em `src/dados/feriados.json`.
 
@@ -98,7 +113,9 @@ os dados vêm.
 - A recepção não vê conteúdo clínico (evolução, CID, conduta); só a médica.
 - CPF aparece parcialmente oculto nas listas.
 - Cadastro só é salvo com o termo de consentimento aceito.
+- Prontuário, resumo clínico e documentos: só a médica. A recepção não abre `/prontuario` nem vê documentos no histórico.
+- Atestado só leva o CID se a Dra. marcar (com autorização do paciente).
 
 ## Próximas entregas do mock
 
-Prontuário (com atestado e receita) · Orçamento · Financeiro (receitas e despesas) · Relatórios · Painel (BI) · Usuários.
+Financeiro (receitas e despesas) · Relatórios · Painel (BI) · Usuários.

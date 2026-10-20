@@ -1,7 +1,7 @@
 // Ficha do paciente: cabeçalho com resumo, HISTÓRICO (linha do tempo) e DADOS cadastrais (edição pelo lápis).
 // LGPD: a recepção vê só o histórico administrativo; o conteúdo clínico aparece só para a médica.
 import { useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { Paciente } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
@@ -16,7 +16,7 @@ import { linkWhats } from '../util/formato';
 
 type Aba = 'historico' | 'dados';
 type FiltroH = 'tudo' | 'agendamento' | 'pagamento' | 'clinico';
-const ICONE: Record<ItemHistorico['tipo'], string> = { agendamento: 'calendario', pagamento: 'carteira', clinico: 'estetoscopio', cadastro: 'pacienteMais' };
+const ICONE: Record<ItemHistorico['tipo'], string> = { agendamento: 'calendario', pagamento: 'carteira', clinico: 'estetoscopio', documento: 'arquivo', cadastro: 'pacienteMais' };
 
 export function PacienteFicha() {
   const { id } = useParams();
@@ -24,6 +24,7 @@ export function PacienteFicha() {
   const { base, acoes } = useDados();
   const { usuario } = useSessao();
   const medica = usuario!.perfil === 'medica';
+  const nav = useNavigate();
   const [aba, setAba] = useState<Aba>('historico');
   const [filtro, setFiltro] = useState<FiltroH>('tudo');
   const [editando, setEditando] = useState(false);
@@ -74,7 +75,7 @@ export function PacienteFicha() {
         <div className="fc-num"><b>{r.proximo ? br(r.proximo.data) : '—'}</b><span>{r.proximo ? 'próximo · ' + r.proximo.hora : 'sem agendamento'}</span></div>
         <div className="fc-acoes">
           <a className="btn2 ic zap" href={linkWhats(p.telefone, `Olá, ${p.nome.split(' ')[0]}! Aqui é da clínica da ${base.clinica.medica}.`)} target="_blank" rel="noreferrer" title="Conversar no WhatsApp" aria-label="Conversar no WhatsApp"><Icone n="zap" /></a>
-          {medica && <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário (próxima entrega)" disabled />}
+          {medica && <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" onClick={() => nav('/prontuario/' + p.id)} />}
           <BotaoIcone icone="calendario" titulo="Agendar para este paciente" pri onClick={() => setParams({ agendar: '1' })} />
         </div>
       </div>

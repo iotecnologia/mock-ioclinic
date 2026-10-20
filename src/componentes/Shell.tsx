@@ -11,6 +11,7 @@ import { useSessao } from '../acesso/Sessao';
 import { EM_BREVE, GRUPOS, PAGINAS } from '../acesso/paginas';
 
 const NOMES_ROTA: Record<string, string> = { novo: 'Novo paciente' };
+const SUB_PADRAO: Record<string, string> = { pacientes: 'Ficha do paciente', prontuario: 'Paciente' };
 
 export function Shell() {
   const s = useSessao();
@@ -19,7 +20,7 @@ export function Shell() {
   const loc = useLocation();
   const partes = loc.pathname.split('/').filter(Boolean);
   const atual = PAGINAS.find((p) => p.rota === '/' + partes[0]);
-  const sub = partes[1] ? NOMES_ROTA[partes[1]] ?? 'Ficha do paciente' : '';
+  const sub = partes[1] ? NOMES_ROTA[partes[1]] ?? SUB_PADRAO[partes[0]] ?? '' : '';
   const trocarTema = () => { setClaro(!claro); local.gravar('tema-claro', !claro); };
   return (
     <div className={'app' + (claro ? ' tema-claro' : '')}>

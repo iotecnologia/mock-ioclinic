@@ -68,8 +68,10 @@ export function Hoje() {
               <div className="px-acoes">
                 <BotaoIcone icone="arquivo" titulo="Ver histórico do paciente" onClick={() => nav('/pacientes/' + p.id)} />
                 {prox.status !== 'em_atendimento'
-                  ? <BotaoIcone icone="play" titulo="Chamar / iniciar atendimento" pri onClick={() => acoes.mudarStatus(prox.id, 'em_atendimento')} />
-                  : <BotaoIcone icone="check" titulo="Finalizar atendimento" pri onClick={() => acoes.mudarStatus(prox.id, 'atendido')} />}
+                  ? <BotaoIcone icone="play" titulo="Chamar e abrir o prontuário" pri onClick={() => { acoes.mudarStatus(prox.id, 'em_atendimento'); if (s.tipo !== 'exame') nav(`/prontuario/${p.id}?ag=${prox.id}`); }} />
+                  : s.tipo !== 'exame'
+                    ? <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" pri onClick={() => nav(`/prontuario/${p.id}?ag=${prox.id}`)} />
+                    : <BotaoIcone icone="check" titulo="Finalizar exame" pri onClick={() => acoes.mudarStatus(prox.id, 'atendido')} />}
               </div>
             </div>
           </div>

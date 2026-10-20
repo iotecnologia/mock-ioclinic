@@ -28,11 +28,11 @@ export function buscarPacientes(lista: Paciente[], termo: string): Paciente[] {
 
 export interface ItemHistorico {
   data: string; hora?: string;
-  tipo: 'agendamento' | 'pagamento' | 'clinico' | 'cadastro';
+  tipo: 'agendamento' | 'pagamento' | 'clinico' | 'documento' | 'cadastro';
   titulo: string; detalhe?: string; status?: string; statusCls?: string;
 }
 
-type BaseHist = Pick<BaseClinica, 'agendamentos' | 'servicos' | 'atendimentos' | 'pacientes'>;
+type BaseHist = Pick<BaseClinica, 'agendamentos' | 'servicos' | 'atendimentos' | 'pacientes'> & Partial<Pick<BaseClinica, 'documentos'>>;
 
 /**
  * Linha do tempo do paciente, do mais recente para o mais antigo.
@@ -55,8 +55,13 @@ export function historico(pacienteId: string, b: BaseHist, perfil: Perfil): Item
       }
     }
   }
+  if (perfil === 'medica') {
+    for (const d of (b.documentos ?? []).filter((x) => x.pacienteId === pacienteId)) {
+      itens.push({ data: d.data, tipo: 'documento', titulo: d.titulo, detalhe: (d.itens ?? d.paragrafos.slice(-1)).join(' · ').slice(0, 160) });
+    }
+  }
   if (pac) itens.push({ data: pac.criadoEm, tipo: 'cadastro', titulo: 'Cadastro do paciente', detalhe: pac.consentimentoLgpd ? 'Termo LGPD aceito' : 'Termo LGPD pendente' });
-  const ordemTipo = { clinico: 0, pagamento: 1, agendamento: 2, cadastro: 3 };
+  const ordemTipo = { clinico: 0, documento: 1, pagamento: 2, agendamento: 3, cadastro: 4 };
   return itens.sort((x, y) => y.data.localeCompare(x.data) || min(y.hora ?? '00:00') - min(x.hora ?? '00:00') || ordemTipo[x.tipo] - ordemTipo[y.tipo]);
 }
 
