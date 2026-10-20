@@ -1,5 +1,5 @@
 // Tela de entrada (mesmo layout do Analiza): marca à esquerda, formulário à direita.
-// Mock: qualquer senha entra. Os dois atalhos servem para a apresentação (Recepção x Dra.).
+// E-mail + senha individual, conferida por hash; 5 erros seguidos bloqueiam por 30 s.
 import { useState, type FormEvent } from 'react';
 import { useSessao } from '../acesso/Sessao';
 import { Icone } from '../componentes/Icone';
@@ -13,12 +13,15 @@ export function Login() {
   const [senha, setSenha] = useState('');
   const [verSenha, setVerSenha] = useState(false);
   const [erro, setErro] = useState('');
-  const entrar = (e: FormEvent) => {
+  const [conferindo, setConferindo] = useState(false);
+  const entrar = async (e: FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !senha) { setErro('Informe o e-mail e a senha.'); return; }
-    if (!s.entrar(email)) setErro('E-mail não cadastrado.');
+    setConferindo(true); setErro('');
+    const r = await s.entrar(email, senha);
+    setConferindo(false);
+    if (!r.ok) { setErro(r.motivo); setSenha(''); }
   };
-  const atalho = (em: string) => { setEmail(em); setSenha('demonstracao'); setErro(''); s.entrar(em); };
   return (
     <div className="login">
       <div className="login-marca">
@@ -48,15 +51,8 @@ export function Login() {
             </div>
           </label>
           {erro && <div className="erro-login">{erro}</div>}
-          <button type="submit" className="btn-entrar">Entrar</button>
-          <div className="demo">
-            <span>Demonstração: entrar como</span>
-            <div>
-              <button type="button" onClick={() => atalho('recepcao@ioclinic.exemplo')}><Icone n="usuarios" /> Recepção</button>
-              <button type="button" onClick={() => atalho('flavia@ioclinic.exemplo')}><Icone n="estetoscopio" /> Dra. Flávia</button>
-            </div>
-          </div>
-          <div className="seg"><Icone n="escudo" /> Acesso com senha individual e verificação em duas etapas na versão final.</div>
+          <button type="submit" className="btn-entrar" disabled={conferindo}>{conferindo ? 'Conferindo…' : 'Entrar'}</button>
+          <div className="seg"><Icone n="escudo" /> Acesso com senha individual. Na versão final, também com verificação em duas etapas.</div>
         </form>
       </div>
     </div>

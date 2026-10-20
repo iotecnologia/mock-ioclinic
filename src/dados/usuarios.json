@@ -1,4 +1,4 @@
 [
-  { "id": "u1", "email": "flavia@ioclinic.exemplo", "nome": "Dra. Flávia", "perfil": "medica", "cargo": "Médica · Administradora" },
-  { "id": "u2", "email": "recepcao@ioclinic.exemplo", "nome": "Recepção", "perfil": "recepcao", "cargo": "Recepcionista" }
+  {"id": "u1", "email": "flavia@ioclinic.exemplo", "nome": "Dra. Flávia", "perfil": "medica", "cargo": "Médica · Administradora", "sal": "cb9ae4d143e7358d22c82f0e", "hash": "b93cc376811039148c40343272d243bee024cbabab2b064898626e3925e51e2c"},
+  {"id": "u2", "email": "recepcao@ioclinic.exemplo", "nome": "Recepção", "perfil": "recepcao", "cargo": "Recepcionista", "sal": "a002046ed51fb0fb3f0878dd", "hash": "89053deb3bf6c52c42ae3c55ba44c37b33a16024873340a8b221b2757202581d"}
 ]
