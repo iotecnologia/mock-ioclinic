@@ -16,8 +16,12 @@ import { PacienteCadastro } from './telas/PacienteCadastro';
 import { Prontuario } from './telas/Prontuario';
 import { ProntuarioPaciente } from './telas/ProntuarioPaciente';
 import { Orcamento } from './telas/Orcamento';
+import { Financeiro } from './telas/Financeiro';
+import { Relatorios } from './telas/Relatorios';
+import { Painel } from './telas/Painel';
 
-const TELAS: Record<string, ReactNode> = { hoje: <Hoje />, agenda: <Agenda />, pacientes: <Pacientes />, prontuario: <Prontuario />, orcamento: <Orcamento /> };
+const TELAS: Record<string, ReactNode> = { hoje: <Hoje />, agenda: <Agenda />, pacientes: <Pacientes />, prontuario: <Prontuario />, orcamento: <Orcamento />,
+  financeiro: <Financeiro />, relatorios: <Relatorios />, painel: <Painel /> };
 
 function Rotas() {
   const s = useSessao();

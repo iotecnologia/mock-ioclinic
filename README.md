@@ -27,12 +27,17 @@ npm run build      # gera a versão final em dist/
 
 ## Acesso de demonstração
 
-Na tela de entrada, use os botões **Recepção** ou **Dra. Flávia** (qualquer senha serve no mock).
+Na tela de entrada, informe o e-mail e a senha. A senha é conferida (hash) e 5 erros seguidos bloqueiam por 30 s.
+
+| Usuário | Senha |
+|---|---|
+| flavia@ioclinic.exemplo | Flavia@2026 |
+| recepcao@ioclinic.exemplo | Recepcao@2026 |
 
 | Perfil | E-mail | O que vê |
 |---|---|---|
 | Recepção | recepcao@ioclinic.exemplo | Hoje, Agenda, Pacientes (sem conteúdo clínico), Orçamento |
-| Dra. Flávia | flavia@ioclinic.exemplo | Tudo, inclusive Prontuário e conteúdo clínico (e, nas próximas entregas, Financeiro, Relatórios, Painel e Usuários) |
+| Dra. Flávia | flavia@ioclinic.exemplo | Tudo, inclusive Prontuário e conteúdo clínico, Financeiro, Relatórios e Painel (BI) |
 
 Itens foscos no menu entram nas próximas entregas.
 
@@ -61,6 +66,14 @@ Itens foscos no menu entram nas próximas entregas.
    **Pedido de exames**, **Atestado** (CID só com autorização do paciente) e **Agendar retorno**.
    Todos imprimem preto no branco, com opção de **papel timbrado**.
 10. Na ficha do paciente (como Dra.), a linha do tempo agora mostra a **evolução clínica** e os **documentos**.
+11. **Financeiro** (só a Dra.): recebido no mês, despesas, saldo e a receber; receitas e despesas do mês;
+    **lançar despesa** (botão +) e marcar como paga; recebido por forma de pagamento; despesas por categoria.
+12. **Relatórios**: Atendimentos, Receitas, Despesas, Fluxo de caixa e Pacientes novos, por período
+    (Este mês, Mês passado, Últimos 90 dias ou datas livres). **Imprimir** (preto no branco) ou **exportar CSV** para o Excel.
+13. **Painel (BI)**: receita, despesas, lucro, atendimentos, ticket médio e faltas, com a variação sobre o mês anterior
+    (no mês em andamento, compara com o mesmo período do mês anterior). Gráficos: receita x custo (6 meses),
+    agendamentos por mês, formas de pagamento, receita por serviço e ocupação da agenda por dia da semana.
+    Passe o mouse nas barras para ver os valores.
 
 ## Estrutura
 
@@ -83,13 +96,14 @@ io-clinic-mock/
 │   │   ├── paciente.ts                idade, busca sem acento, histórico (recepção x médica), resumo
 │   │   ├── prontuario.ts              IMC, classificação da PA (diretriz 2020), busca de CID
 │   │   ├── documentos.ts              texto do atestado, receita, pedido de exames, comparecimento
-│   │   └── orcamento.ts               desconto PIX, desconto extra, parcelas por faixa
+│   │   ├── orcamento.ts               desconto PIX, desconto extra, parcelas por faixa
+│   │   └── financeiro.ts              resumo do mês, séries do Painel, relatórios, CSV para Excel
 │   ├── acesso/                    sessão (login do mock) e catálogo de páginas por perfil
-│   ├── componentes/               4. TELA — Shell, calendário, agenda, agendamento, receber, formulário, CID, documentos, folha A4
-│   ├── telas/                     4. TELA — Login, Hoje, Agenda, Pacientes, Ficha, Cadastro, Prontuário, Orçamento
-│   ├── estilos/                   clinica.css (tema) + telas.css (peças das telas) + impressao.css (folha A4)
+│   ├── componentes/               4. TELA — Shell, calendário, agenda, agendamento, receber, formulário, CID, documentos, folha A4, gráficos
+│   ├── telas/                     4. TELA — Login, Hoje, Agenda, Pacientes, Ficha, Cadastro, Prontuário, Orçamento, Financeiro, Relatórios, Painel
+│   ├── estilos/                   clinica.css (tema) + telas.css (peças das telas) + impressao.css (folha A4) + gestao.css (Financeiro, Relatórios, Painel)
 │   └── util/                      datas e formatos (moeda, CPF, telefone, WhatsApp)
-└── tests/                         Vitest: disponibilidade, paciente/LGPD, base fictícia, prontuário/documentos, orçamento
+└── tests/                         Vitest: disponibilidade, paciente/LGPD, base fictícia, prontuário/documentos, orçamento, financeiro
 ```
 
 Regra das camadas: **tela só chama `regras/`**, **`regras/` só recebe dados**, e só o `repositorio/` sabe de onde
@@ -101,6 +115,7 @@ os dados vêm.
   (**horários de exemplo** — ajustar em `src/dados/clinica.json`).
 - Consulta e retorno: 1h. Exames: 30 min. Grade de 30 min.
 - Retorno até 30 dias sem custo. PIX ou dinheiro com 5% de desconto.
+- Despesas fictícias de consultório (aluguel, condomínio, recepcionista, contador, contas, material, manutenção, Simples Nacional ≈ 6% do recebido no mês anterior).
 - Cartão: até R$ 300 em 2x; de R$ 300 a R$ 500 em 3x; acima de R$ 500 em 6x. Desconto extra da recepção até 10%.
   Orçamento válido por 30 dias. (**Regras de exemplo** — ajustar em `src/dados/clinica.json`.)
 - Pressão arterial classificada pela Diretriz Brasileira de Hipertensão 2020 (vale a pior entre sistólica e diastólica).
@@ -113,9 +128,9 @@ os dados vêm.
 - A recepção não vê conteúdo clínico (evolução, CID, conduta); só a médica.
 - CPF aparece parcialmente oculto nas listas.
 - Cadastro só é salvo com o termo de consentimento aceito.
-- Prontuário, resumo clínico e documentos: só a médica. A recepção não abre `/prontuario` nem vê documentos no histórico.
+- Prontuário, resumo clínico, documentos, Financeiro, Relatórios e Painel: só a médica. A recepção não abre `/prontuario` nem vê documentos no histórico.
 - Atestado só leva o CID se a Dra. marcar (com autorização do paciente).
 
 ## Próximas entregas do mock
 
-Financeiro (receitas e despesas) · Relatórios · Painel (BI) · Usuários.
+Usuários (cadastro de usuários e perfis).

@@ -69,6 +69,10 @@ export interface Documento { id: string; pacienteId: string; data: string; tipo:
 
 export interface Cid { codigo: string; descricao: string; grupo: string }
 
+export type CategoriaDespesa = 'Aluguel e condomínio' | 'Pessoal' | 'Contas de consumo' | 'Serviços' | 'Material e insumos' | 'Equipamentos' | 'Impostos' | 'Marketing' | 'Outros';
+/** Despesa da clínica. `data` é o vencimento; `pagaEm` quando foi paga. */
+export interface Despesa { id: string; data: string; descricao: string; categoria: CategoriaDespesa; valor: number; status: 'paga' | 'a_pagar'; pagaEm?: string }
+
 export interface Bloqueio { data: string; motivo: string }
 export interface Feriado { data: string; nome: string }
 
@@ -81,6 +85,7 @@ export interface BaseClinica {
   atendimentos: Atendimento[];
   resumos: ResumoClinico[];
   documentos: Documento[];
+  despesas: Despesa[];
   cids: Cid[];
   bloqueios: Bloqueio[];
   feriados: Feriado[];

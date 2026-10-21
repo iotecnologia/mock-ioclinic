@@ -1,7 +1,7 @@
 // Base carregada pelo repositório + ações (criar paciente, agendar, mudar status, receber).
 // No mock tudo fica só na memória da página: recarregou, volta ao início. Fase 3: cada ação chama a API.
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { Agendamento, Atendimento, BaseClinica, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
+import type { Agendamento, Atendimento, BaseClinica, Despesa, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
 import type { Repositorio } from '../repositorio/repositorio';
 import { hoje } from '../util/datas';
 
@@ -14,6 +14,9 @@ interface Acoes {
   finalizarAtendimento(at: Omit<Atendimento, 'id'>): Atendimento;
   salvarResumo(r: ResumoClinico): void;
   emitirDocumento(d: Omit<Documento, 'id'>): Documento;
+  lancarDespesa(d: Omit<Despesa, 'id'>): Despesa;
+  pagarDespesa(id: string): void;
+  excluirDespesa(id: string): void;
 }
 interface Ctx { base: BaseClinica; acoes: Acoes }
 const C = createContext<Ctx | null>(null);
@@ -71,6 +74,17 @@ export function DadosProvider({ repo, children }: { repo: Repositorio; children:
       const novo: Documento = { ...d, id: 'n' + Date.now().toString(36) };
       setBase((b) => b && { ...b, documentos: [...b.documentos, novo] });
       return novo;
+    },
+    lancarDespesa(d) {
+      const novo: Despesa = { ...d, id: 'n' + Date.now().toString(36) };
+      setBase((b) => b && { ...b, despesas: [...b.despesas, novo].sort((x, y) => x.data.localeCompare(y.data)) });
+      return novo;
+    },
+    pagarDespesa(id) {
+      setBase((b) => b && { ...b, despesas: b.despesas.map((x) => (x.id === id ? { ...x, status: 'paga', pagaEm: hoje() } : x)) });
+    },
+    excluirDespesa(id) {
+      setBase((b) => b && { ...b, despesas: b.despesas.filter((x) => x.id !== id) });
     },
   };
   return <C.Provider value={{ base, acoes }}>{children}</C.Provider>;

@@ -1,7 +1,7 @@
 // Gera a base FICTÍCIA do mock (pacientes, agenda de ~3 meses para trás e 4 semanas para frente, prontuários).
 // Tudo relativo a "hoje", para a apresentação sempre ter agenda cheia no dia em que for aberta.
 // Sorteio com semente fixa: a mesma data gera sempre a mesma base. Nenhum dado é de pessoa real.
-import type { Agendamento, Atendimento, BaseClinica, Bloqueio, Cid, Clinica, Documento, Feriado, FormaPagamento, Paciente, ResumoClinico, Servico, Usuario } from '../tipos/modelos';
+import type { Agendamento, Atendimento, BaseClinica, Bloqueio, Cid, Clinica, Despesa, Documento, Feriado, FormaPagamento, Paciente, ResumoClinico, Servico, Usuario } from '../tipos/modelos';
 import { comparecimento, pedidoExames, receita } from '../regras/documentos';
 import { situacaoDia, faixasDoDia } from '../regras/disponibilidade';
 import { diaSemana, hhmm, min, somaDias } from '../util/datas';
@@ -43,6 +43,9 @@ function cpfFicticio(s: ReturnType<typeof sorteador>): string {
   const t = n.join('');
   return `${t.slice(0, 3)}.${t.slice(3, 6)}.${t.slice(6, 9)}-${t.slice(9)}`;
 }
+
+/** Dias de agenda para trás (≈ 6 meses, para os gráficos do Painel). */
+export const DIAS_HISTORICO = 185;
 
 /** A Dra. tem cerca de 200 pacientes. */
 export const TOTAL_PACIENTES = 200;
@@ -142,7 +145,7 @@ export function gerarBase(hojeIso: string, agoraMin: number, semente = 20261024)
     if (p.consentimentoData && p.consentimentoData > d) p.consentimentoData = p.criadoEm;
   }
 
-  for (let off = -100; off <= 28; off++) {
+  for (let off = -DIAS_HISTORICO; off <= 28; off++) {
     const data = somaDias(hojeIso, off);
     if (!situacaoDia(data, base).aberto) continue;
     const ocup = off < 0 ? 0.72 : off === 0 ? 0.9 : off <= 7 ? 0.6 - off * 0.03 : Math.max(0.12, 0.38 - (off - 7) * 0.012);
@@ -215,5 +218,41 @@ export function gerarBase(hojeIso: string, agoraMin: number, semente = 20261024)
     if (s.r() < 0.15) documentos.push({ id: 'd' + documentos.length, ...comparecimento(p, { data: at.data, de: ag.hora, ate: hhmm(min(ag.hora) + ag.duracaoMin) }) });
   }
 
-  return { clinica: cli, usuarios: usuarios as Usuario[], servicos: servs, pacientes, agendamentos, atendimentos, resumos, documentos, cids: cids as Cid[], bloqueios, feriados: fers };
+  const despesas = gerarDespesas(s, hojeIso, agendamentos);
+  return { clinica: cli, usuarios: usuarios as Usuario[], servicos: servs, pacientes, agendamentos, atendimentos, resumos, documentos, despesas, cids: cids as Cid[], bloqueios, feriados: fers };
+}
+
+/** Despesas típicas de consultório: fixas todo mês + variáveis. Vencidas = pagas; a vencer = a pagar. */
+function gerarDespesas(s: ReturnType<typeof sorteador>, hojeIso: string, ags: Agendamento[]): Despesa[] {
+  const lista: Despesa[] = [];
+  const [ano, mes] = hojeIso.split('-').map(Number);
+  const p2 = (n: number) => String(n).padStart(2, '0');
+  for (let k = -6; k <= 0; k++) {
+    const d = new Date(ano, mes - 1 + k, 1);
+    const ym = `${d.getFullYear()}-${p2(d.getMonth() + 1)}`;
+    const dia = (n: number) => `${ym}-${p2(n)}`;
+    const add = (n: number, descricao: string, categoria: Despesa['categoria'], valor: number) => {
+      const data = dia(n);
+      const paga = data < hojeIso;
+      lista.push({ id: 'dp' + lista.length, data, descricao, categoria, valor: +valor.toFixed(2), status: paga ? 'paga' : 'a_pagar', pagaEm: paga ? data : undefined });
+    };
+    add(5, 'Aluguel do consultório', 'Aluguel e condomínio', 4200);
+    add(5, 'Condomínio', 'Aluguel e condomínio', 780);
+    add(5, 'Salário e encargos — recepcionista', 'Pessoal', 3150);
+    add(10, 'Honorários do contador', 'Serviços', 650);
+    add(10, 'Licença IO Clinic', 'Serviços', 390);
+    add(12, 'Internet e telefone', 'Contas de consumo', 219.9);
+    add(15, 'Energia elétrica', 'Contas de consumo', s.ent(380, 540) + s.r());
+    add(15, 'Água', 'Contas de consumo', s.ent(90, 140) + s.r());
+    add(18, 'Limpeza (diarista)', 'Serviços', 880);
+    add(s.ent(3, 25), 'Material de consumo (eletrodos, papel ECG, gel)', 'Material e insumos', s.ent(420, 880) + s.r());
+    if (s.r() < 0.45) add(s.ent(6, 26), s.r() < 0.5 ? 'Manutenção preventiva — ecocardiógrafo' : 'Calibração — esteira ergométrica', 'Equipamentos', s.ent(600, 1800));
+    if (s.r() < 0.5) add(s.ent(4, 24), 'Impulsionamento redes sociais', 'Marketing', s.ent(200, 400));
+    // Simples Nacional: ~6% do recebido no mês anterior, vence dia 20
+    const ant = new Date(ano, mes - 2 + k, 1);
+    const ymAnt = `${ant.getFullYear()}-${p2(ant.getMonth() + 1)}`;
+    const recebidoAnt = ags.filter((a) => a.pagamento?.status === 'pago' && (a.pagamento.pagoEm ?? a.data).startsWith(ymAnt)).reduce((t, a) => t + a.pagamento!.valor, 0);
+    if (recebidoAnt > 0) add(20, 'Simples Nacional (DAS)', 'Impostos', recebidoAnt * 0.06);
+  }
+  return lista.sort((a, b) => a.data.localeCompare(b.data));
 }

@@ -11,13 +11,13 @@ export const PAGINAS: Pagina[] = [
   { id: 'pacientes', rota: '/pacientes', nome: 'Pacientes', grupo: 'Atendimento', icone: 'usuarios', perfis: TODOS },
   { id: 'prontuario', rota: '/prontuario', nome: 'Prontuário', grupo: 'Atendimento', icone: 'estetoscopio', perfis: MEDICA },
   { id: 'orcamento', rota: '/orcamento', nome: 'Orçamento', grupo: 'Atendimento', icone: 'orcamento', perfis: TODOS },
+  { id: 'financeiro', rota: '/financeiro', nome: 'Financeiro', grupo: 'Gestão', icone: 'carteira', perfis: MEDICA },
+  { id: 'relatorios', rota: '/relatorios', nome: 'Relatórios', grupo: 'Gestão', icone: 'arquivo', perfis: MEDICA },
+  { id: 'painel', rota: '/painel', nome: 'Painel (BI)', grupo: 'Gestão', icone: 'grafico', perfis: MEDICA },
 ];
 
 /** Itens que aparecem no menu apagados (fosco), sem abrir: entram nas próximas entregas do mock. */
 export const EM_BREVE: { nome: string; grupo: string; icone: string; dica: string; perfis: Perfil[] }[] = [
-  { nome: 'Financeiro', grupo: 'Gestão', icone: 'carteira', dica: 'Próxima entrega: receitas, despesas e saldo', perfis: MEDICA },
-  { nome: 'Relatórios', grupo: 'Gestão', icone: 'arquivo', dica: 'Próxima entrega: relatórios por período', perfis: MEDICA },
-  { nome: 'Painel (BI)', grupo: 'Gestão', icone: 'grafico', dica: 'Próxima entrega: receita x custo e agendamentos por mês', perfis: MEDICA },
   { nome: 'Usuários', grupo: 'Administração', icone: 'chave', dica: 'Próxima entrega: usuários e perfis', perfis: MEDICA },
 ];
 
