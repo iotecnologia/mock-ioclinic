@@ -46,8 +46,13 @@ export function Painel() {
     <>
       <TituloPagina titulo="Painel" sub={`${nomeMesLongo(mes)}${parcial ? ` · até hoje · comparação ${comp}` : ` · ${comp}`}`}>
         <div className="nav-data">
-          <button type="button" className="icone-btn" title="Mês anterior" aria-label="Mês anterior" onClick={() => setMes(somaMes(mes, -1))}><Icone n="esq" /></button>
-          <button type="button" className="btn2 peq" onClick={() => setMes(mesDe(hj))} disabled={mes === mesDe(hj)}>Este mês</button>
+          <button type="button" className="icone-btn" title="Mês anterior" aria-label="Mês anterior" onClick={() => setMes(somaMes(mes, -1))} disabled={mes <= somaMes(mesDe(hj), -11)}><Icone n="esq" /></button>
+          <select className="sel-mes" value={mes} onChange={(e) => setMes(e.target.value)} aria-label="Mês" title="Escolher o mês">
+            {Array.from({ length: 12 }, (_, i) => somaMes(mesDe(hj), -i)).map((m) => {
+              const nome = nomeMesLongo(m);
+              return <option key={m} value={m}>{nome[0].toUpperCase() + nome.slice(1)}{m === mesDe(hj) ? ' (atual)' : ''}</option>;
+            })}
+          </select>
           <button type="button" className="icone-btn" title="Próximo mês" aria-label="Próximo mês" onClick={() => setMes(somaMes(mes, 1))} disabled={mes >= mesDe(hj)}><Icone n="dir" /></button>
         </div>
       </TituloPagina>
