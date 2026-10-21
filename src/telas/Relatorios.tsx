@@ -41,6 +41,18 @@ export function Relatorios() {
     </table>
   );
 
+  // tabela da FOLHA IMPRESSA: própria, sem nenhum estilo da tela (nada grudado, nada em caixa alta);
+  // o total é a última linha, uma vez só; o cabeçalho das colunas repete no topo de cada página.
+  const tabelaImpressa = r && (
+    <table className="ri-tab">
+      <thead><tr>{r.colunas.map((c) => <th key={c.titulo} className={c.num ? 'dir' : ''}>{c.titulo}</th>)}</tr></thead>
+      <tbody>
+        {r.linhas.map((l, i) => <tr key={i}>{l.map((v, k) => <td key={k} className={r.colunas[k].num ? 'dir' : ''}>{celula(v, r.colunas[k].num, moeda)}</td>)}</tr>)}
+        {r.total && <tr className="ri-total">{r.total.map((v, k) => <td key={k} className={r.colunas[k].num ? 'dir' : ''}>{celula(v, r.colunas[k].num, moeda)}</td>)}</tr>}
+      </tbody>
+    </table>
+  );
+
   return (
     <>
       <TituloPagina titulo="Relatórios" sub="Escolha o relatório e o período. Imprima ou exporte para o Excel.">
@@ -73,7 +85,7 @@ export function Relatorios() {
             <div className="ri-cab">{base.clinica.medica} · {base.clinica.especialidade} · {base.clinica.cidade}</div>
             <h1>{r.titulo}</h1>
             <div className="ri-per">Período: {br(per.de)} a {br(per.ate)} · emitido em {br(hj)}</div>
-            {tabela}
+            {tabelaImpressa}
           </div>
         </Imprimir>
       )}

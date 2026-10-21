@@ -49,8 +49,8 @@ export function Painel() {
           <button type="button" className="icone-btn" title="Mês anterior" aria-label="Mês anterior" onClick={() => setMes(somaMes(mes, -1))} disabled={mes <= somaMes(mesDe(hj), -11)}><Icone n="esq" /></button>
           <select className="sel-mes" value={mes} onChange={(e) => setMes(e.target.value)} aria-label="Mês" title="Escolher o mês">
             {Array.from({ length: 12 }, (_, i) => somaMes(mesDe(hj), -i)).map((m) => {
-              const nome = nomeMesLongo(m);
-              return <option key={m} value={m}>{nome[0].toUpperCase() + nome.slice(1)}{m === mesDe(hj) ? ' (atual)' : ''}</option>;
+              const nome = nomeMesLongo(m).replace(' de ', ' ');   // "outubro 2026"
+              return <option key={m} value={m}>{nome[0].toUpperCase() + nome.slice(1)}</option>;
             })}
           </select>
           <button type="button" className="icone-btn" title="Próximo mês" aria-label="Próximo mês" onClick={() => setMes(somaMes(mes, 1))} disabled={mes >= mesDe(hj)}><Icone n="dir" /></button>
