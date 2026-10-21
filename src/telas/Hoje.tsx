@@ -47,7 +47,7 @@ export function Hoje() {
 
       <div className="contadores">
         <div><Icone n="calendario" /><b>{c.total}</b><span>pacientes hoje</span></div>
-        <div><Icone n="check" /><b>{c.confirmados}<small> de {c.total}</small></b><span>confirmados</span></div>
+        <div><Icone n="check" /><b>{c.confirmados}</b><span>confirmados</span></div>
         <div><Icone n="estetoscopio" /><b>{c.atendidos}</b><span>atendidos</span></div>
         <div><Icone n="relogio" /><b>{livres}</b><span>horários livres</span></div>
         <div className={c.aReceber ? 'alerta' : ''}><Icone n="carteira" /><b>{c.aReceber}</b><span>a receber</span></div>
