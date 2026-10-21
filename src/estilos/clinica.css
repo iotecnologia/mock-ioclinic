@@ -185,6 +185,23 @@ table.tab tr.clic:hover td { background: var(--hover); }
 .demo button:hover { border-color: #547793; }
 .form-caixa .seg { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--linha); font-size: 11px; color: var(--texto-suave); display: flex; gap: 8px; align-items: center; }
 
+/* =================== ABERTURA (depois do login) =================== */
+.abertura { position: fixed; inset: 0; background: radial-gradient(circle at 50% 40%, #144473 0%, #0C3257 55%, #082442 100%); color: #DEE8F4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-family: var(--fonte, "Montserrat", system-ui, sans-serif); z-index: 100; animation: ab-entra .35s ease-out; }
+.abertura-logo { position: relative; width: 150px; height: 150px; display: grid; place-items: center; margin-bottom: 6px; }
+.abertura-logo .logo-svg { position: relative; z-index: 1; animation: ab-pulsa 1.6s ease-in-out infinite; filter: drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
+.abertura-logo .onda { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(145,175,199,.6); animation: ab-onda 1.8s ease-out infinite; }
+.abertura-logo .onda.o2 { animation-delay: .9s; }
+.abertura-nome { font-size: 24px; font-weight: 800; letter-spacing: 6px; color: #fff; }
+.abertura-sub { font-size: 12.5px; color: #91AFC7; letter-spacing: .3px; margin-top: -6px; }
+.abertura-ola { font-size: 17px; color: #DEE8F4; font-weight: 600; margin-top: 8px; }
+.abertura-barra { width: min(320px, 80vw); height: 6px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; margin-top: 8px; }
+.abertura-barra span { display: block; height: 100%; background: #91AFC7; border-radius: 6px; transition: width .6s ease; }
+.abertura-msg { font-size: 13.5px; color: #A9BED3; min-height: 20px; }
+@keyframes ab-entra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ab-pulsa { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes ab-onda { from { transform: scale(.7); opacity: .9; } to { transform: scale(1.5); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .abertura-logo .logo-svg, .abertura-logo .onda { animation: none; } .abertura-barra span { transition: none; } }
+
 /* =================== RESPONSIVO =================== */
 @media (max-width: 760px) {
   .login { grid-template-columns: 1fr; }

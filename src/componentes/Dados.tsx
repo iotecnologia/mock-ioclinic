@@ -21,12 +21,18 @@ interface Acoes {
 interface Ctx { base: BaseClinica; acoes: Acoes }
 const C = createContext<Ctx | null>(null);
 
-export function DadosProvider({ repo, children }: { repo: Repositorio; children: ReactNode }) {
+/** Carrega a base da clínica. Só é montado DEPOIS do login (dado de paciente nunca carrega antes de entrar).
+ *  Enquanto carrega não desenha nada: quem mostra a espera é a tela de abertura (componentes/Abertura.tsx). */
+export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositorio; children: ReactNode; aoCarregar?: () => void }) {
   const [base, setBase] = useState<BaseClinica | null>(null);
   const [erro, setErro] = useState<string | null>(null);
-  useEffect(() => { repo.carregar().then(setBase).catch((e) => setErro(String(e))); }, [repo]);
+  useEffect(() => {
+    // deixa a tela de abertura aparecer antes de montar os dados
+    const t = setTimeout(() => { repo.carregar().then((b) => { setBase(b); aoCarregar?.(); }).catch((e) => setErro(String(e))); }, 30);
+    return () => clearTimeout(t);
+  }, [repo]); // eslint-disable-line react-hooks/exhaustive-deps
   if (erro) return <div className="vazio">Não foi possível carregar os dados: {erro}</div>;
-  if (!base) return <div className="vazio">Carregando…</div>;
+  if (!base) return null;
 
   const atualizaAg = (id: string, f: (a: Agendamento) => Agendamento) =>
     setBase((b) => b && { ...b, agendamentos: b.agendamentos.map((a) => (a.id === id ? f(a) : a)) });

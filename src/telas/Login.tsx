@@ -4,11 +4,10 @@ import { useState, type FormEvent } from 'react';
 import { useSessao } from '../acesso/Sessao';
 import { Icone } from '../componentes/Icone';
 import { Logo } from '../componentes/Marca';
-import { useDados } from '../componentes/Dados';
+import clinica from '../dados/clinica.json';
 
 export function Login() {
   const s = useSessao();
-  const { base } = useDados();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [verSenha, setVerSenha] = useState(false);
@@ -26,7 +25,7 @@ export function Login() {
     <div className="login">
       <div className="login-marca">
         <div className="deco" />
-        <div className="logo-bloco"><Logo tam={46} /><div><b>IO CLINIC</b><small>{base.clinica.medica} · {base.clinica.especialidade}</small></div></div>
+        <div className="logo-bloco"><Logo tam={46} /><div><b>IO CLINIC</b><small>{clinica.medica} · {clinica.especialidade}</small></div></div>
         <h1>Sua clínica organizada, <em>do agendamento ao financeiro.</em></h1>
         <p>Agenda com horários livres na hora, cadastro e histórico do paciente, prontuário, orçamento e a gestão financeira da clínica em um só lugar.</p>
         <div className="modulos-lista">
@@ -35,7 +34,7 @@ export function Login() {
           <span><Icone n="estetoscopio" /> Prontuário</span>
           <span><Icone n="grafico" /> Financeiro e BI</span>
         </div>
-        <div className="rod">IO Clinic · {base.clinica.cidade} · em conformidade com a LGPD</div>
+        <div className="rod">IO Clinic · {clinica.cidade} · em conformidade com a LGPD</div>
       </div>
       <div className="login-form">
         <form className="form-caixa" onSubmit={entrar}>
