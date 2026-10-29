@@ -1,26 +1,44 @@
 /* ============================================================
-   impressao.css — folha A4 (prévia na tela e impressão).
-   Preto no branco, sem fundo colorido; negrito só no título e nos cabeçalhos de tabela.
+   impressao.css — folha A4 dos DOCUMENTOS (atestado, receita, pedido, comparecimento, orçamento).
+   Visual do protótipo Vitalis: faixa da marca, logo da Dra., selo do documento, caixa do paciente,
+   marca d'água e assinatura. (Os RELATÓRIOS continuam preto no branco — ver gestao.css.)
    ============================================================ */
-.folha { background: #fff; color: #000; font-family: "Montserrat", Arial, sans-serif; font-size: 13px; line-height: 1.6;
-  width: 100%; max-width: 560px; aspect-ratio: 210 / 297; padding: 34px 40px; margin: 0 auto; box-shadow: 0 2px 14px rgba(12,50,87,.18); display: flex; flex-direction: column; border-radius: 4px; }
+.folha { position: relative; overflow: hidden; background: #fff; color: #1e293b; font-family: "Montserrat", Arial, sans-serif; font-size: 13px; line-height: 1.6;
+  width: 100%; max-width: 560px; aspect-ratio: 210 / 297; padding: 34px 40px; margin: 0 auto; box-shadow: 0 2px 14px rgba(12,50,87,.18); display: flex; flex-direction: column; border-radius: 4px;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.folha > * { position: relative; z-index: 1; }
 .folha.timbrado { padding-top: 92px; }
-.fl-cab { text-align: center; border-bottom: 1px solid #000; padding-bottom: 10px; margin-bottom: 18px; font-size: 11px; }
-.fl-medica { font-size: 15px; letter-spacing: .5px; }
-.fl-tit { font-size: 16px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; margin: 6px 0 22px; }
+.fl-faixa { position: absolute !important; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #0C3257, #547793, #91AFC7); }
+.folha .marca-dagua { position: absolute !important; z-index: 0 !important; top: 50%; left: 50%; width: 52%; height: auto; transform: translate(-50%, -45%); opacity: .045; pointer-events: none; }
+.fl-cab { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; padding-bottom: 10px; border-bottom: 2px solid #0C3257; margin-bottom: 16px; }
+.fl-marca { display: flex; align-items: center; gap: 12px; }
+.fl-medica { font-size: 15px; font-weight: 700; color: #0C3257; letter-spacing: .1em; line-height: 1.2; }
+.fl-esp { font-size: 9px; font-weight: 600; color: #547793; letter-spacing: .12em; margin-top: 2px; }
+.fl-crm { font-size: 9.5px; color: #64748b; margin-top: 2px; font-weight: 500; }
+.fl-tipo { text-align: right; }
+.fl-selo { display: inline-block; padding: 4px 10px; background: #DEE8F4; border: 1px solid #91AFC7; border-radius: 6px; font-size: 9.5px; font-weight: 800; color: #0C3257; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
+.fl-emissao { font-size: 9.5px; color: #547793; margin-top: 5px; font-weight: 500; }
+.fl-end { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; padding-top: 6px; border-top: 1px dashed #DEE8F4; font-size: 9px; color: #64748b; }
+.fl-end b { color: #547793; font-weight: 700; white-space: nowrap; }
+.fl-tit { font-size: 16px; font-weight: 700; color: #0C3257; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; margin: 6px 0 18px; }
+.fl-pac { display: grid; grid-template-columns: 1fr auto; gap: 14px; padding: 10px 14px; margin-bottom: 18px; background: #FDFDF3; border: 1px solid #DEE8F4; border-left: 4px solid #547793; border-radius: 8px; }
+.fl-pac span { display: block; font-size: 8.5px; font-weight: 700; color: #547793; text-transform: uppercase; letter-spacing: .08em; }
+.fl-pac b { display: block; font-size: 12.5px; font-weight: 700; color: #0C3257; margin-top: 1px; }
+.fl-pac .fl-cpf { font-family: Consolas, monospace; font-weight: 600; }
 .fl-corpo { flex: 1; font-weight: 400; }
 .fl-corpo p { margin: 0 0 10px; text-align: justify; }
 .fl-corpo ul { list-style: none; padding: 0; margin: 6px 0 12px; }
-.fl-corpo li { padding: 3px 0; }
+.fl-corpo li { padding: 4px 0; border-bottom: 1px dotted #DEE8F4; }
 .fl-corpo table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; }
-.fl-corpo th { text-align: left; font-weight: 700; border-bottom: 1px solid #000; padding: 5px 4px; }
-.fl-corpo td { border-bottom: 1px solid #ccc; padding: 5px 4px; font-weight: 400; }
+.fl-corpo th { text-align: left; font-weight: 700; color: #0C3257; border-bottom: 1px solid #0C3257; padding: 5px 4px; }
+.fl-corpo td { border-bottom: 1px solid #DEE8F4; padding: 5px 4px; font-weight: 400; }
 .fl-corpo td.n, .fl-corpo th.n { text-align: right; white-space: nowrap; }
-.fl-corpo .fl-nota { font-size: 11px; margin-top: 10px; }
-.fl-local { text-align: right; margin: 18px 0 40px; }
-.fl-ass { display: grid; justify-items: center; font-size: 12px; }
-.fl-ass span { width: 240px; border-top: 1px solid #000; margin-bottom: 4px; }
-.fl-ass small { font-size: 10.5px; }
+.fl-corpo .fl-nota { font-size: 11px; margin-top: 10px; color: #64748b; }
+.fl-local { text-align: right; margin: 14px 0 34px; font-size: 12px; }
+.fl-ass { display: grid; justify-items: center; font-size: 12px; padding-top: 8px; }
+.fl-ass span { width: 230px; border-top: 1.5px solid #0C3257; margin-bottom: 5px; }
+.fl-ass b { color: #0C3257; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+.fl-ass small { font-size: 10px; color: #547793; }
 .area-impressao { display: none; }
 
 @media print {

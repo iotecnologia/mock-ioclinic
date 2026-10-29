@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buscarCid, classificaImc, classificaPA, imc, lerPA } from '../src/regras/prontuario';
+import { buscarCid, buscarExame, buscarMedicamento, classificaImc, classificaPA, imc, lerPA } from '../src/regras/prontuario';
+import medicamentos from '../src/dados/medicamentos.json';
+import exames from '../src/dados/exames.json';
 import { atestado, receita } from '../src/regras/documentos';
 import { historico } from '../src/regras/paciente';
-import type { Cid, Paciente } from '../src/tipos/modelos';
+import type { Cid, ExameCatalogo, Medicamento, Paciente } from '../src/tipos/modelos';
 import cids from '../src/dados/cid.json';
 
 const lista = cids as Cid[];
@@ -53,5 +55,24 @@ describe('documentos', () => {
     const b = { pacientes: [p], servicos: [], agendamentos: [], atendimentos: [], documentos: [{ id: 'd', ...atestado(p, { data: '2026-10-20', dias: 1, inicio: '2026-10-20' }) }] };
     expect(historico('p1', b, 'recepcao').some((i) => i.tipo === 'documento')).toBe(false);
     expect(historico('p1', b, 'medica').some((i) => i.tipo === 'documento')).toBe(true);
+  });
+});
+
+describe('busca de remédio e exame', () => {
+  const meds = medicamentos as Medicamento[];
+  const ex = exames as ExameCatalogo[];
+  it('remédio pelo princípio ativo, sem acento', () => expect(buscarMedicamento(meds, 'losar')[0].comercial).toBe('Cozaar'));
+  it('remédio pelo nome comercial', () => expect(buscarMedicamento(meds, 'selozok')[0].principio).toBe('Succinato de metoprolol'));
+  it('levotiroxina traz as 3 marcas com laboratório', () => expect(buscarMedicamento(meds, 'levotiroxina').map((m) => m.laboratorio).sort()).toEqual(['Abbott', 'Merck', 'Sanofi']));
+  it('todo remédio tem dose e posologia', () => expect(meds.every((m) => m.doses.length > 0 && m.posologia.length > 0)).toBe(true));
+  it('exame por palavra e sem repetir os escolhidos', () => {
+    const r = buscarExame(ex, 'troponina');
+    expect(r[0].nome).toContain('Troponina');
+    expect(buscarExame(ex, 'troponina', [r[0].nome]).some((x) => x.nome === r[0].nome)).toBe(false);
+  });
+  it('CID: base ampliada e sem código repetido', () => {
+    expect(lista.length).toBeGreaterThan(150);
+    const cods = lista.map((c) => c.codigo + c.descricao);
+    expect(new Set(cods).size).toBe(cods.length);
   });
 });

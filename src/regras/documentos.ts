@@ -20,7 +20,7 @@ export function atestado(p: Paciente, o: { data: string; dias: number; inicio: s
 export function receita(p: Paciente, o: { data: string; itens: { nome: string; uso: string }[] }): Omit<Documento, 'id'> {
   return {
     pacienteId: p.id, data: o.data, tipo: 'receita', titulo: 'Receituário',
-    paragrafos: [`Paciente: ${p.nome}`, 'Uso oral'],
+    paragrafos: ['Uso oral'],
     itens: o.itens.filter((i) => i.nome.trim()).map((i, k) => `${k + 1}. ${i.nome.trim()}${i.uso.trim() ? ' — ' + i.uso.trim() : ''}`),
   };
 }
@@ -28,7 +28,7 @@ export function receita(p: Paciente, o: { data: string; itens: { nome: string; u
 export function pedidoExames(p: Paciente, o: { data: string; exames: string[]; indicacao?: string }): Omit<Documento, 'id'> {
   return {
     pacienteId: p.id, data: o.data, tipo: 'pedido_exames', titulo: 'Solicitação de exames',
-    paragrafos: [`Paciente: ${ident(p)}`, 'Solicito os exames abaixo:'],
+    paragrafos: ['Solicito os exames abaixo:'],
     itens: [...o.exames.map((e) => `• ${e}`), ...(o.indicacao ? [`Indicação clínica: ${o.indicacao}`] : [])],
   };
 }

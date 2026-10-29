@@ -57,8 +57,7 @@ export function Orcamento() {
   const vazio = itens.length === 0;
 
   const folha = (
-    <Folha clinica={c} titulo="Orçamento" data={hj} assinatura={false}>
-      {nome && <p>Paciente: {nome}</p>}
+    <Folha clinica={c} titulo="Orçamento" data={hj} assinatura={false} paciente={nome ? { nome, cpf: pac?.cpf } : undefined}>
       <table>
         <thead><tr><th>Serviço</th><th className="n">Qtd</th><th className="n">Valor</th></tr></thead>
         <tbody>

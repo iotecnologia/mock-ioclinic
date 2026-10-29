@@ -2,6 +2,9 @@
   "produto": "IO Clinic",
   "medica": "Dra. Flávia Silva Mothe",
   "especialidade": "Cardiologia",
+  "crm": "CRM-SP ______",
+  "rqe": "",
+  "endereco": "Endereço da clínica · Campinas – SP",
   "cidade": "Campinas · SP",
   "telefone": "(19) 3000-0000",
   "horarios": {

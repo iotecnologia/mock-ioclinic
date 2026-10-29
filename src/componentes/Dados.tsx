@@ -1,6 +1,7 @@
-// Base carregada pelo repositório + ações (criar paciente, agendar, mudar status, receber).
-// No mock tudo fica só na memória da página: recarregou, volta ao início. Fase 3: cada ação chama a API.
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+// Base carregada pelo repositório + ações (criar paciente, agendar, mudar status, receber…).
+// MOCK: tudo o que for feito fica salvo NESTE navegador (localStorage) — os dados são fictícios.
+// No sistema real isso NÃO acontece: dado de paciente fica só no banco (backend io-clinic), nunca no navegador.
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Agendamento, Atendimento, BaseClinica, Despesa, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
 import type { Repositorio } from '../repositorio/repositorio';
 import { hoje } from '../util/datas';
@@ -18,7 +19,56 @@ interface Acoes {
   pagarDespesa(id: string): void;
   excluirDespesa(id: string): void;
 }
-interface Ctx { base: BaseClinica; acoes: Acoes }
+interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void }
+
+// ------------------------------------------------------------------ salvar no navegador (só no mock)
+export const CHAVE_DEMO = 'ioclinic:demo';
+const VERSAO = 1;
+/** Partes da base que o usuário altera (o resto — clínica, serviços, CID… — vem sempre do código atualizado). */
+const PARTES = ['pacientes', 'agendamentos', 'atendimentos', 'resumos', 'documentos', 'despesas', 'bloqueios'] as const;
+type Parte = (typeof PARTES)[number];
+type Salvo = { versao: number; salvoEm: string } & Pick<BaseClinica, Parte>;
+
+export function lerSalvo(): Salvo | null {
+  try { const t = localStorage.getItem(CHAVE_DEMO); if (!t) return null; const s = JSON.parse(t) as Salvo; return s.versao === VERSAO ? s : null; } catch { return null; }
+}
+function gravar(b: BaseClinica) {
+  try {
+    const s: Salvo = { versao: VERSAO, salvoEm: hoje(), ...(Object.fromEntries(PARTES.map((p) => [p, b[p]])) as Pick<BaseClinica, Parte>) };
+    localStorage.setItem(CHAVE_DEMO, JSON.stringify(s));
+  } catch { /* navegador sem armazenamento ou cheio: segue só na memória */ }
+}
+export function apagarSalvo() { try { localStorage.removeItem(CHAVE_DEMO); } catch { /* sem armazenamento */ } }
+
+/** Junta o que foi salvo com a base nova do código (clínica, serviços, CIDs… sempre atualizados). */
+export const juntar = (nova: BaseClinica, salvo: Salvo): BaseClinica => ({ ...nova, ...(Object.fromEntries(PARTES.map((p) => [p, salvo[p]])) as Pick<BaseClinica, Parte>) });
+
+/** Número estável (0–99) a partir do id: decide falta/forma de pagamento sempre igual, sem sorteio. */
+const hash = (s: string) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 100; };
+
+/**
+ * Ao abrir num dia seguinte: o que ficou "em aberto" em dias que já passaram é fechado sozinho,
+ * para a agenda não parar no passado. Agendados → atendidos (≈6% faltas) e recebidos; contas da base fictícia vencidas → pagas.
+ * O que o usuário cadastrou continua igual (só o status dos dias passados é fechado).
+ */
+export function fecharDiasPassados(b: BaseClinica, hojeIso: string): BaseClinica {
+  const desconto = b.clinica.descontoPix;
+  const FORMAS: FormaPagamento[] = ['pix', 'pix', 'pix', 'cartao_credito', 'cartao_credito', 'cartao_debito', 'dinheiro'];
+  const agendamentos = b.agendamentos.map((a): Agendamento => {
+    if (a.data >= hojeIso || !['agendado', 'confirmado', 'chegou', 'em_atendimento'].includes(a.status)) return a;
+    const h = hash(a.id);
+    if (h < 6 && a.status !== 'chegou' && a.status !== 'em_atendimento') return { ...a, status: 'faltou', pagamento: a.pagamento?.status === 'pago' ? a.pagamento : undefined };
+    let pagamento = a.pagamento;
+    if (pagamento?.status === 'pendente' && pagamento.valor > 0) {
+      const forma = FORMAS[h % FORMAS.length];
+      const valor = forma === 'pix' || forma === 'dinheiro' ? +(pagamento.valor * (1 - desconto / 100)).toFixed(2) : pagamento.valor;
+      pagamento = { status: 'pago', forma, valor, pagoEm: a.data };
+    }
+    return { ...a, status: 'atendido', pagamento };
+  });
+  const despesas = b.despesas.map((d) => (d.status === 'a_pagar' && d.data < hojeIso && d.id.startsWith('dp') ? { ...d, status: 'paga' as const, pagaEm: d.data } : d));
+  return { ...b, agendamentos, despesas };
+}
 const C = createContext<Ctx | null>(null);
 
 /** Carrega a base da clínica. Só é montado DEPOIS do login (dado de paciente nunca carrega antes de entrar).
@@ -26,11 +76,26 @@ const C = createContext<Ctx | null>(null);
 export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositorio; children: ReactNode; aoCarregar?: () => void }) {
   const [base, setBase] = useState<BaseClinica | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [versao, setVersao] = useState(0);   // muda ao restaurar → recarrega
   useEffect(() => {
     // deixa a tela de abertura aparecer antes de montar os dados
-    const t = setTimeout(() => { repo.carregar().then((b) => { setBase(b); aoCarregar?.(); }).catch((e) => setErro(String(e))); }, 30);
+    const t = setTimeout(() => {
+      repo.carregar().then((nova) => {
+        const salvo = lerSalvo();
+        setBase(salvo ? fecharDiasPassados(juntar(nova, salvo), hoje()) : nova);
+        aoCarregar?.();
+      }).catch((e) => setErro(String(e)));
+    }, 30);
     return () => clearTimeout(t);
-  }, [repo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [repo, versao]); // eslint-disable-line react-hooks/exhaustive-deps
+  // salva a cada mudança (com um pequeno atraso para juntar várias mudanças seguidas)
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => {
+    if (!base) return;
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => gravar(base), 300);
+  }, [base]);
+  useEffect(() => () => clearTimeout(timer.current), []);
   if (erro) return <div className="vazio">Não foi possível carregar os dados: {erro}</div>;
   if (!base) return null;
 
@@ -93,7 +158,9 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
       setBase((b) => b && { ...b, despesas: b.despesas.filter((x) => x.id !== id) });
     },
   };
-  return <C.Provider value={{ base, acoes }}>{children}</C.Provider>;
+  /** Apaga o que foi salvo e gera a clínica fictícia de novo (para a próxima apresentação). */
+  const restaurar = () => { clearTimeout(timer.current); apagarSalvo(); setBase(null); setVersao((v) => v + 1); };
+  return <C.Provider value={{ base, acoes, restaurar }}>{children}</C.Provider>;
 }
 
 export function useDados(): Ctx {

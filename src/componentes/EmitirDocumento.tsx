@@ -6,10 +6,10 @@ import { useDados } from './Dados';
 import { Modal } from './Comuns';
 import { Icone } from './Icone';
 import { Folha, Imprimir } from './Folha';
+import { ExameBusca, MedicamentoBusca } from './Buscas';
 import { atestado, comparecimento, NOME_DOC, pedidoExames, receita } from '../regras/documentos';
 import { hhmm, hoje, min } from '../util/datas';
 
-const LAB = ['Hemograma completo', 'Perfil lipídico', 'Glicemia de jejum', 'Hemoglobina glicada', 'Creatinina', 'Potássio', 'Sódio', 'TSH', 'Ácido úrico', 'Urina tipo 1'];
 
 export function ConteudoDoc({ d }: { d: Omit<Documento, 'id'> }) {
   return <>{d.paragrafos.map((p, i) => <p key={i}>{p}</p>)}{d.itens && <ul>{d.itens.map((x, i) => <li key={i}>{x}</li>)}</ul>}</>;
@@ -71,6 +71,7 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
                   {resumo.medicamentos.map((m) => { const [nome, uso] = m.split(' — '); return <button type="button" key={m} className="chip-sug" onClick={() => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, uso: uso ?? '' }])}><Icone n="mais" /> {nome}</button>; })}
                 </div>
               )}
+              <MedicamentoBusca aoEscolher={(m, dose) => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome: `${m.principio} ${dose}`, uso: m.posologia }])} />
               {itens.map((it, i) => (
                 <div key={i} className="linha-med">
                   <input placeholder="Medicamento e dose" value={it.nome} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, nome: e.target.value } : x)))} />
@@ -83,8 +84,10 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
           )}
           {tipo === 'pedido_exames' && (
             <>
-              <div className="grupo-chk"><span>Exames da clínica</span>{exClinica.map((x) => <label key={x}><input type="checkbox" checked={sel.includes(x)} onChange={() => marca(x)} /> {x}</label>)}</div>
-              <div className="grupo-chk"><span>Laboratoriais</span>{LAB.map((x) => <label key={x}><input type="checkbox" checked={sel.includes(x)} onChange={() => marca(x)} /> {x}</label>)}</div>
+              <div className="lbl-peq">Exames da clínica</div>
+              <div className="chips-sel">{exClinica.map((x) => <button type="button" key={x} className={sel.includes(x) ? 'sel' : ''} onClick={() => marca(x)}>{x}</button>)}</div>
+              <div className="lbl-peq">Outros exames</div>
+              <ExameBusca escolhidos={sel.filter((x) => !exClinica.includes(x))} mudar={(l) => setSel([...sel.filter((x) => exClinica.includes(x)), ...l])} />
               <label>Indicação clínica<input value={indicacao} onChange={(e) => setIndicacao(e.target.value)} placeholder="Ex.: I10 · Hipertensão essencial" /></label>
             </>
           )}
@@ -102,10 +105,10 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
           </div>
         </div>
         <div className="emitir-previa">
-          <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado}><ConteudoDoc d={doc} /></Folha>
+          <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha>
         </div>
       </div>
-      {imprimindo && <Imprimir aoTerminar={() => setImprimindo(false)}><Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado}><ConteudoDoc d={doc} /></Folha></Imprimir>}
+      {imprimindo && <Imprimir aoTerminar={() => setImprimindo(false)}><Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha></Imprimir>}
     </Modal>
   );
 }

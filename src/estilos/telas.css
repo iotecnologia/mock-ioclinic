@@ -368,15 +368,10 @@ table.tab th.dir { text-align: right; }
 .grupo-chk label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
 .certo-peq { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--st-ok-bg); color: var(--st-ok-t); font-size: 12.5px; font-weight: 600; }
 .emitir-previa { position: sticky; top: 0; background: var(--painel-2); border-radius: 14px; padding: 16px; }
-.emitir-previa .folha { font-size: 9px; padding: 22px 24px; }
-.emitir-previa .folha.timbrado { padding-top: 56px; }
-.emitir-previa .fl-tit { font-size: 11px; margin-bottom: 12px; }
-.emitir-previa .fl-medica { font-size: 11px; }
-.emitir-previa .fl-cab { font-size: 8px; margin-bottom: 10px; }
-.emitir-previa .fl-ass span { width: 150px; }
-.emitir-previa .fl-local { margin: 10px 0 24px; }
+/* prévia: a mesma folha da impressão, só que reduzida (zoom), para ficar idêntica ao papel */
+.emitir-previa .folha { width: 560px; max-width: none; zoom: .62; }
 .reimp { background: var(--painel-2); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
-.reimp .folha { font-size: 10px; padding: 24px 28px; }
+.reimp .folha { width: 560px; max-width: none; zoom: .82; }
 
 /* orçamento */
 .orc { grid-template-columns: minmax(0, 1fr) 380px; }
@@ -419,3 +414,26 @@ table.tab th.dir { text-align: right; }
   .g2, .linha-med { grid-template-columns: 1fr; }
   .fc-acoes { flex-wrap: wrap; }
 }
+
+/* ============================================================
+   Buscas de remédio e de exame (receita, pedido, prontuário)
+   ============================================================ */
+.busca-cat { position: relative; }
+.busca-cat > svg { position: absolute; left: 12px; top: 12px; width: 16px; height: 16px; color: var(--texto-suave); }
+.busca-cat input { padding-left: 36px; height: 40px; font-size: 13.5px; color: var(--texto); }
+.cat-res { top: 46px; max-height: 340px; overflow: auto; }
+.med-op { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--linha); }
+.med-op:hover { background: var(--hover); }
+.med-nome { flex: 1; min-width: 0; }
+.med-nome b { display: block; font-size: 13.5px; }
+.med-nome small { color: var(--texto-suave); font-size: 11.5px; }
+.med-doses { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 55%; }
+.app .med-doses button { height: 26px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--borda); background: var(--painel); font-size: 11.5px; font-weight: 700; color: var(--texto); cursor: pointer; white-space: nowrap; }
+.app .med-doses button:hover { border-color: var(--destaque-2); background: var(--gelo); }
+.cat-nota { padding: 7px 12px; font-size: 11px; color: var(--texto-suave); background: var(--painel-2); }
+.escolhidos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip-esc { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border-radius: 999px; background: var(--gelo); border: 1px solid var(--destaque-2); font-size: 12px; font-weight: 600; color: var(--texto); }
+.app .chip-esc button { width: 20px; height: 20px; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; cursor: pointer; color: var(--texto-suave); padding: 0; }
+.chip-esc button:hover { background: var(--painel); color: var(--texto); }
+.chip-esc svg { width: 12px; height: 12px; }
+.lbl-peq { font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; }

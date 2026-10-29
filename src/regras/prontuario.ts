@@ -1,6 +1,6 @@
 // Regras do prontuário: IMC, classificação da pressão arterial e busca de CID.
 // Funções puras, testadas em tests/prontuario.test.ts.
-import type { Cid } from '../tipos/modelos';
+import type { Cid, ExameCatalogo, Medicamento } from '../tipos/modelos';
 import { semAcento } from '../util/formato';
 
 /** IMC = peso / altura² (altura em cm). Sem dado suficiente → undefined. */
@@ -52,4 +52,27 @@ export function buscarCid(lista: Cid[], termo: string, max = 8): Cid[] {
   const porCodigo = lista.filter((c) => c.codigo.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(cod));
   const porTexto = lista.filter((c) => !porCodigo.includes(c) && partes.every((p) => semAcento(c.descricao).includes(p)));
   return [...porCodigo, ...porTexto].slice(0, max);
+}
+
+/** Busca de remédio pelo princípio ativo OU pelo nome comercial, sem acento e por partes ("losar", "cozaar", "metopro succ"). */
+export function buscarMedicamento(lista: Medicamento[], termo: string, max = 8): Medicamento[] {
+  const partes = semAcento(termo).split(/\s+/).filter(Boolean);
+  if (!partes.length) return [];
+  const pontua = (m: Medicamento) => {
+    const p = semAcento(m.principio), c = semAcento(m.comercial);
+    if (!partes.every((x) => p.includes(x) || c.includes(x))) return -1;
+    return (p.startsWith(partes[0]) || c.startsWith(partes[0]) ? 2 : 0) + (m.laboratorio ? 1 : 0);
+  };
+  return lista.map((m) => [m, pontua(m)] as const).filter(([, n]) => n >= 0).sort((a, b) => b[1] - a[1]).slice(0, max).map(([m]) => m);
+}
+
+/** Busca de exame por palavras do nome, sem acento ("eco", "holter", "colesterol"). Não repete os já escolhidos. */
+export function buscarExame(lista: ExameCatalogo[], termo: string, escolhidos: string[] = [], max = 8): ExameCatalogo[] {
+  const partes = semAcento(termo).split(/\s+/).filter(Boolean);
+  if (!partes.length) return [];
+  const ja = new Set(escolhidos.map(semAcento));
+  return lista
+    .filter((e) => !ja.has(semAcento(e.nome)) && partes.every((x) => semAcento(e.nome).includes(x)))
+    .sort((a, b) => Number(semAcento(b.nome).startsWith(partes[0])) - Number(semAcento(a.nome).startsWith(partes[0])))
+    .slice(0, max);
 }

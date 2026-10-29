@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { Icone } from './Icone';
 import { Logo, Marca } from './Marca';
+import { useDados } from './Dados';
 import { BuscaGeral } from './BuscaGeral';
 import { Avatar } from './Comuns';
 import { local } from '../util/formato';
@@ -15,6 +16,7 @@ const SUB_PADRAO: Record<string, string> = { pacientes: 'Ficha do paciente', pro
 
 export function Shell() {
   const s = useSessao();
+  const { restaurar } = useDados();
   const perfil = s.usuario!.perfil;
   const [claro, setClaro] = useState(() => local.ler('tema-claro', true));
   const loc = useLocation();
@@ -47,6 +49,7 @@ export function Shell() {
         <div className="migalha">Início{atual && <> &nbsp;/&nbsp; {sub ? atual.nome : <b>{atual.nome}</b>}</>}{sub && <> &nbsp;/&nbsp; <b>{sub}</b></>}</div>
         <BuscaGeral />
         <div className="topo-dir">
+          {perfil === 'medica' && <button type="button" className="icone-btn" onClick={() => { if (confirm('Restaurar os dados de demonstração?\n\nTudo o que foi cadastrado ou alterado neste navegador será apagado e a clínica fictícia será gerada de novo.')) restaurar(); }} title="Restaurar dados de demonstração" aria-label="Restaurar dados de demonstração"><Icone n="limpar" /></button>}
           <button type="button" className="icone-btn" onClick={trocarTema} title="Tema claro/escuro" aria-label="Alternar tema claro ou escuro"><Icone n="tema" /></button>
           <div className="usuario"><Avatar nome={s.usuario!.nome} /><div><b>{s.usuario!.nome}</b><small>{s.usuario!.cargo}</small></div></div>
           <button type="button" className="icone-btn" onClick={s.sair} title="Sair" aria-label="Sair"><Icone n="sair" /></button>
@@ -56,7 +59,7 @@ export function Shell() {
       <nav className="nav-celular" aria-label="Menu">
         {PAGINAS.filter((p) => p.perfis.includes(perfil)).map((p) => <NavLink key={p.id} to={p.rota} className={({ isActive }) => (isActive ? 'ativo' : '')}><Icone n={p.icone} />{p.nome}</NavLink>)}
       </nav>
-      <footer className="status"><span className="on">Mock funcional</span><span>Dados fictícios · nada é salvo ao recarregar</span><span className="dir">{s.usuario!.email} · {s.usuario!.cargo}</span></footer>
+      <footer className="status"><span className="on">Mock funcional</span><span>Dados fictícios · salvos neste navegador</span><span className="dir">{s.usuario!.email} · {s.usuario!.cargo}</span></footer>
     </div>
   );
 }

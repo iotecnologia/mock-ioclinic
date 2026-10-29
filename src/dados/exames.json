@@ -1,0 +1,392 @@
+[
+ {
+  "nome": "Eletrocardiograma de Repouso (ECG 12 derivações)",
+  "grupo": "Cardiológicos",
+  "preparo": "Sem preparo prévio especial"
+ },
+ {
+  "nome": "Ecocardiograma Transtorácico com Doppler Colorido",
+  "grupo": "Cardiológicos",
+  "preparo": "Levar exames anteriores"
+ },
+ {
+  "nome": "Teste Ergométrico Computadorizado em Esteira",
+  "grupo": "Cardiológicos",
+  "preparo": "Roupas leves e tênis; evitar cafeína"
+ },
+ {
+  "nome": "Holter 24 Horas Digital (Eletrocardiografia Contínua)",
+  "grupo": "Cardiológicos",
+  "preparo": "Tomar banho antes da colocação dos eletrodos"
+ },
+ {
+  "nome": "MAPA 24 Horas (Monitorização Ambulatorial da Pressão Arterial)",
+  "grupo": "Cardiológicos",
+  "preparo": "Braçadeira confortável durante rotina diária"
+ },
+ {
+  "nome": "Bioimpedância Clínica (Composição Corporal & Gordura Visceral)",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 2 a 4h; bexiga vazia"
+ },
+ {
+  "nome": "Angiotomografia de Coronárias com Escore de Cálcio",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 4h; avaliar frequência cardíaca"
+ },
+ {
+  "nome": "Cintilografia de Perfusão Miocárdica (Repouso e Estresse)",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum leve; suspender cafeína e teofilina por 24h"
+ },
+ {
+  "nome": "Duplex Scan de Artérias Carótidas e Vertebrais com Doppler",
+  "grupo": "Cardiológicos",
+  "preparo": "Sem preparo especial"
+ },
+ {
+  "nome": "Duplex Scan Venoso de Membros Inferiores",
+  "grupo": "Cardiológicos",
+  "preparo": "Roupas confortáveis"
+ },
+ {
+  "nome": "Duplex Scan Arterial de Membros Inferiores",
+  "grupo": "Cardiológicos",
+  "preparo": "Roupas confortáveis"
+ },
+ {
+  "nome": "Ressonância Magnética Cardíaca com Realce Tardio",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 4h; verificar implantes metálicos"
+ },
+ {
+  "nome": "Cateterismo Cardíaco / Cineangiocoronariografia",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 6h; internação eletiva em hospital"
+ },
+ {
+  "nome": "Troponina I de Alta Sensibilidade (Quantitativa)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea imediata ou seriada"
+ },
+ {
+  "nome": "Troponina T Ultrassensível",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "CK-MB Massa (Creatinoquinase fração MB)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "BNP (Peptídeo Natriurético Tipo B)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea; marcador de insuficiência cardíaca"
+ },
+ {
+  "nome": "NT-proBNP Quantitativo",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "Dímero-D de Alta Sensibilidade (Quantitativo)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "PCR Ultrassensível (Proteína C Reativa Cardiovascular)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea; jejum de 4h"
+ },
+ {
+  "nome": "Perfil Lipídico Completo com LDL Direto e Não-HDL",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum não obrigatório segundo novas diretrizes SBC"
+ },
+ {
+  "nome": "Apolipoproteína A1 e B (Apo-A1 e Apo-B)",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 8h a 12h"
+ },
+ {
+  "nome": "Lipoproteína (a) - Lp(a)",
+  "grupo": "Cardiológicos",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "Homocisteína Plasmática",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 8h"
+ },
+ {
+  "nome": "Ecocardiograma com Estresse Farmacológico (Dobutamina)",
+  "grupo": "Cardiológicos",
+  "preparo": "Jejum de 4h; suspender betabloqueador conforme orientação"
+ },
+ {
+  "nome": "Hemograma Completo com Contagem de Plaquetas",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h (água liberada)"
+ },
+ {
+  "nome": "Glicemia de Jejum",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum obrigatório de 8 a 12 horas"
+ },
+ {
+  "nome": "Hemoglobina Glicada (HbA1c)",
+  "grupo": "Laboratoriais",
+  "preparo": "Sem necessidade de jejum estrito"
+ },
+ {
+  "nome": "Insulina Basal com HOMA-IR e HOMA-BETA",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 8 a 12 horas"
+ },
+ {
+  "nome": "Colesterol Total e Frações (HDL, LDL, VLDL)",
+  "grupo": "Laboratoriais",
+  "preparo": "Alimentação habitual no dia anterior"
+ },
+ {
+  "nome": "Triglicerídeos Séricos",
+  "grupo": "Laboratoriais",
+  "preparo": "Evitar ingestão de álcool 72h antes"
+ },
+ {
+  "nome": "Ureia e Creatinina com Taxa de Filtração Glomerular (eTFG)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Ácido Úrico Sérico",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h a 8h"
+ },
+ {
+  "nome": "TGO (AST) e TGP (ALT) - Transaminases Hepáticas",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Gama-Glutamiltransferase (Gama-GT)",
+  "grupo": "Laboratoriais",
+  "preparo": "Evitar álcool 48h antes"
+ },
+ {
+  "nome": "Fosfatase Alcalina",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Bilirrubinas Total e Frações (Direta e Indireta)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "TSH Ultra-sensível (Hormônio Tireoestimulante)",
+  "grupo": "Laboratoriais",
+  "preparo": "Coletar preferencialmente pela manhã"
+ },
+ {
+  "nome": "T4 Livre (Tiroxina Livre)",
+  "grupo": "Laboratoriais",
+  "preparo": "Tomar medicação de tireoide após a coleta"
+ },
+ {
+  "nome": "T3 Total e T3 Livre",
+  "grupo": "Laboratoriais",
+  "preparo": "Coleta matinal"
+ },
+ {
+  "nome": "Anticorpos Anti-TPO e Anti-Tireoglobulina",
+  "grupo": "Laboratoriais",
+  "preparo": "Coleta sanguínea"
+ },
+ {
+  "nome": "Vitamina D (25-Hidroxivitamina D)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum não obrigatório"
+ },
+ {
+  "nome": "Vitamina B12 (Cobalamina)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Ácido Fólico (Folato Sérico)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Ferritina Sérica",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h a 8h"
+ },
+ {
+  "nome": "Ferro Sérico e Capacidade Total de Ligação (TIBC)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum obrigatório de 8h"
+ },
+ {
+  "nome": "Eletrólitos: Sódio, Potássio, Cálcio Total e Magnésio",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Coagulograma Completo (TAP, INR, TTPA, Fibrinogênio)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "VHS (Velocidade de Hemossedimentação)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Proteína C Reativa Quantitativa (PCR)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "PSA Total e PSA Livre (Antígeno Prostático Específico)",
+  "grupo": "Laboratoriais",
+  "preparo": "Abstinência sexual e sem andar de bicicleta por 48h"
+ },
+ {
+  "nome": "Beta-HCG Quantitativo Sérico",
+  "grupo": "Laboratoriais",
+  "preparo": "Sem jejum obrigatório"
+ },
+ {
+  "nome": "Sorologias: HIV 1 e 2, Sífilis (VDRL), Hepatites B e C",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Fator Reumatoide (FR) e Anticorpos FAN (HEp-2)",
+  "grupo": "Laboratoriais",
+  "preparo": "Jejum de 4h"
+ },
+ {
+  "nome": "Cortisol Basal Sérico (8 horas da manhã)",
+  "grupo": "Laboratoriais",
+  "preparo": "Coleta estrita entre 07h e 09h em repouso"
+ },
+ {
+  "nome": "Radiografia (Raio-X) de Tórax PA e Perfil",
+  "grupo": "Imagem",
+  "preparo": "Sem preparo; retirar objetos metálicos"
+ },
+ {
+  "nome": "Ultrassonografia de Abdome Total com Doppler",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 6h a 8h e bexiga cheia"
+ },
+ {
+  "nome": "Ultrassonografia de Abdome Superior (Fígado, Vias Biliares e Pâncreas)",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 6h a 8h"
+ },
+ {
+  "nome": "Ultrassonografia de Rins e Vias Urinárias",
+  "grupo": "Imagem",
+  "preparo": "Bexiga confortavelmente cheia"
+ },
+ {
+  "nome": "Ultrassonografia de Tireoide com Doppler Colorido",
+  "grupo": "Imagem",
+  "preparo": "Sem preparo; retirar colares"
+ },
+ {
+  "nome": "Ultrassonografia Mamária Bilateral",
+  "grupo": "Imagem",
+  "preparo": "Levar mamografias anteriores"
+ },
+ {
+  "nome": "Mamografia Digital Bilateral de Alta Resolução",
+  "grupo": "Imagem",
+  "preparo": "Não usar desodorante, talco ou cremes nas axilas e mamas"
+ },
+ {
+  "nome": "Tomografia Computadorizada de Tórax de Alta Resolução",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h se houver contraste iodado"
+ },
+ {
+  "nome": "Tomografia Computadorizada de Abdome Total e Pelve",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h; ingesta de água conforme protocolo"
+ },
+ {
+  "nome": "Tomografia Computadorizada de Crânio",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h se com contraste"
+ },
+ {
+  "nome": "Tomografia Computadorizada de Seios da Face",
+  "grupo": "Imagem",
+  "preparo": "Sem preparo especial"
+ },
+ {
+  "nome": "Ressonância Magnética de Crânio / Encéfalo",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h; verificar marcapasso ou metais no corpo"
+ },
+ {
+  "nome": "Ressonância Magnética da Coluna Lombossacra",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h se com contraste"
+ },
+ {
+  "nome": "Ressonância Magnética da Coluna Cervical",
+  "grupo": "Imagem",
+  "preparo": "Jejum de 4h se com contraste"
+ },
+ {
+  "nome": "Ressonância Magnética de Joelho / Articulação",
+  "grupo": "Imagem",
+  "preparo": "Roupas sem zíper ou metal"
+ },
+ {
+  "nome": "Densitometria Óssea de Coluna e Fêmur",
+  "grupo": "Imagem",
+  "preparo": "Suspender suplemento de cálcio 24h antes"
+ },
+ {
+  "nome": "Radiografia de Coluna Lombar (AP + Perfil + Oblíquas)",
+  "grupo": "Imagem",
+  "preparo": "Sem preparo especial"
+ },
+ {
+  "nome": "Ultrassonografia Pélvica Transvaginal",
+  "grupo": "Imagem",
+  "preparo": "Esvaziar a bexiga antes do exame"
+ },
+ {
+  "nome": "Troponina I ultrassensível",
+  "grupo": "Laboratoriais",
+  "preparo": "Conforme orientação do laboratório"
+ },
+ {
+  "nome": "Proteína C reativa ultrassensível",
+  "grupo": "Laboratoriais",
+  "preparo": "Conforme orientação do laboratório"
+ },
+ {
+  "nome": "TGO e TGP",
+  "grupo": "Laboratoriais",
+  "preparo": "Conforme orientação do laboratório"
+ },
+ {
+  "nome": "Microalbuminúria",
+  "grupo": "Laboratoriais",
+  "preparo": "Conforme orientação do laboratório"
+ },
+ {
+  "nome": "Urina tipo 1",
+  "grupo": "Laboratoriais",
+  "preparo": "Conforme orientação do laboratório"
+ }
+]

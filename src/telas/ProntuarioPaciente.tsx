@@ -8,6 +8,7 @@ import { useDados } from '../componentes/Dados';
 import { Avatar, Bloco, BotaoIcone, Modal, TagStatus, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { CidBusca } from '../componentes/CidBusca';
+import { ExameBusca } from '../componentes/Buscas';
 import { ConteudoDoc, EmitirDocumento } from '../componentes/EmitirDocumento';
 import { Folha, Imprimir } from '../componentes/Folha';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
@@ -160,6 +161,7 @@ export function ProntuarioPaciente() {
                 <div className="chips-sel">
                   {exClinica.map((x) => <button type="button" key={x} className={f.exames.includes(x) ? 'sel' : ''} onClick={() => muda({ exames: f.exames.includes(x) ? f.exames.filter((y) => y !== x) : [...f.exames, x] })}>{x}</button>)}
                 </div>
+                <ExameBusca escolhidos={f.exames.filter((x) => !exClinica.includes(x))} mudar={(l) => muda({ exames: [...f.exames.filter((x) => exClinica.includes(x)), ...l] })} />
                 <div className="g g3 linha-ret">
                   <label>Retorno<select value={f.retornoDias} onChange={(e) => muda({ retornoDias: Number(e.target.value) })}>{RETORNOS.map((d) => <option key={d} value={d}>{d === 0 ? 'Sem retorno marcado' : d === 365 ? 'Em 1 ano' : `Em ${d} dias`}</option>)}</select></label>
                 </div>
@@ -213,9 +215,9 @@ function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) {
   const [imp, setImp] = useState(false);
   return (
     <Modal titulo={`${NOME_DOC[d.tipo]} · ${br(d.data)}`} fechar={fechar}>
-      <div className="reimp"><Folha clinica={base.clinica} titulo={d.titulo} data={d.data}><ConteudoDoc d={d} /></Folha></div>
+      <div className="reimp"><Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={base.pacientes.find((x) => x.id === d.pacienteId)}><ConteudoDoc d={d} /></Folha></div>
       <div className="rodape-modal"><button type="button" className="btn2" onClick={fechar}>Fechar</button><button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Reimprimir</button></div>
-      {imp && <Imprimir aoTerminar={() => setImp(false)}><Folha clinica={base.clinica} titulo={d.titulo} data={d.data}><ConteudoDoc d={d} /></Folha></Imprimir>}
+      {imp && <Imprimir aoTerminar={() => setImp(false)}><Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={base.pacientes.find((x) => x.id === d.pacienteId)}><ConteudoDoc d={d} /></Folha></Imprimir>}
     </Modal>
   );
 }

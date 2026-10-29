@@ -7,6 +7,11 @@ export interface Clinica {
   produto: string;
   medica: string;
   especialidade: string;
+  /** Ex.: "CRM-SP 123456". Aparece no cabeçalho e na assinatura dos documentos. */
+  crm: string;
+  /** Registro de especialista (opcional). */
+  rqe?: string;
+  endereco: string;
   cidade: string;
   telefone: string;
   /** Horário de atendimento por dia da semana (0 = domingo … 6 = sábado). Dia sem faixa = fechado. */
@@ -68,6 +73,11 @@ export type TipoDocumento = 'atestado' | 'receita' | 'pedido_exames' | 'comparec
 export interface Documento { id: string; pacienteId: string; data: string; tipo: TipoDocumento; titulo: string; paragrafos: string[]; itens?: string[] }
 
 export interface Cid { codigo: string; descricao: string; grupo: string }
+
+/** Remédio do catálogo de busca da receita. `comercial`/`laboratorio` = marca de referência (vazio quando não cadastrada). */
+export interface Medicamento { id: string; grupo: string; principio: string; comercial: string; laboratorio: string; doses: string[]; posologia: string; via: string }
+/** Exame do catálogo de busca do pedido de exames. */
+export interface ExameCatalogo { nome: string; grupo: string; preparo: string }
 
 export type CategoriaDespesa = 'Aluguel e condomínio' | 'Pessoal' | 'Contas de consumo' | 'Serviços' | 'Material e insumos' | 'Equipamentos' | 'Impostos' | 'Marketing' | 'Outros';
 /** Despesa da clínica. `data` é o vencimento; `pagaEm` quando foi paga. */
