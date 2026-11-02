@@ -69,7 +69,7 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
               if (medica && s === 'em_atendimento' && serv.tipo !== 'exame') nav(`/prontuario/${pac.id}?ag=${ag.id}`);
             }} />
         ))}
-        {medica && !pac.situacao && serv.tipo !== 'exame' && ag.status !== 'cancelado' && <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" cls="peq" onClick={() => nav(`/prontuario/${pac.id}?ag=${ag.id}`)} />}
+        {medica && !pac.situacao && serv.tipo !== 'exame' && ag.status !== 'cancelado' && <BotaoIcone icone="estetoscopio" titulo="Abrir histórico clínico" cls="peq" onClick={() => nav(`/prontuario/${pac.id}?ag=${ag.id}`)} />}
         {podeReceber && <button type="button" className="btn2 peq ic sec" title="Receber pagamento" aria-label="Receber pagamento" onClick={() => setReceber(true)}><Icone n="carteira" /></button>}
       </div>
       {receber && <Receber ag={ag} fechar={() => setReceber(false)} />}

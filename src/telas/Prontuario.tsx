@@ -1,4 +1,5 @@
-// Prontuário (só a médica): escolhe o paciente — atendimentos de hoje ou busca — e abre o prontuário dele.
+// Histórico (só a médica): escolhe o paciente — atendimentos de hoje ou busca — e abre o histórico dele
+// (registro curto do atendimento, documentos e resumo; o prontuário clínico completo fica no sistema da Dra.).
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
@@ -17,7 +18,7 @@ export function Prontuario() {
   const res = t.trim().length >= 2 ? buscarPacientes(cadastrados(base.pacientes), t).slice(0, 10) : [];
   return (
     <>
-      <TituloPagina titulo="Prontuário" sub={`Atendimentos de ${extenso(hj)}`} />
+      <TituloPagina titulo="Histórico" sub={`Atendimentos de ${extenso(hj)}`} />
       <div className="grade2">
         <Bloco titulo={<><Icone n="dia" /> Pacientes de hoje</>}>
           {lista.length === 0 ? <Vazio>Nenhum paciente agendado para hoje.</Vazio> : (
@@ -50,7 +51,7 @@ export function Prontuario() {
             </ul>
           )}
           {t.trim().length >= 2 && !res.length && <Vazio>Nenhum paciente encontrado.</Vazio>}
-          {t.trim().length < 2 && <Vazio>Busque para abrir o prontuário de qualquer paciente (evolução avulsa, renovação de receita).</Vazio>}
+          {t.trim().length < 2 && <Vazio>Busque para abrir o histórico de qualquer paciente (registro avulso, renovação de receita, documentos).</Vazio>}
         </Bloco>
       </div>
     </>

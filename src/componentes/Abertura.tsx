@@ -9,7 +9,7 @@ import clinica from '../dados/clinica.json';
 
 const PASSOS: Record<Perfil, string[]> = {
   recepcao: ['Conferindo seu acesso…', 'Carregando a agenda do dia…', 'Organizando pacientes e confirmações…', 'Preparando sua área de trabalho…'],
-  medica: ['Conferindo seu acesso…', 'Carregando a agenda do dia…', 'Organizando prontuários…', 'Preparando o painel da clínica…'],
+  medica: ['Conferindo seu acesso…', 'Carregando a agenda do dia…', 'Organizando o histórico dos pacientes…', 'Preparando o painel da clínica…'],
 };
 const PASSO_MS = 650;
 

@@ -86,8 +86,8 @@ export function historico(pacienteId: string, b: BaseHist, perfil: Perfil): Item
     if (perfil === 'medica') {
       const at = b.atendimentos.find((x) => x.agendamentoId === a.id);
       if (at) {
-        const sinais = [at.pa && `PA ${at.pa}`, at.fc && `FC ${at.fc} bpm`, at.pesoKg && `${at.pesoKg} kg`].filter(Boolean).join(' · ');
-        itens.push({ atId: at.id, data: at.data, hora: a.hora, tipo: 'clinico', titulo: at.cid ? `${at.cid} · ${at.cidDescricao}` : 'Evolução clínica', detalhe: [at.queixa, sinais, at.conduta].filter(Boolean).join(' — ') });
+        // registro curto do atendimento (o prontuário clínico completo fica no sistema da Dra.)
+        itens.push({ atId: at.id, data: at.data, hora: a.hora, tipo: 'clinico', titulo: at.cid ? `${at.cid} · ${at.cidDescricao}` : 'Atendimento registrado', detalhe: [at.conduta, at.examesSolicitados?.length ? `Exames: ${at.examesSolicitados.join(', ')}` : ''].filter(Boolean).join(' — ') || undefined });
       }
     }
   }

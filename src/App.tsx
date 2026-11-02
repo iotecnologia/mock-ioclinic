@@ -63,7 +63,7 @@ function Telas() {
         ))}
         <Route path="pacientes/novo" element={<PacienteCadastro />} />
         <Route path="pacientes/:id" element={<PacienteFicha />} />
-        <Route path="prontuario/:id" element={perfil === 'medica' ? <ProntuarioPaciente /> : <Vazio>O prontuário é exclusivo da médica (LGPD: dado sensível de saúde).</Vazio>} />
+        <Route path="prontuario/:id" element={perfil === 'medica' ? <ProntuarioPaciente /> : <Vazio>O histórico clínico é exclusivo da médica (LGPD: dado sensível de saúde).</Vazio>} />
         <Route path="*" element={<Navigate to="/hoje" replace />} />
       </Route>
     </Routes>

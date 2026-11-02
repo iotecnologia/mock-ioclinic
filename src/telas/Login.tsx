@@ -28,11 +28,11 @@ export function Login() {
         <div className="deco" />
         <div className="logo-bloco dra"><LogoDra tam={52} tinta="clara" /><div><b>{nomeCurto(clinica.medica)}</b><small>{clinica.especialidade}</small></div></div>
         <h1>Sua clínica organizada, <em>do agendamento ao financeiro.</em></h1>
-        <p>Agenda com horários livres na hora, cadastro e histórico do paciente, prontuário, orçamento e a gestão financeira da clínica em um só lugar.</p>
+        <p>Agenda com horários livres na hora, cadastro e histórico do paciente, documentos com a sua marca, orçamento e a gestão financeira da clínica em um só lugar.</p>
         <div className="modulos-lista">
           <span><Icone n="calendario" /> Agenda inteligente</span>
           <span><Icone n="usuarios" /> Histórico do paciente</span>
-          <span><Icone n="estetoscopio" /> Prontuário</span>
+          <span><Icone n="arquivo" /> Documentos e receitas</span>
           <span><Icone n="grafico" /> Financeiro e BI</span>
         </div>
         <div className="rod"><CreditoIO versao={false} /> · {clinica.cidade} · em conformidade com a LGPD</div>

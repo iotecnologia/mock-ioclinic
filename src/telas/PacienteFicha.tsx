@@ -82,7 +82,7 @@ export function PacienteFicha() {
         <div className="fc-num"><b>{r.proximo ? br(r.proximo.data) : '—'}</b><span>{r.proximo ? 'próximo · ' + r.proximo.hora : 'sem agendamento'}</span></div>
         <div className="fc-acoes">
           <a className="btn2 ic zap" href={linkWhats(p.telefone, `Olá, ${p.nome.split(' ')[0]}! Aqui é da clínica da ${base.clinica.medica}.`)} target="_blank" rel="noreferrer" title="Conversar no WhatsApp" aria-label="Conversar no WhatsApp"><Icone n="zap" /></a>
-          {medica && <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" onClick={() => nav('/prontuario/' + p.id)} />}
+          {medica && <BotaoIcone icone="estetoscopio" titulo="Abrir histórico clínico" onClick={() => nav('/prontuario/' + p.id)} />}
           <BotaoIcone icone="calendario" titulo="Agendar para este paciente" pri onClick={() => setParams({ agendar: '1' })} />
         </div>
       </div>

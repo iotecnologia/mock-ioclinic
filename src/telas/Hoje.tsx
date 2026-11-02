@@ -83,16 +83,16 @@ export function Hoje() {
               <div className="px-info">
                 {p.situacao ? <span className="px-nome">{p.nome}</span> : <Link to={'/pacientes/' + p.id} className="px-nome">{p.nome}</Link>}
                 <div className="mut">{idadeTxt(p, hj)} · {s.nome}{prox.encaixe ? ' · encaixe' : ''}</div>
-                {ult ? <div className="px-ult"><Icone n="pulso" /> Última consulta {brCurto(ult.data)}: {ult.cid} · {ult.cidDescricao}{ult.pa ? ` · PA ${ult.pa}` : ''}</div> : <div className="px-ult"><Icone n="info" /> Primeira consulta na clínica</div>}
+                {ult ? <div className="px-ult"><Icone n="pulso" /> Última consulta {brCurto(ult.data)}{ult.cid ? `: ${ult.cid} · ${ult.cidDescricao}` : ''}</div> : <div className="px-ult"><Icone n="info" /> Primeira consulta na clínica</div>}
               </div>
               <TagStatus s={prox.status} />
               <div className="px-acoes">
                 {p.situacao === 'pre' ? <span className="tag t-in" title="A recepção completa o cadastro quando o paciente chegar">pré-cadastro · aguardando chegada</span> : <>
                 <BotaoIcone icone="arquivo" titulo="Ver histórico do paciente" onClick={() => nav('/pacientes/' + p.id)} />
                 {prox.status !== 'em_atendimento'
-                  ? <BotaoIcone icone="play" titulo="Chamar e abrir o prontuário" pri onClick={() => { acoes.mudarStatus(prox.id, 'em_atendimento'); if (s.tipo !== 'exame') nav(`/prontuario/${p.id}?ag=${prox.id}`); }} />
+                  ? <BotaoIcone icone="play" titulo="Chamar e abrir o histórico clínico" pri onClick={() => { acoes.mudarStatus(prox.id, 'em_atendimento'); if (s.tipo !== 'exame') nav(`/prontuario/${p.id}?ag=${prox.id}`); }} />
                   : s.tipo !== 'exame'
-                    ? <BotaoIcone icone="estetoscopio" titulo="Abrir prontuário" pri onClick={() => nav(`/prontuario/${p.id}?ag=${prox.id}`)} />
+                    ? <BotaoIcone icone="estetoscopio" titulo="Abrir histórico clínico" pri onClick={() => nav(`/prontuario/${p.id}?ag=${prox.id}`)} />
                     : <BotaoIcone icone="check" titulo="Finalizar exame" pri onClick={() => acoes.mudarStatus(prox.id, 'atendido')} />}
                 </>}
               </div>

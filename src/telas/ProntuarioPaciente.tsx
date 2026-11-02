@@ -1,6 +1,6 @@
-// Prontuário do paciente (só a médica).
-// Esquerda: atendimento de hoje (queixa, sinais vitais com IMC e classificação da PA, exame físico, CID, conduta).
-// Direita: resumo clínico (alergias, medicamentos, antecedentes), evoluções anteriores e documentos emitidos.
+// Histórico do paciente (só a médica). O prontuário clínico completo fica no sistema de prontuário da Dra. (Life Up);
+// aqui fica o REGISTRO CURTO de cada atendimento (CID, observação, exames pedidos e retorno), os documentos com o logo
+// da Dra. (atestado, receita, pedido de exames, comparecimento) e o resumo (alergias, medicamentos, antecedentes).
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { Atendimento, Cid, Documento, ResumoClinico, TipoDocumento } from '../tipos/modelos';
@@ -13,16 +13,14 @@ import { ConteudoDoc, EmitirDocumento } from '../componentes/EmitirDocumento';
 import { BaixarPdf, Folha, Imprimir } from '../componentes/Folha';
 import { nomeArquivo } from '../util/pdf';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
-import { classificaImc, classificaPA, imc } from '../regras/prontuario';
 import { NOME_DOC } from '../regras/documentos';
 import { idade } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
 
-const EXAME_NORMAL = 'BEG, corado, hidratado, eupneico. ACV: RCR 2T, BNF, sem sopros. AR: MV+ sem RA. Extremidades sem edema, pulsos presentes.';
 const ANTECEDENTES = ['Hipertensão', 'Diabetes tipo 2', 'Dislipidemia', 'Tabagismo', 'Ex-tabagista', 'Obesidade', 'Sedentarismo', 'IAM prévio', 'AVC prévio', 'História familiar de DAC', 'Hipotireoidismo', 'Doença renal crônica'];
 const RETORNOS = [0, 30, 60, 90, 180, 365];
 
-type Form = { queixa: string; hda: string; pa: string; fc: string; peso: string; altura: string; exameFisico: string; cid?: Cid; conduta: string; exames: string[]; retornoDias: number };
+type Form = { cid?: Cid; obs: string; exames: string[]; retornoDias: number };
 
 export function ProntuarioPaciente() {
   const { id } = useParams();
@@ -35,13 +33,8 @@ export function ProntuarioPaciente() {
   const ag = base.agendamentos.find((a) => a.id === agId);
   const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
   const anteriores = base.atendimentos.filter((a) => a.pacienteId === id && a.agendamentoId !== agId).sort((x, y) => y.data.localeCompare(x.data));
-  const ultimo = anteriores[0];
   const salvo = base.atendimentos.find((a) => agId && a.agendamentoId === agId);
-  const [f, setF] = useState<Form>(() => ({
-    queixa: '', hda: '', pa: '', fc: '', peso: ultimo?.pesoKg ? String(ultimo.pesoKg) : '', altura: ultimo?.alturaCm ? String(ultimo.alturaCm) : '',
-    exameFisico: '', conduta: '', exames: [], retornoDias: 30,
-  }));
-  const [erros, setErros] = useState<Record<string, string>>({});
+  const [f, setF] = useState<Form>(() => ({ obs: '', exames: [], retornoDias: 30 }));
   const [doc, setDoc] = useState<TipoDocumento | null>(null);
   const [retorno, setRetorno] = useState(false);
   const [verTodas, setVerTodas] = useState(false);
@@ -53,28 +46,16 @@ export function ProntuarioPaciente() {
   const resumo = base.resumos.find((r) => r.pacienteId === p.id);
   const docs = base.documentos.filter((d) => d.pacienteId === p.id).sort((x, y) => y.data.localeCompare(x.data));
   const finalizado: Atendimento | undefined = salvo ?? base.atendimentos.find((a) => a.id === finalId);
-  const v = finalizado
-    ? { pa: finalizado.pa ?? '', peso: finalizado.pesoKg, altura: finalizado.alturaCm }
-    : { pa: f.pa, peso: Number(f.peso.replace(',', '.')) || undefined, altura: Number(f.altura) || undefined };
-  const vImc = imc(v.peso, v.altura);
-  const cImc = classificaImc(vImc);
-  const cPa = classificaPA(v.pa);
   const muda = (x: Partial<Form>) => setF((o) => ({ ...o, ...x }));
   const exClinica = base.servicos.filter((s) => s.tipo === 'exame').map((s) => s.nome);
   const cidTxt = finalizado?.cid ? `${finalizado.cid} · ${finalizado.cidDescricao}` : f.cid ? `${f.cid.codigo} · ${f.cid.descricao}` : undefined;
 
+  // registro curto: nada é obrigatório (o clínico completo fica no prontuário da Dra.)
   const finalizar = () => {
-    const e: Record<string, string> = {};
-    if (!f.queixa.trim()) e.queixa = 'Informe a queixa principal.';
-    if (f.pa && !classificaPA(f.pa)) e.pa = 'Use o formato 120/80.';
-    if (!f.conduta.trim()) e.conduta = 'Informe a conduta.';
-    setErros(e);
-    if (Object.keys(e).length) return;
     const novo = acoes.finalizarAtendimento({
       agendamentoId: agId ?? 'avulso-' + Date.now(), pacienteId: p.id, data: hj,
-      queixa: f.queixa.trim(), hda: f.hda.trim() || undefined, pa: f.pa || undefined, fc: Number(f.fc) || undefined,
-      pesoKg: v.peso, alturaCm: v.altura, cid: f.cid?.codigo, cidDescricao: f.cid?.descricao,
-      exameFisico: f.exameFisico.trim() || undefined, conduta: f.conduta.trim(), examesSolicitados: f.exames, retornoDias: f.retornoDias || undefined,
+      queixa: '', cid: f.cid?.codigo, cidDescricao: f.cid?.descricao,
+      conduta: f.obs.trim(), examesSolicitados: f.exames, retornoDias: f.retornoDias || undefined,
     });
     setFinalId(novo.id);
   };
@@ -105,23 +86,15 @@ export function ProntuarioPaciente() {
       </div>
 
       <div className="grade2 pront">
-        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag ? `Atendimento de hoje · ${serv?.nome}` : 'Evolução avulsa (sem agendamento)'}</>}
+        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag ? `Atendimento de hoje · ${serv?.nome}` : 'Registro avulso (sem agendamento)'}</>}
           extra={finalizado && <span className="tag t-ok">finalizado</span>}>
           {finalizado ? (
             <div className="evol-lida">
-              <div className="sinais">
-                {finalizado.pa && <div><span>PA</span><b className="mono">{finalizado.pa}</b>{cPa && <em className={'tag ' + cPa.cls}>{cPa.nome}</em>}</div>}
-                {finalizado.fc && <div><span>FC</span><b className="mono">{finalizado.fc} bpm</b></div>}
-                {finalizado.pesoKg && <div><span>Peso</span><b className="mono">{finalizado.pesoKg} kg</b></div>}
-                {vImc && <div><span>IMC</span><b className="mono">{vImc}</b>{cImc && <em className={'tag ' + cImc.cls}>{cImc.nome}</em>}</div>}
-              </div>
               <dl>
-                <dt>Queixa principal</dt><dd>{finalizado.queixa}</dd>
-                {finalizado.hda && <><dt>História da doença atual</dt><dd>{finalizado.hda}</dd></>}
-                {finalizado.exameFisico && <><dt>Exame físico</dt><dd>{finalizado.exameFisico}</dd></>}
                 {finalizado.cid && <><dt>Hipótese diagnóstica</dt><dd><span className="mono">{finalizado.cid}</span> · {finalizado.cidDescricao}</dd></>}
-                <dt>Conduta</dt><dd>{finalizado.conduta}</dd>
+                {finalizado.conduta && <><dt>Observação</dt><dd>{finalizado.conduta}</dd></>}
                 {!!finalizado.examesSolicitados?.length && <><dt>Exames solicitados</dt><dd>{finalizado.examesSolicitados.join(' · ')}</dd></>}
+                {!!finalizado.retornoDias && <><dt>Retorno</dt><dd>em {finalizado.retornoDias} dias</dd></>}
               </dl>
               <div className="pos-atend">
                 <span>Próximos passos:</span>
@@ -135,28 +108,8 @@ export function ProntuarioPaciente() {
           ) : (
             <div className="form-pac form-atend">
               <section>
-                <label>Queixa principal *<input value={f.queixa} onChange={(e) => muda({ queixa: e.target.value })} placeholder="Ex.: palpitações há 2 meses" />{erros.queixa && <span className="erro-campo">{erros.queixa}</span>}</label>
-                <label>História da doença atual<textarea rows={2} value={f.hda} onChange={(e) => muda({ hda: e.target.value })} /></label>
-              </section>
-              <section>
-                <h4>Sinais vitais</h4>
-                <div className="g g4">
-                  <label>PA (mmHg)<input className="mono" value={f.pa} onChange={(e) => muda({ pa: e.target.value })} placeholder="120/80" />{cPa && <em className={'tag ' + cPa.cls}>{cPa.nome}</em>}{erros.pa && <span className="erro-campo">{erros.pa}</span>}</label>
-                  <label>FC (bpm)<input className="mono" inputMode="numeric" value={f.fc} onChange={(e) => muda({ fc: e.target.value.replace(/\D/g, '').slice(0, 3) })} placeholder="72" /></label>
-                  <label>Peso (kg)<input className="mono" inputMode="decimal" value={f.peso} onChange={(e) => muda({ peso: e.target.value })} /></label>
-                  <label>Altura (cm)<input className="mono" inputMode="numeric" value={f.altura} onChange={(e) => muda({ altura: e.target.value.replace(/\D/g, '').slice(0, 3) })} /></label>
-                </div>
-                {vImc && <div className="imc">IMC <b className="mono">{vImc}</b> {cImc && <em className={'tag ' + cImc.cls}>{cImc.nome}</em>}</div>}
-              </section>
-              <section>
-                <label>Exame físico
-                  <div className="com-atalho">
-                    <textarea rows={2} value={f.exameFisico} onChange={(e) => muda({ exameFisico: e.target.value })} />
-                    <button type="button" className="btn2 peq" onClick={() => muda({ exameFisico: EXAME_NORMAL })} title="Preencher com exame físico normal">Normal</button>
-                  </div>
-                </label>
                 <label>Hipótese diagnóstica (CID-10)<CidBusca valor={f.cid} aoEscolher={(c) => muda({ cid: c })} /></label>
-                <label>Conduta *<textarea rows={3} value={f.conduta} onChange={(e) => muda({ conduta: e.target.value })} placeholder="Medicação, orientações, encaminhamentos" />{erros.conduta && <span className="erro-campo">{erros.conduta}</span>}</label>
+                <label>Observação<textarea rows={3} value={f.obs} onChange={(e) => muda({ obs: e.target.value })} placeholder="Resumo curto do atendimento (o registro clínico completo fica no prontuário)" /></label>
               </section>
               <section>
                 <h4>Exames solicitados</h4>
@@ -178,17 +131,15 @@ export function ProntuarioPaciente() {
 
         <div className="pilha">
           <ResumoBloco key={p.id + (resumo?.atualizadoEm ?? '')} pacienteId={p.id} resumo={resumo} salvar={acoes.salvarResumo} />
-          <Bloco titulo={<><Icone n="relogio" /> Evoluções anteriores</>} extra={anteriores.length > 3 && <button type="button" className="lk" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'ver menos' : `ver todas (${anteriores.length})`}</button>}>
+          <Bloco titulo={<><Icone n="relogio" /> Atendimentos anteriores</>} extra={anteriores.length > 3 && <button type="button" className="lk" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'ver menos' : `ver todas (${anteriores.length})`}</button>}>
             {anteriores.length === 0 ? <Vazio>Primeiro atendimento do paciente.</Vazio> : (
               <ul className="evols">
                 {(verTodas ? anteriores : anteriores.slice(0, 3)).map((a) => {
-                  const i = imc(a.pesoKg, a.alturaCm);
                   return (
-                    <li key={a.id} className="clic" role="button" tabIndex={0} title="Abrir a evolução completa" onClick={() => setEvol(a)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setEvol(a)}>
+                    <li key={a.id} className="clic" role="button" tabIndex={0} title="Ver o atendimento" onClick={() => setEvol(a)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setEvol(a)}>
                       <div className="ev-cab"><b className="mono">{br(a.data)}</b>{a.cid && <span>{a.cid} · {a.cidDescricao}</span>}</div>
-                      <div className="ev-sinais mono">{[a.pa && `PA ${a.pa}`, a.fc && `FC ${a.fc}`, a.pesoKg && `${a.pesoKg} kg`, i && `IMC ${i}`].filter(Boolean).join(' · ')}</div>
-                      <p>{a.queixa}</p>
-                      <p className="mut">{a.conduta}</p>
+                      {a.conduta && <p>{a.conduta}</p>}
+                      {!!a.examesSolicitados?.length && <p className="mut">Exames: {a.examesSolicitados.join(' · ')}</p>}
                     </li>
                   );
                 })}
@@ -213,46 +164,30 @@ export function ProntuarioPaciente() {
   );
 }
 
-/** Evolução anterior completa (clicada na lista), com os documentos emitidos no mesmo dia. */
+/** Atendimento anterior (clicado na lista): registro curto + documentos emitidos no mesmo dia; imprime ou baixa o resumo. */
 export function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: Documento[]; abrirDoc: (d: Documento) => void; fechar: () => void }) {
   const { base } = useDados();
   const ag = base.agendamentos.find((x) => x.id === a.agendamentoId);
   const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
-  const vImc = imc(a.pesoKg, a.alturaCm), cImc = classificaImc(vImc), cPa = classificaPA(a.pa);
   const pac = base.pacientes.find((x) => x.id === a.pacienteId);
   const [imp, setImp] = useState(false);
   const [pdf, setPdf] = useState(false);
-  const sinais = [a.pa && `PA ${a.pa} mmHg${cPa ? ` (${cPa.nome})` : ''}`, a.fc && `FC ${a.fc} bpm`, a.pesoKg && `Peso ${a.pesoKg} kg`, a.alturaCm && `Altura ${a.alturaCm} cm`, vImc && `IMC ${vImc}${cImc ? ` (${cImc.nome})` : ''}`].filter(Boolean).join(' · ');
   // folha da evolução para imprimir/baixar (mesmo visual dos outros documentos, com assinatura da Dra.)
   const folha = (
-    <Folha clinica={base.clinica} titulo="Evolução clínica" data={hoje()} paciente={pac}>
+    <Folha clinica={base.clinica} titulo="Resumo do atendimento" data={hoje()} paciente={pac}>
       <p><b>Atendimento:</b> {br(a.data)}{serv ? ` · ${serv.nome}` : ''}</p>
-      {sinais && <p><b>Sinais vitais:</b> {sinais}</p>}
-      <p><b>Queixa principal:</b> {a.queixa}</p>
-      {a.hda && <p><b>História da doença atual:</b> {a.hda}</p>}
-      {a.exameFisico && <p><b>Exame físico:</b> {a.exameFisico}</p>}
       {a.cid && <p><b>Hipótese diagnóstica:</b> {a.cid} · {a.cidDescricao}</p>}
-      <p><b>Conduta:</b> {a.conduta}</p>
+      {a.conduta && <p><b>Observação:</b> {a.conduta}</p>}
       {!!a.examesSolicitados?.length && <p><b>Exames solicitados:</b> {a.examesSolicitados.join(' · ')}</p>}
       {!!a.retornoDias && <p><b>Retorno:</b> em {a.retornoDias} dias</p>}
     </Folha>
   );
   return (
-    <Modal titulo={`Evolução de ${br(a.data)}${serv ? ` · ${serv.nome}` : ''}`} fechar={fechar} largo>
+    <Modal titulo={`Atendimento de ${br(a.data)}${serv ? ` · ${serv.nome}` : ''}`} fechar={fechar} largo>
       <div className="evol-lida">
-        <div className="sinais">
-          {a.pa && <div><span>PA</span><b className="mono">{a.pa}</b>{cPa && <em className={'tag ' + cPa.cls}>{cPa.nome}</em>}</div>}
-          {a.fc && <div><span>FC</span><b className="mono">{a.fc} bpm</b></div>}
-          {a.pesoKg && <div><span>Peso</span><b className="mono">{a.pesoKg} kg</b></div>}
-          {a.alturaCm && <div><span>Altura</span><b className="mono">{a.alturaCm} cm</b></div>}
-          {vImc && <div><span>IMC</span><b className="mono">{vImc}</b>{cImc && <em className={'tag ' + cImc.cls}>{cImc.nome}</em>}</div>}
-        </div>
         <dl>
-          <dt>Queixa principal</dt><dd>{a.queixa}</dd>
-          {a.hda && <><dt>História da doença atual</dt><dd>{a.hda}</dd></>}
-          {a.exameFisico && <><dt>Exame físico</dt><dd>{a.exameFisico}</dd></>}
           {a.cid && <><dt>Hipótese diagnóstica</dt><dd><span className="mono">{a.cid}</span> · {a.cidDescricao}</dd></>}
-          <dt>Conduta</dt><dd>{a.conduta}</dd>
+          {a.conduta && <><dt>Observação</dt><dd>{a.conduta}</dd></>}
           {!!a.examesSolicitados?.length && <><dt>Exames solicitados</dt><dd>{a.examesSolicitados.join(' · ')}</dd></>}
           {!!a.retornoDias && <><dt>Retorno</dt><dd>em {a.retornoDias} dias</dd></>}
         </dl>
@@ -265,11 +200,11 @@ export function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento;
         <div className="rodape-modal">
           <button type="button" className="btn2" onClick={fechar}>Fechar</button>
           <button type="button" className="btn2" disabled={pdf} onClick={() => setPdf(true)}><Icone n="pdf" /> {pdf ? 'Gerando…' : 'Baixar PDF'}</button>
-          <button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Imprimir evolução</button>
+          <button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Imprimir resumo</button>
         </div>
       </div>
       {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
-      {pdf && <BaixarPdf nome={nomeArquivo('evolucao', pac?.nome, a.data)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
+      {pdf && <BaixarPdf nome={nomeArquivo('resumo-atendimento', pac?.nome, a.data)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
     </Modal>
   );
 }
