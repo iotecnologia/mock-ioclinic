@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { Icone } from './Icone';
 import { Logo, Marca } from './Marca';
 import { useDados, type Aviso } from './Dados';
+import { WHATS_AUTOMATICO } from './WhatsAuto';
+import { lembretesPendentes } from '../regras/agenda';
+import { agoraMin, brCurto, hoje, somaDias } from '../util/datas';
 import { BuscaGeral } from './BuscaGeral';
 import { Avatar } from './Comuns';
 import { local } from '../util/formato';
@@ -57,6 +60,7 @@ export function Shell() {
       </header>
       <main className="conteudo"><Outlet /></main>
       <Avisos />
+      {perfil === 'recepcao' && !WHATS_AUTOMATICO && <AlertaLembretes />}
       <nav className="nav-celular" aria-label="Menu">
         {PAGINAS.filter((p) => p.perfis.includes(perfil)).map((p) => <NavLink key={p.id} to={p.rota} className={({ isActive }) => (isActive ? 'ativo' : '')}><Icone n={p.icone} />{p.nome}</NavLink>)}
       </nav>
@@ -72,11 +76,35 @@ function Avisos() {
 }
 function AvisoItem({ a, fechar }: { a: Aviso; fechar: () => void }) {
   const nav = useNavigate();
-  useEffect(() => { const t = setTimeout(fechar, 8000); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (a.fixo) return; const t = setTimeout(fechar, 8000); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={'aviso-flut ' + a.tipo}>
       <span onClick={() => { if (a.link) { nav(a.link); fechar(); } }} className={a.link ? 'clic' : ''}>{a.texto}</span>
       <button type="button" className="icone-btn" title="Fechar aviso" aria-label="Fechar aviso" onClick={fechar}><Icone n="x" /></button>
     </div>
   );
+}
+
+/**
+ * Recepção: na hora do lembrete (clinica.horaLembrete), avisa em qualquer tela que há lembretes para enviar pelo WhatsApp.
+ * Confere a cada minuto. Depois de fechado, só volta se aparecer paciente novo para lembrar.
+ */
+function AlertaLembretes() {
+  const { base, avisar, fecharAviso } = useDados();
+  const [agora, setAgora] = useState(agoraMin());
+  useEffect(() => { const t = setInterval(() => setAgora(agoraMin()), 60000); return () => clearInterval(t); }, []);
+  const hj = hoje();
+  const { dia, lista, hora } = lembretesPendentes(base, hj, agora);
+  const id = `lembretes:${dia}`;
+  const tem = !!dia && hora && lista.length > 0;
+  useEffect(() => {
+    if (!tem) { fecharAviso(id); return; }   // todos enviados: o aviso some
+    let visto = false;
+    try { visto = sessionStorage.getItem('ioclinic:' + id) === '1'; } catch { /* sem armazenamento */ }
+    if (visto) return;
+    try { sessionStorage.setItem('ioclinic:' + id, '1'); } catch { /* sem armazenamento */ }
+    const quando = dia === somaDias(hj, 1) ? 'amanhã' : brCurto(dia!);
+    avisar({ id, tipo: 'alerta', fixo: true, link: '/hoje', texto: `⏰ Hora de enviar os lembretes de ${quando} pelo WhatsApp · ${lista.length} paciente${lista.length > 1 ? 's' : ''}` });
+  }, [id, tem]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
 }

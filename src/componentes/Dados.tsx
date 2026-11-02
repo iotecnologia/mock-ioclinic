@@ -29,8 +29,8 @@ interface Acoes {
   resolverRemarcar(id: string): void;
 }
 /** Aviso que aparece no canto da tela (ex.: resposta do paciente no WhatsApp). */
-export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string }
-interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void }
+export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string; /** fica até fechar */ fixo?: boolean }
+interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void; avisar(a: Aviso): void }
 
 /** Segundos até a resposta simulada do paciente chegar (demonstração). */
 const ESPERA_RESPOSTA = 6;
@@ -237,7 +237,8 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
   /** Apaga o que foi salvo e gera a clínica fictícia de novo (para a próxima apresentação). */
   const restaurar = () => { clearTimeout(timer.current); apagarSalvo(); setBase(null); setVersao((v) => v + 1); };
   const fecharAviso = (id: string) => setAvisos((l) => l.filter((x) => x.id !== id));
-  return <C.Provider value={{ base, acoes, restaurar, avisos, fecharAviso }}>{children}</C.Provider>;
+  const avisar = (a: Aviso) => setAvisos((l) => [...l.filter((x) => x.id !== a.id), a].slice(-4));
+  return <C.Provider value={{ base, acoes, restaurar, avisos, fecharAviso, avisar }}>{children}</C.Provider>;
 }
 
 export function useDados(): Ctx {

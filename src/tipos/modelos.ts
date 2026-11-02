@@ -17,6 +17,8 @@ export interface Clinica {
   telefone: string;
   /** WhatsApp da clínica. */
   whatsapp?: string;
+  /** A partir desta hora ('HH:mm') a recepção é avisada para enviar os lembretes do próximo dia de atendimento. */
+  horaLembrete?: string;
   /** Horário de atendimento por dia da semana (0 = domingo … 6 = sábado). Dia sem faixa = fechado. */
   horarios: Record<string, { inicio: string; fim: string }[]>;
   /** Grade da agenda em minutos (todos os horários começam em múltiplos disso). */

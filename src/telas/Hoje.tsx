@@ -8,13 +8,13 @@ import { Bloco, BotaoIcone, TagStatus, TituloPagina, Vazio } from '../componente
 import { Icone } from '../componentes/Icone';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
-import { aConfirmar, contagem, doDia, proximoPaciente } from '../regras/agenda';
+import { aConfirmar, contagem, doDia, lembretesPendentes, proximoPaciente } from '../regras/agenda';
 import { blocosLivres, situacaoDia } from '../regras/disponibilidade';
 import { idadeTxt } from '../regras/paciente';
 import { agoraMin, brCurto, extenso, hoje, nomeDiaCurto, somaDias } from '../util/datas';
 import { linkWhats, moeda } from '../util/formato';
 import { msgLembrete, msgRemarcar } from '../regras/mensagens';
-import { ChaveWhatsAuto, useWhatsAuto } from '../componentes/WhatsAuto';
+import { useWhatsAuto } from '../componentes/WhatsAuto';
 
 function saudacao() { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; }
 
@@ -47,6 +47,8 @@ export function Hoje() {
   const remarcar = base.agendamentos
     .filter((a) => a.whats?.resposta === 'remarcar' && !a.whats.resolvido && a.data >= hj && ['agendado', 'confirmado'].includes(a.status))
     .sort((x, y) => x.data.localeCompare(y.data) || x.hora.localeCompare(y.hora));
+  const lemb = lembretesPendentes(base, hj, agoraMin());
+  const horaLembrete = !auto && lemb.hora && lemb.lista.length > 0;
   const confirmaramZap = amanha ? doDia(base, amanha).filter((a) => a.whats?.resposta === 'confirmou').length : 0;
 
   return (
@@ -118,8 +120,9 @@ export function Hoje() {
             </ul>
           </Bloco>
 
-          <Bloco titulo={<><Icone n="lista" /> Para fazer</>} extra={<ChaveWhatsAuto />}>
+          <Bloco titulo={<><Icone n="lista" /> Para fazer</>}>
             <ul className="tarefas">
+              {horaLembrete && <li className="t-lembrete"><Icone n="zap" /><span><b>Hora de enviar os lembretes ({lemb.lista.length})</b><small>Clique no WhatsApp de cada paciente abaixo. Quando ele responder “1”, marque o ✓.</small></span></li>}
               {remarcar.length > 0 && <li className="t-cab alerta"><Icone n="alerta" /> Pediram para remarcar pelo WhatsApp ({remarcar.length})</li>}
               {remarcar.map((a) => {
                 const p = nomeP(a.pacienteId), s = nomeS(a.servicoId);
@@ -141,9 +144,9 @@ export function Hoje() {
                   <li key={a.id}>
                     <span className="mono">{a.hora}</span><span className="tf-nome">{p.nome}<small>{s.curto}
                       {w?.modo === 'auto' && w.lembreteEm && (w.resposta === 'remarcar' ? <em className="zap-st no"> · pediu remarcar</em> : w.processado ? <em className="zap-st"> · sem resposta</em> : <em className="zap-st"> · ⏳ aguardando resposta</em>)}
-                      {w?.modo === 'manual' && w.lembreteEm && <em className="zap-st"> · lembrete enviado</em>}
+                      {w?.modo === 'manual' && w.lembreteEm && <em className="zap-st ok"> · lembrete enviado ✓</em>}
                     </small></span>
-                    <a className="btn2 peq ic zap" href={linkWhats(p.telefone, msgLembrete(base.clinica, p, s, a))} target="_blank" rel="noreferrer" title="Enviar lembrete pelo WhatsApp" aria-label="Enviar lembrete pelo WhatsApp"
+                    <a className={'btn2 peq ic zap' + (horaLembrete && !w?.lembreteEm ? ' pulsa' : '')} href={linkWhats(p.telefone, msgLembrete(base.clinica, p, s, a))} target="_blank" rel="noreferrer" title="Enviar lembrete pelo WhatsApp" aria-label="Enviar lembrete pelo WhatsApp"
                       onClick={() => !auto && acoes.registrarWhats(a.id, { modo: 'manual', lembreteEm: new Date().toISOString() })}><Icone n="zap" /></a>
                     <BotaoIcone icone="check" titulo="Marcar como confirmado" cls="peq verde" onClick={() => acoes.mudarStatus(a.id, 'confirmado')} />
                   </li>

@@ -1,6 +1,7 @@
 // Regras da agenda do dia: status, ordem, contadores e próximo paciente.
 import type { Agendamento, BaseClinica, StatusAgendamento } from '../tipos/modelos';
-import { min } from '../util/datas';
+import { min, somaDias } from '../util/datas';
+import { situacaoDia } from './disponibilidade';
 
 export const STATUS: Record<StatusAgendamento, { nome: string; cls: string }> = {
   agendado: { nome: 'Agendado', cls: 't-in' },
@@ -52,3 +53,19 @@ export function proximoPaciente(lista: Agendamento[], agora: number): Agendament
 /** Agendamentos de amanhã (ou do próximo dia útil) que ainda não foram confirmados. */
 export const aConfirmar = (b: Pick<BaseClinica, 'agendamentos'>, data: string) =>
   doDia(b, data).filter((a) => a.status === 'agendado');
+
+/** Próximo dia em que a clínica abre, depois de hoje (para o lembrete da véspera). */
+export function proximoDiaAberto(b: Pick<BaseClinica, 'clinica' | 'agendamentos' | 'feriados' | 'bloqueios'>, hojeIso: string): string | undefined {
+  for (let i = 1; i < 30; i++) { const d = somaDias(hojeIso, i); if (situacaoDia(d, b).aberto) return d; }
+  return undefined;
+}
+
+/**
+ * Lembretes que a recepção ainda precisa enviar pelo WhatsApp: agendados do próximo dia de atendimento
+ * que não receberam lembrete e não pediram para remarcar. `hora` = já chegou a hora do lembrete (clinica.horaLembrete)?
+ */
+export function lembretesPendentes(b: Pick<BaseClinica, 'clinica' | 'agendamentos' | 'feriados' | 'bloqueios'>, hojeIso: string, agora: number) {
+  const dia = proximoDiaAberto(b, hojeIso);
+  const lista = dia ? aConfirmar(b, dia).filter((a) => !a.whats?.lembreteEm && a.whats?.resposta !== 'remarcar') : [];
+  return { dia, lista, hora: agora >= min(b.clinica.horaLembrete ?? '10:00') };
+}
