@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
-import { Avatar, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Avatar, BotaoIcone, Rolagem, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { buscarPacientes, cadastrados, idade, resumoPaciente } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
@@ -37,7 +37,7 @@ export function Pacientes() {
       </div>
       <div className="bloco">
         {filtradas.length === 0 ? <Vazio>Nenhum paciente encontrado.</Vazio> : (
-          <table className="tab">
+          <Rolagem><table className="tab">
             <thead><tr><th>Paciente</th><th>Idade</th><th>Celular</th><th>CPF</th><th>Última visita</th><th>Próximo agendamento</th></tr></thead>
             <tbody>
               {filtradas.map(({ p, r }) => (
@@ -51,7 +51,7 @@ export function Pacientes() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></Rolagem>
         )}
       </div>
     </>

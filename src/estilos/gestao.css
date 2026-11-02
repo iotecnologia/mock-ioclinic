@@ -133,3 +133,17 @@ table.tab td.acoes-linha { padding-top: 6px; padding-bottom: 6px; }
 .app .per-rot:hover { background: var(--hover); }
 .barra .seletor-periodo { justify-content: flex-start; }
 @media (max-width: 760px) { .seletor-periodo { justify-content: flex-start; } .app .per-rot { min-width: 0; } }
+/* tamanho FIXO: trocar de Mês para Semana ou Personalizado não mexe no resto da linha */
+.seletor-periodo > .nav-data, .seletor-periodo > .per-livre { width: 340px; flex: none; box-sizing: border-box; }
+.seletor-periodo .nav-data { justify-content: space-between; }
+.app .seletor-periodo .per-rot { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.seletor-periodo .per-livre { height: 38px; gap: 6px; }
+.seletor-periodo .per-livre .per { flex: 1; min-width: 0; gap: 5px; }
+.seletor-periodo .per-livre .per input { width: 100%; min-width: 0; height: 36px; padding: 0 6px; font-size: 12.5px; }
+@media (max-width: 760px) { .seletor-periodo > .nav-data, .seletor-periodo > .per-livre { width: 100%; } }
+.gr-prop-leg li.clic { cursor: pointer; border-radius: 6px; margin: 0 -6px; padding: 2px 6px; }
+.gr-prop-leg li.clic:hover { background: var(--hover); }
+.gr-prop-leg li.sel { background: var(--gelo); }
+/* Financeiro: abaixo de 1400 px os quadros empilham (tabelas com espaço inteiro, nada cortado) */
+@media (max-width: 1399px) { .grade2.fin { grid-template-columns: minmax(0, 1fr); } .grade2.fin > .pilha.lado { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; } }
+@media (max-width: 900px) { .grade2.fin > .pilha.lado { grid-template-columns: 1fr; } }

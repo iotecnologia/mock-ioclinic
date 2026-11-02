@@ -45,6 +45,30 @@ export function BotaoIcone({ icone, titulo, onClick, pri, disabled, cls }: { ico
   );
 }
 
+/**
+ * Card de número (contador). Todo card é clicável: filtra a informação da tela ou abre o detalhe.
+ * `sel` = filtro ligado (clicar de novo desliga).
+ */
+export function Contador({ icone, valor, rotulo, cls, sel, onClick, titulo }: {
+  icone: string; valor: ReactNode; rotulo: ReactNode; cls?: string; sel?: boolean; onClick: () => void; titulo: string;
+}) {
+  return (
+    <button type="button" className={['contador', cls, sel && 'sel'].filter(Boolean).join(' ')} onClick={onClick} title={titulo} aria-pressed={sel}>
+      <Icone n={icone} /><b>{valor}</b><span>{rotulo}</span>
+    </button>
+  );
+}
+
+/** Etiqueta do filtro ligado, com X para limpar. */
+export function FiltroAtivo({ nome, limpar }: { nome: ReactNode; limpar: () => void }) {
+  return <span className="filtro-ativo">Filtro: {nome}<button type="button" title="Limpar filtro" aria-label="Limpar filtro" onClick={limpar}><Icone n="x" /></button></span>;
+}
+
+/** Tabela que rola para o lado dentro do quadro (nunca corta coluna). */
+export function Rolagem({ children }: { children: ReactNode }) {
+  return <div className="tab-rolagem">{children}</div>;
+}
+
 export function Modal({ titulo, fechar, children, largo }: { titulo: ReactNode; fechar: () => void; children: ReactNode; largo?: boolean }) {
   useEffect(() => {
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') fechar(); };

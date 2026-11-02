@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
-import { Bloco, BotaoIcone, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Bloco, BotaoIcone, Contador, FiltroAtivo, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
@@ -23,6 +23,9 @@ export function Hoje() {
   const { usuario } = useSessao();
   const nav = useNavigate();
   const [novo, setNovo] = useState(false);
+  // filtro da "Agenda de hoje" ligado pelos cards
+  const [filtro, setFiltro] = useState<'confirmados' | 'atendidos' | 'areceber' | null>(null);
+  const alterna = (f: typeof filtro) => setFiltro((x) => (x === f ? null : f));
   const hj = hoje();
   const medica = usuario!.perfil === 'medica';
   const lista = doDia(base, hj);
@@ -58,11 +61,11 @@ export function Hoje() {
       </TituloPagina>
 
       <div className="contadores">
-        <div><Icone n="calendario" /><b>{c.total}</b><span>pacientes hoje</span></div>
-        <div><Icone n="check" /><b>{c.confirmados}</b><span>confirmados</span></div>
-        <div><Icone n="estetoscopio" /><b>{c.atendidos}</b><span>atendidos</span></div>
-        <div><Icone n="relogio" /><b>{livres}</b><span>horários livres</span></div>
-        <div className={c.aReceber ? 'alerta' : ''}><Icone n="carteira" /><b>{c.aReceber}</b><span>a receber</span></div>
+        <Contador icone="calendario" valor={c.total} rotulo="pacientes hoje" sel={!filtro} onClick={() => setFiltro(null)} titulo="Mostrar todos os pacientes de hoje" />
+        <Contador icone="check" valor={c.confirmados} rotulo="confirmados" sel={filtro === 'confirmados'} onClick={() => alterna('confirmados')} titulo="Filtrar: só os confirmados" />
+        <Contador icone="estetoscopio" valor={c.atendidos} rotulo="atendidos" sel={filtro === 'atendidos'} onClick={() => alterna('atendidos')} titulo="Filtrar: só os atendidos" />
+        <Contador icone="relogio" valor={livres} rotulo="horários livres" onClick={() => nav('/agenda?data=' + hj)} titulo="Abrir a agenda do dia para ver os horários livres" />
+        <Contador icone="carteira" valor={c.aReceber} rotulo="a receber" cls={c.aReceber ? 'alerta' : ''} sel={filtro === 'areceber'} onClick={() => alterna('areceber')} titulo="Filtrar: quem falta pagar" />
       </div>
 
       {medica && prox && (() => {
@@ -95,10 +98,18 @@ export function Hoje() {
       })()}
 
       <div className="grade2">
-        <Bloco titulo={<><Icone n="dia" /> Agenda de hoje</>} extra={<button type="button" className="lk" onClick={() => nav('/agenda')}>abrir agenda completa</button>}>
+        <Bloco titulo={<><Icone n="dia" /> Agenda de hoje</>} extra={filtro
+          ? <FiltroAtivo nome={{ confirmados: 'confirmados', atendidos: 'atendidos', areceber: 'a receber' }[filtro]} limpar={() => setFiltro(null)} />
+          : <button type="button" className="lk" onClick={() => nav('/agenda')}>abrir agenda completa</button>}>
           {!sit.aberto ? <Vazio>{sit.motivo}. Veja ao lado os próximos dias.</Vazio>
             : lista.length === 0 ? <Vazio>Nenhum paciente agendado para hoje.</Vazio>
-            : <div className="lista-ag">{lista.map((a) => <LinhaAgendamento key={a.id} ag={a} />)}</div>}
+            : (() => {
+              const l = lista.filter((a) => !filtro
+                || (filtro === 'confirmados' && ['confirmado', 'chegou', 'em_atendimento', 'atendido'].includes(a.status))
+                || (filtro === 'atendidos' && a.status === 'atendido')
+                || (filtro === 'areceber' && a.pagamento?.status === 'pendente' && ['chegou', 'em_atendimento', 'atendido'].includes(a.status)));
+              return l.length ? <div className="lista-ag">{l.map((a) => <LinhaAgendamento key={a.id} ag={a} />)}</div> : <Vazio>Nenhum paciente neste filtro.</Vazio>;
+            })()}
         </Bloco>
 
         <div className="pilha">

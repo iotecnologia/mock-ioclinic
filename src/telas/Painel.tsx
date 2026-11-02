@@ -2,7 +2,8 @@
 // com variação sobre o período anterior — se o período ainda não terminou, compara a parte que já passou com a
 // mesma parte do anterior — e gráficos de evolução. Mesmo período e mesmas contas do Financeiro e dos Relatórios.
 import { useDados } from '../componentes/Dados';
-import { Bloco, TituloPagina } from '../componentes/Comuns';
+import { useNavigate } from 'react-router-dom';
+import { Bloco, Contador, TituloPagina } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { Barras, BarrasAgrupadas, BarrasH, Proporcao } from '../componentes/Graficos';
 import { FORMAS } from '../componentes/Receber';
@@ -25,6 +26,7 @@ function Var({ v, bom }: { v: number | null; bom: 'subir' | 'descer' }) {
 
 export function Painel() {
   const { base } = useDados();
+  const nav = useNavigate();
   const hj = hoje();
   const [p] = usePeriodo();
   // valores: o período inteiro (iguais ao Financeiro e aos Relatórios)
@@ -43,12 +45,12 @@ export function Painel() {
   const emAndamento = serie.some((s) => s.rotulo.endsWith('*'));
 
   const kpis = [
-    { rot: 'Receita', val: moeda(a.recebido), v: variacao(ca.recebido, cb.recebido), bom: 'subir' as const, ic: 'carteira' },
-    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(ca.despesas, cb.despesas), bom: 'descer' as const, ic: 'arquivo' },
-    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(ca.lucro, cb.lucro), bom: 'subir' as const, ic: 'grafico' },
-    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(ca.atendidos, cb.atendidos), bom: 'subir' as const, ic: 'estetoscopio' },
-    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(ca.ticketMedio, cb.ticketMedio), bom: 'subir' as const, ic: 'orcamento' },
-    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(ca.taxaFaltas, cb.taxaFaltas), bom: 'descer' as const, ic: 'falta' },
+    { rot: 'Receita', val: moeda(a.recebido), v: variacao(ca.recebido, cb.recebido), bom: 'subir' as const, ic: 'carteira', ir: 'tipo=receitas', dica: 'Ver as receitas do período' },
+    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(ca.despesas, cb.despesas), bom: 'descer' as const, ic: 'arquivo', ir: 'tipo=despesas', dica: 'Ver as despesas do período' },
+    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(ca.lucro, cb.lucro), bom: 'subir' as const, ic: 'grafico', ir: 'tipo=fluxo', dica: 'Ver o fluxo de caixa do período' },
+    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(ca.atendidos, cb.atendidos), bom: 'subir' as const, ic: 'estetoscopio', ir: 'tipo=atendimentos&situacao=atendido', dica: 'Ver os atendimentos do período' },
+    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(ca.ticketMedio, cb.ticketMedio), bom: 'subir' as const, ic: 'orcamento', ir: 'tipo=receitas', dica: 'Ver os pagamentos que formam o ticket médio' },
+    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(ca.taxaFaltas, cb.taxaFaltas), bom: 'descer' as const, ic: 'falta', ir: 'tipo=atendimentos&situacao=faltou', dica: 'Ver quem faltou no período' },
   ];
 
   return (
@@ -58,7 +60,7 @@ export function Painel() {
       </TituloPagina>
 
       <div className="contadores c6">
-        {kpis.map((k) => <div key={k.rot}><Icone n={k.ic} /><b>{k.val}</b><span>{k.rot} <Var v={k.v} bom={k.bom} /></span></div>)}
+        {kpis.map((k) => <Contador key={k.rot} icone={k.ic} valor={k.val} rotulo={<>{k.rot} <Var v={k.v} bom={k.bom} /></>} onClick={() => nav('/relatorios?' + k.ir)} titulo={k.dica} />)}
       </div>
 
       <div className="grade-bi">

@@ -1,8 +1,9 @@
 // Relatórios (só a médica): escolhe o relatório e o período (o mesmo do Painel e do Financeiro), vê a tabela com total,
 // imprime (preto no branco; negrito só no título e no cabeçalho) ou exporta CSV para o Excel.
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
-import { Bloco, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Bloco, BotaoIcone, FiltroAtivo, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Imprimir } from '../componentes/Folha';
 import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
 import { celula, montarRelatorio, paraCsv, type TipoRelatorio } from '../regras/financeiro';
@@ -17,11 +18,16 @@ const TIPOS: { id: TipoRelatorio; nome: string }[] = [
 export function Relatorios() {
   const { base } = useDados();
   const hj = hoje();
-  const [tipo, setTipo] = useState<TipoRelatorio>('receitas');
+  // vindo de um card (Painel/Financeiro): ?tipo=fluxo, ?tipo=atendimentos&situacao=faltou
+  const [params, setParams] = useSearchParams();
+  const tipoUrl = params.get('tipo') as TipoRelatorio | null;
+  const [tipo, setTipoEstado] = useState<TipoRelatorio>(tipoUrl && TIPOS.some((t) => t.id === tipoUrl) ? tipoUrl : 'receitas');
+  const situacao = params.get('situacao') ?? undefined;
+  const setTipo = (t: TipoRelatorio) => { setTipoEstado(t); setParams({}, { replace: true }); };
   const [per] = usePeriodo();
   const [imp, setImp] = useState(false);
   const valido = per.de && per.ate && per.de <= per.ate;
-  const r = valido ? montarRelatorio(tipo, base, per.de, per.ate) : null;
+  const r = valido ? montarRelatorio(tipo, base, per.de, per.ate, { situacao: tipo === 'atendimentos' ? situacao : undefined }) : null;
 
   const exportar = () => {
     if (!r) return;
@@ -61,6 +67,7 @@ export function Relatorios() {
 
       <div className="barra">
         <div className="segmentado">{TIPOS.map((t) => <button type="button" key={t.id} className={tipo === t.id ? 'sel' : ''} onClick={() => setTipo(t.id)}>{t.nome}</button>)}</div>
+        {situacao && tipo === 'atendimentos' && <FiltroAtivo nome={situacao === 'faltou' ? 'só faltas' : situacao === 'atendido' ? 'só atendidos' : situacao} limpar={() => setParams({}, { replace: true })} />}
       </div>
       <div className="barra">
         <SeletorPeriodo />

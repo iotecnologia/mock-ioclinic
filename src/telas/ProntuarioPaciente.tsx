@@ -46,6 +46,7 @@ export function ProntuarioPaciente() {
   const [retorno, setRetorno] = useState(false);
   const [verTodas, setVerTodas] = useState(false);
   const [reimp, setReimp] = useState<Documento | null>(null);
+  const [evol, setEvol] = useState<Atendimento | null>(null);   // evolução anterior aberta
   const [finalId, setFinalId] = useState<string | null>(null);
   if (!p) return <Vazio>Paciente não encontrado.</Vazio>;
 
@@ -183,7 +184,7 @@ export function ProntuarioPaciente() {
                 {(verTodas ? anteriores : anteriores.slice(0, 3)).map((a) => {
                   const i = imc(a.pesoKg, a.alturaCm);
                   return (
-                    <li key={a.id}>
+                    <li key={a.id} className="clic" role="button" tabIndex={0} title="Abrir a evolução completa" onClick={() => setEvol(a)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setEvol(a)}>
                       <div className="ev-cab"><b className="mono">{br(a.data)}</b>{a.cid && <span>{a.cid} · {a.cidDescricao}</span>}</div>
                       <div className="ev-sinais mono">{[a.pa && `PA ${a.pa}`, a.fc && `FC ${a.fc}`, a.pesoKg && `${a.pesoKg} kg`, i && `IMC ${i}`].filter(Boolean).join(' · ')}</div>
                       <p>{a.queixa}</p>
@@ -207,7 +208,45 @@ export function ProntuarioPaciente() {
       {doc && <EmitirDocumento paciente={p} tipoInicial={doc} cid={cidTxt} exames={finalizado?.examesSolicitados ?? f.exames} hora={ag?.hora} fechar={() => setDoc(null)} />}
       {retorno && finalizado?.retornoDias && <NovoAgendamento pacienteId={p.id} servicoId={finalizado.retornoDias <= 30 ? 'retorno' : 'consulta'} data={somaDias(hj, finalizado.retornoDias)} fechar={() => setRetorno(false)} />}
       {reimp && <Reimprimir d={reimp} fechar={() => setReimp(null)} />}
+      {evol && !reimp && <DetalheEvolucao a={evol} docs={docs.filter((d) => d.data === evol.data)} abrirDoc={setReimp} fechar={() => setEvol(null)} />}
     </>
+  );
+}
+
+/** Evolução anterior completa (clicada na lista), com os documentos emitidos no mesmo dia. */
+function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: Documento[]; abrirDoc: (d: Documento) => void; fechar: () => void }) {
+  const { base } = useDados();
+  const ag = base.agendamentos.find((x) => x.id === a.agendamentoId);
+  const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
+  const vImc = imc(a.pesoKg, a.alturaCm), cImc = classificaImc(vImc), cPa = classificaPA(a.pa);
+  return (
+    <Modal titulo={`Evolução de ${br(a.data)}${serv ? ` · ${serv.nome}` : ''}`} fechar={fechar} largo>
+      <div className="evol-lida">
+        <div className="sinais">
+          {a.pa && <div><span>PA</span><b className="mono">{a.pa}</b>{cPa && <em className={'tag ' + cPa.cls}>{cPa.nome}</em>}</div>}
+          {a.fc && <div><span>FC</span><b className="mono">{a.fc} bpm</b></div>}
+          {a.pesoKg && <div><span>Peso</span><b className="mono">{a.pesoKg} kg</b></div>}
+          {a.alturaCm && <div><span>Altura</span><b className="mono">{a.alturaCm} cm</b></div>}
+          {vImc && <div><span>IMC</span><b className="mono">{vImc}</b>{cImc && <em className={'tag ' + cImc.cls}>{cImc.nome}</em>}</div>}
+        </div>
+        <dl>
+          <dt>Queixa principal</dt><dd>{a.queixa}</dd>
+          {a.hda && <><dt>História da doença atual</dt><dd>{a.hda}</dd></>}
+          {a.exameFisico && <><dt>Exame físico</dt><dd>{a.exameFisico}</dd></>}
+          {a.cid && <><dt>Hipótese diagnóstica</dt><dd><span className="mono">{a.cid}</span> · {a.cidDescricao}</dd></>}
+          <dt>Conduta</dt><dd>{a.conduta}</dd>
+          {!!a.examesSolicitados?.length && <><dt>Exames solicitados</dt><dd>{a.examesSolicitados.join(' · ')}</dd></>}
+          {!!a.retornoDias && <><dt>Retorno</dt><dd>em {a.retornoDias} dias</dd></>}
+        </dl>
+        <div className="lbl-peq">Documentos emitidos neste dia</div>
+        {docs.length === 0 ? <p className="mut peq">Nenhum documento emitido neste dia.</p> : (
+          <ul className="lista-simples docs">
+            {docs.map((d) => <li key={d.id}><button type="button" onClick={() => abrirDoc(d)} title="Ver, reimprimir ou baixar PDF"><Icone n="arquivo" /><span>{NOME_DOC[d.tipo]}<small>{br(d.data)}</small></span><Icone n="imprimir" /></button></li>)}
+          </ul>
+        )}
+        <div className="rodape-modal"><button type="button" className="btn2" onClick={fechar}>Fechar</button></div>
+      </div>
+    </Modal>
   );
 }
 

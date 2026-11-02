@@ -5,7 +5,7 @@ import { useState } from 'react';
 import type { Paciente } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
-import { Bloco, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Bloco, BotaoIcone, Rolagem, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { BaixarPdf, Folha, Imprimir } from '../componentes/Folha';
 import { nomeArquivo } from '../util/pdf';
@@ -22,6 +22,7 @@ export function Orcamento() {
   const c = base.clinica;
   const [itens, setItens] = useState<ItemOrc[]>([]);
   const [busca, setBusca] = useState('');
+  const [listaAberta, setListaAberta] = useState(false);   // lista suspensa dos serviços
   const [pac, setPac] = useState<Paciente | null>(null);
   const [nomeLivre, setNomeLivre] = useState('');
   const [buscaPac, setBuscaPac] = useState('');
@@ -89,13 +90,26 @@ export function Orcamento() {
         <div className="pilha">
           <Bloco titulo={<><span className="passo">1</span> Serviços</>}>
             <div className="pad">
-              <div className="f-busca"><Icone n="busca" /><input type="text" value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Digite o serviço… ex.: eco, holter" aria-label="Buscar serviço" /></div>
-              <div className="sug-serv">
-                {sugest.map((s) => <button type="button" key={s.id} onClick={() => add(s.id)}><Icone n="mais" /> {s.curto}<small>{moeda(s.valor)}</small></button>)}
+              <div className="rel">
+                <div className="f-busca"><Icone n="busca" />
+                  <input type="text" value={busca} placeholder="Clique para ver os serviços ou digite… ex.: eco, holter" aria-label="Buscar serviço" role="combobox" aria-expanded={listaAberta}
+                    onChange={(e) => { setBusca(e.target.value); setListaAberta(true); }} onFocus={() => setListaAberta(true)} onClick={() => setListaAberta(true)} onBlur={() => setTimeout(() => setListaAberta(false), 150)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && sugest[0]) { e.preventDefault(); add(sugest[0].id); } if (e.key === 'Escape') setListaAberta(false); }} />
+                  <Icone n="dir" />
+                </div>
+                {listaAberta && (
+                  <div className="busca-res lista-serv" role="listbox">
+                    {sugest.length ? sugest.map((s) => (
+                      <button type="button" key={s.id} role="option" onMouseDown={(e) => { e.preventDefault(); add(s.id); setListaAberta(false); }}>
+                        <span><b>{s.nome}</b><small>{s.duracaoMin} min{itens.some((i) => i.servicoId === s.id) ? ' · já no orçamento (soma +1)' : ''}</small></span><b className="mono">{moeda(s.valor)}</b>
+                      </button>
+                    )) : <div className="vazio">Nenhum serviço com “{busca}”.</div>}
+                  </div>
+                )}
               </div>
             </div>
-            {vazio ? <Vazio>Nenhum serviço ainda. Clique nos serviços acima.</Vazio> : (
-              <table className="tab">
+            {vazio ? <Vazio>Nenhum serviço ainda. Escolha na lista acima.</Vazio> : (
+              <Rolagem><table className="tab">
                 <thead><tr><th>Serviço</th><th>Duração</th><th>Qtd</th><th className="dir">Valor</th></tr></thead>
                 <tbody>
                   {r.linhas.map((l) => (
@@ -107,7 +121,7 @@ export function Orcamento() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></Rolagem>
             )}
           </Bloco>
 

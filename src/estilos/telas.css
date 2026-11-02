@@ -489,3 +489,37 @@ table.tab th.dir { text-align: right; }
 .zap-st.ok { color: var(--st-ok-t); font-weight: 600; }
 .btn2.zap.pulsa { animation: zap-pulsa 1.6s ease-in-out infinite; }
 @keyframes zap-pulsa { 0%, 100% { box-shadow: 0 0 0 0 rgba(37,162,68,.45); } 50% { box-shadow: 0 0 0 6px rgba(37,162,68,0); } }
+
+/* ---------- cards clicáveis (filtram ou abrem o detalhe) ---------- */
+.app .contadores > button.contador { background: var(--painel); border: 1px solid var(--linha); border-radius: 14px; box-shadow: var(--sombra); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; font: inherit; color: var(--texto); cursor: pointer; min-width: 0; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.app .contadores > button.contador:hover { border-color: var(--destaque-2); transform: translateY(-1px); }
+.app .contadores > button.contador.sel { border-color: var(--destaque-2); box-shadow: 0 0 0 2px color-mix(in srgb, var(--destaque-2) 35%, transparent), var(--sombra); }
+.app .contadores > button.contador:focus-visible { outline: 2px solid var(--destaque-2); outline-offset: 2px; }
+.contadores > button.contador b, .contadores > button.contador span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filtro-ativo { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 4px 0 10px; border-radius: 13px; background: var(--gelo); color: var(--texto); font-size: 12px; font-weight: 600; }
+.app .filtro-ativo button { width: 20px; height: 20px; border: 0; border-radius: 50%; background: transparent; color: var(--texto-suave); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.app .filtro-ativo button:hover { background: var(--hover); }
+.filtro-ativo svg { width: 12px; height: 12px; }
+.tab-rolagem { overflow-x: auto; max-width: 100%; }
+.app .lista-cat li.clic { cursor: pointer; }
+.app .lista-cat li.clic:hover { background: var(--hover); }
+.app .lista-cat li.sel { background: var(--gelo); font-weight: 600; }
+.app .chips-cab button.tag { border: 0; cursor: pointer; font-family: inherit; }
+.app .chips-cab button.tag.sel { box-shadow: 0 0 0 2px var(--destaque-2); }
+.app .topo .voltar { flex: none; border: 1px solid var(--linha); background: var(--painel); }
+.app .topo .voltar:hover { border-color: var(--destaque-2); }
+@media (max-width: 760px) { .app .topo .voltar { order: -1; } }
+/* orçamento: lista suspensa dos serviços */
+.lista-serv { max-height: 320px; overflow-y: auto; }
+.app .lista-serv button { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lista-serv button > span { min-width: 0; }
+.lista-serv button > b.mono { font-size: 13px; white-space: nowrap; }
+.orc .f-busca > svg:last-child { left: auto; right: 12px; transform: translateY(-50%) rotate(90deg); pointer-events: none; }
+.rel { position: relative; }
+.orc .bloco { overflow: visible; }
+.evols li.clic { cursor: pointer; transition: background .12s; }
+.evols li.clic:hover { background: var(--hover); }
+.evols li.clic:focus-visible { outline: 2px solid var(--destaque-2); outline-offset: -2px; }
+.tl-item.clic { cursor: pointer; border-radius: 10px; transition: background .12s; }
+.tl-item.clic:hover { background: var(--hover); }
+.tl-item.clic:focus-visible { outline: 2px solid var(--destaque-2); outline-offset: -2px; }

@@ -50,6 +50,12 @@ export function PacienteFicha() {
   const descartar = () => { setEditando(false); setRasc(null); setErros({}); setVersao((v) => v + 1); };
 
   // agrupa por mês/ano para a linha do tempo
+  // cada item do histórico abre onde ele está: agenda do dia, prontuário ou dados cadastrais
+  const abrirItem = (i: { tipo: string; data: string }) => {
+    if (i.tipo === 'cadastro') setAba('dados');
+    else if ((i.tipo === 'clinico' || i.tipo === 'documento') && medica) nav('/prontuario/' + p.id);
+    else nav('/agenda?data=' + i.data);
+  };
   const grupos: { chave: string; itens: ItemHistorico[] }[] = [];
   for (const i of itens) {
     const chave = `${nomeMes(Number(i.data.slice(5, 7)) - 1)} de ${i.data.slice(0, 4)}`;
@@ -100,7 +106,9 @@ export function PacienteFicha() {
                 <div key={g.chave} className="tl-grupo">
                   <div className="tl-mes">{g.chave}</div>
                   {g.itens.map((i, k) => (
-                    <div key={k} className={'tl-item tl-' + i.tipo + (i.data > hj ? ' futuro' : '')}>
+                    <div key={k} className={'tl-item clic tl-' + i.tipo + (i.data > hj ? ' futuro' : '')} role="button" tabIndex={0}
+                      title={i.tipo === 'cadastro' ? 'Ver dados cadastrais' : i.tipo === 'clinico' || i.tipo === 'documento' ? 'Abrir o prontuário' : 'Abrir a agenda deste dia'}
+                      onClick={() => abrirItem(i)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && abrirItem(i)}>
                       <span className="tl-dot"><Icone n={ICONE[i.tipo]} /></span>
                       <div className="tl-data mono">{br(i.data).slice(0, 5)}{i.hora && <small>{i.hora}</small>}</div>
                       <div className="tl-txt">

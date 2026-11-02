@@ -26,6 +26,10 @@ export function Shell() {
   const partes = loc.pathname.split('/').filter(Boolean);
   const atual = PAGINAS.find((p) => p.rota === '/' + partes[0]);
   const sub = partes[1] ? NOMES_ROTA[partes[1]] ?? SUB_PADRAO[partes[0]] ?? '' : '';
+  const nav = useNavigate();
+  const naInicial = partes.length === 0 || (partes[0] === 'hoje' && partes.length === 1);
+  // volta para a página anterior; se abriu direto (sem histórico no sistema), vai para a Visão Geral
+  const voltar = () => { if ((window.history.state?.idx ?? 0) > 0) nav(-1); else nav('/hoje'); };
   const trocarTema = () => { setClaro(!claro); local.gravar('tema-claro', !claro); };
   return (
     <div className={'app' + (claro ? ' tema-claro' : '')}>
@@ -49,6 +53,7 @@ export function Shell() {
       </aside>
       <header className="topo">
         <div className="topo-marca"><Logo tam={30} /><b>IO CLINIC</b></div>
+        {!naInicial && <button type="button" className="icone-btn voltar" onClick={voltar} title="Voltar para a página anterior" aria-label="Voltar para a página anterior"><Icone n="esq" /></button>}
         <div className="migalha">Início{atual && <> &nbsp;/&nbsp; {sub ? atual.nome : <b>{atual.nome}</b>}</>}{sub && <> &nbsp;/&nbsp; <b>{sub}</b></>}</div>
         <BuscaGeral />
         <div className="topo-dir">

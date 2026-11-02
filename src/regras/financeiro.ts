@@ -109,13 +109,14 @@ export type TipoRelatorio = 'atendimentos' | 'receitas' | 'despesas' | 'fluxo' |
 export interface Coluna { titulo: string; num?: boolean }
 export interface Relatorio { titulo: string; colunas: Coluna[]; linhas: (string | number)[][]; total?: (string | number)[] }
 
-export function montarRelatorio(tipo: TipoRelatorio, b: Base, de: string, ate: string): Relatorio {
+/** `situacao`: só no relatório de atendimentos, filtra por situação (ex.: 'faltou', vindo do card Faltas do Painel). */
+export function montarRelatorio(tipo: TipoRelatorio, b: Base, de: string, ate: string, opc: { situacao?: string } = {}): Relatorio {
   const nomeP = (id: string) => b.pacientes.find((p) => p.id === id)?.nome ?? '';
   const nomeS = (id: string) => b.servicos.find((s) => s.id === id)?.nome ?? id;
   const FORMA: Record<string, string> = { pix: 'PIX', dinheiro: 'Dinheiro', cartao_credito: 'Cartão de crédito', cartao_debito: 'Cartão de débito' };
   const STATUS: Record<string, string> = { agendado: 'Agendado', confirmado: 'Confirmado', chegou: 'Na recepção', em_atendimento: 'Em atendimento', atendido: 'Atendido', faltou: 'Faltou', cancelado: 'Cancelado' };
   if (tipo === 'atendimentos') {
-    const l = b.agendamentos.filter((a) => a.data >= de && a.data <= ate).sort((x, y) => x.data.localeCompare(y.data) || min(x.hora) - min(y.hora));
+    const l = b.agendamentos.filter((a) => a.data >= de && a.data <= ate && (!opc.situacao || a.status === opc.situacao)).sort((x, y) => x.data.localeCompare(y.data) || min(x.hora) - min(y.hora));
     return { titulo: 'Atendimentos', colunas: [{ titulo: 'Data' }, { titulo: 'Hora' }, { titulo: 'Paciente' }, { titulo: 'Serviço' }, { titulo: 'Situação' }],
       linhas: l.map((a) => [a.data, a.hora, nomeP(a.pacienteId), nomeS(a.servicoId), STATUS[a.status]]),
       total: [`${l.filter((a) => a.status === 'atendido').length} atendidos`, '', `${l.length} agendamentos`, '', `${l.filter((a) => a.status === 'faltou').length} faltas`] };

@@ -88,7 +88,8 @@ export function BarrasH({ dados, fmt, max }: { dados: { rotulo: string; valor: n
 }
 
 /** Proporção (barra 100% empilhada) com legenda que mostra valor e %. */
-export function Proporcao({ partes, fmt, rodape }: { partes: { nome: string; valor: number }[]; fmt: Fmt; rodape?: ReactNode }) {
+/** Proporção (100% empilhado). Com `aoEscolher`, cada item da legenda é clicável (filtra); `sel` destaca o escolhido. */
+export function Proporcao({ partes, fmt, rodape, aoEscolher, sel }: { partes: { nome: string; valor: number }[]; fmt: Fmt; rodape?: ReactNode; aoEscolher?: (i: number) => void; sel?: number | null }) {
   const total = partes.reduce((t, p) => t + p.valor, 0) || 1;
   return (
     <figure className="gr-prop">
@@ -97,7 +98,7 @@ export function Proporcao({ partes, fmt, rodape }: { partes: { nome: string; val
       </div>
       <ul className="gr-prop-leg">
         {partes.map((p, i) => (
-          <li key={p.nome}><i className={'s' + (i + 1)} /><span>{p.nome}</span><b className="mono">{fmt(p.valor)}</b><small>{Math.round((p.valor / total) * 100)}%</small></li>
+          <li key={p.nome} className={(aoEscolher ? 'clic' : '') + (sel === i ? ' sel' : '')} onClick={aoEscolher && (() => aoEscolher(i))} title={aoEscolher ? `Filtrar: ${p.nome}` : undefined}><i className={'s' + (i + 1)} /><span>{p.nome}</span><b className="mono">{fmt(p.valor)}</b><small>{Math.round((p.valor / total) * 100)}%</small></li>
         ))}
       </ul>
       {rodape}

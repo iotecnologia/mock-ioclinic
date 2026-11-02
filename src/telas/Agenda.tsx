@@ -24,6 +24,7 @@ export function Agenda() {
   const ir = (d: string, v: Visao = visao) => setParams({ data: d, visao: v }, { replace: true });
   const [novo, setNovo] = useState<{ data?: string; hora?: string } | null>(null);
   const [detalhe, setDetalhe] = useState<Agendamento | null>(null);
+  const [soVer, setSoVer] = useState<'livres' | 'agendados' | null>(null);   // filtro dos chips do dia
   const passo = visao === 'semana' ? 7 : 1;
   const lista = doDia(base, data);
   const sit = situacaoDia(data, base);
@@ -50,11 +51,17 @@ export function Agenda() {
         <div className="grade2">
           <Bloco
             titulo={<><Icone n="dia" /> Horários de {nomeDiaCurto(data).toLowerCase()}, {brCurto(data)}</>}
-            extra={sit.aberto && <div className="chips-cab"><span className="tag t-ok">{livres} livres</span><span className="tag t-in">{lista.length} agendados</span></div>}
+            extra={sit.aberto && <div className="chips-cab">
+              <button type="button" className={'tag t-ok' + (soVer === 'livres' ? ' sel' : '')} title={soVer === 'livres' ? 'Mostrar tudo' : 'Mostrar só os horários livres'} aria-pressed={soVer === 'livres'} onClick={() => setSoVer((x) => (x === 'livres' ? null : 'livres'))}>{livres} livres</button>
+              <button type="button" className={'tag t-in' + (soVer === 'agendados' ? ' sel' : '')} title={soVer === 'agendados' ? 'Mostrar tudo' : 'Mostrar só os agendados'} aria-pressed={soVer === 'agendados'} onClick={() => setSoVer((x) => (x === 'agendados' ? null : 'agendados'))}>{lista.length} agendados</button>
+            </div>}
           >
             {!sit.aberto ? <Vazio>{sit.motivo}</Vazio> : (
               <div className="grade-dia">
                 {gradeDoDia(data, base).map((l) => {
+                  if (soVer && l.tipo === 'intervalo') return null;
+                  if (soVer === 'livres' && l.tipo === 'ocupado') return null;
+                  if (soVer === 'agendados' && l.tipo === 'livre') return null;
                   if (l.tipo === 'intervalo') return <div key={'i' + l.hora} className="gd-intervalo mono">{l.hora} – {l.ate} · intervalo</div>;
                   if (l.tipo === 'ocupado') return <LinhaAgendamento key={l.ag.id} ag={l.ag} />;
                   const passou = data < hj || (data === hj && min(l.hora) <= agoraMin());

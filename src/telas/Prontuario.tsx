@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
-import { Avatar, Bloco, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Avatar, Bloco, Rolagem, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { doDia } from '../regras/agenda';
 import { buscarPacientes, cadastrados, idade, idadeTxt } from '../regras/paciente';
@@ -21,7 +21,7 @@ export function Prontuario() {
       <div className="grade2">
         <Bloco titulo={<><Icone n="dia" /> Pacientes de hoje</>}>
           {lista.length === 0 ? <Vazio>Nenhum paciente agendado para hoje.</Vazio> : (
-            <table className="tab">
+            <Rolagem><table className="tab">
               <thead><tr><th>Hora</th><th>Paciente</th><th>Serviço</th><th>Situação</th></tr></thead>
               <tbody>
                 {lista.map((a) => {
@@ -37,7 +37,7 @@ export function Prontuario() {
                   );
                 })}
               </tbody>
-            </table>
+            </table></Rolagem>
           )}
         </Bloco>
         <Bloco titulo={<><Icone n="busca" /> Outro paciente</>}>
