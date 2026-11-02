@@ -437,3 +437,27 @@ table.tab th.dir { text-align: right; }
 .chip-esc button:hover { background: var(--painel); color: var(--texto); }
 .chip-esc svg { width: 12px; height: 12px; }
 .lbl-peq { font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; }
+
+/* ---------- pré-cadastro e encaixe ---------- */
+.form-pre { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.form-pre label { display: grid; gap: 5px; font-size: 12px; font-weight: 600; color: var(--texto-suave); }
+.form-pre input { height: 40px; font-size: 14px; color: var(--texto); }
+.encaixe-btn { margin: 10px 0; }
+.hora.encaixe { border-style: dashed; border-color: var(--st-at-t, #B7791F); color: var(--st-at-t, #B7791F); background: transparent; }
+.hora.encaixe.sel { background: var(--destaque); border-style: solid; border-color: var(--destaque); color: var(--destaque-texto); }
+.linha-ag.encaixe { box-shadow: inset 3px 0 0 var(--st-at-t, #B7791F); }
+.la-nome.anonimo { font-style: italic; font-weight: 500; color: var(--texto-suave); }
+.la-nome.anonimo:hover, span.la-nome:hover { text-decoration: none; }
+.feito-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.resumo-ag .tag { margin-left: 6px; vertical-align: middle; }
+.app .sem-ag.encaixe { left: 40%; outline: 2px dashed rgba(255,255,255,.9); outline-offset: -3px; z-index: 2; }
+@media (max-width: 760px) { .form-pre { grid-template-columns: 1fr; } }
+
+/* remédio: apresentações (referência + genéricos com laboratório) */
+.med-op { flex-wrap: wrap; }
+.med-labs { order: 3; flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px; }
+.med-op > small.mut { order: 3; flex-basis: 100%; font-size: 11px; }
+.app .med-labs button { height: 24px; padding: 0 8px; border-radius: 12px; border: 1px solid var(--borda); background: transparent; font-size: 11px; font-weight: 500; color: var(--texto-suave); cursor: pointer; white-space: nowrap; }
+.app .med-labs button:hover { border-color: var(--destaque-2); }
+.app .med-labs button.sel { border-color: var(--destaque-2); background: var(--gelo); color: var(--texto); font-weight: 700; }
+.med-labs em { font-style: normal; font-size: 10px; color: var(--texto-suave); margin-left: 3px; }

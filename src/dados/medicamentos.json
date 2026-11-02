@@ -1,1037 +1,2483 @@
 [
- {
-  "id": "m001",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Losartana potássica",
-  "comercial": "Cozaar",
-  "laboratorio": "Organon",
-  "doses": [
-   "25 mg",
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m002",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Valsartana",
-  "comercial": "Diovan",
-  "laboratorio": "Novartis",
-  "doses": [
-   "80 mg",
-   "160 mg",
-   "320 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m003",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Candesartana cilexetila",
-  "comercial": "Atacand",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "8 mg",
-   "16 mg",
-   "32 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m004",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Telmisartana",
-  "comercial": "Micardis",
-  "laboratorio": "Boehringer Ingelheim",
-  "doses": [
-   "40 mg",
-   "80 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m005",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Olmesartana medoxomila",
-  "comercial": "Benicar",
-  "laboratorio": "Daiichi Sankyo",
-  "doses": [
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m006",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Maleato de enalapril",
-  "comercial": "Renitec",
-  "laboratorio": "Organon",
-  "doses": [
-   "5 mg",
-   "10 mg",
-   "20 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m007",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Captopril",
-  "comercial": "Capoten",
-  "laboratorio": "Bristol-Myers Squibb",
-  "doses": [
-   "12,5 mg",
-   "25 mg",
-   "50 mg"
-  ],
-  "posologia": "1 comprimido de 8/8 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m008",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Ramipril",
-  "comercial": "Triatec",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "2,5 mg",
-   "5 mg",
-   "10 mg"
-  ],
-  "posologia": "1 cápsula pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m009",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Besilato de anlodipino",
-  "comercial": "Norvasc",
-  "laboratorio": "Viatris",
-  "doses": [
-   "5 mg",
-   "10 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m010",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Nifedipino (liberação prolongada)",
-  "comercial": "Adalat Retard",
-  "laboratorio": "Bayer",
-  "doses": [
-   "20 mg",
-   "30 mg",
-   "60 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m011",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Hidroclorotiazida",
-  "comercial": "Clorana",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "12,5 mg",
-   "25 mg",
-   "50 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m012",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Clortalidona",
-  "comercial": "Higroton",
-  "laboratorio": "Novartis",
-  "doses": [
-   "12,5 mg",
-   "25 mg",
-   "50 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m013",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Indapamida (liberação prolongada)",
-  "comercial": "Natrilix SR",
-  "laboratorio": "Servier",
-  "doses": [
-   "1,5 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m014",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Espironolactona",
-  "comercial": "Aldactone",
-  "laboratorio": "Pfizer",
-  "doses": [
-   "25 mg",
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m015",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Furosemida",
-  "comercial": "Lasix",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "40 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m016",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Cloridrato de hidralazina",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "25 mg",
-   "50 mg"
-  ],
-  "posologia": "1 comprimido de 8/8 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m017",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Metildopa",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "250 mg",
-   "500 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m018",
-  "grupo": "Anti-hipertensivos",
-  "principio": "Cloridrato de clonidina",
-  "comercial": "Atensina",
-  "laboratorio": "Boehringer Ingelheim",
-  "doses": [
-   "0,100 mg",
-   "0,150 mg",
-   "0,200 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m019",
-  "grupo": "Betabloqueadores",
-  "principio": "Atenolol",
-  "comercial": "Atenol",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "25 mg",
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m020",
-  "grupo": "Betabloqueadores",
-  "principio": "Succinato de metoprolol",
-  "comercial": "Selozok",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "25 mg",
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m021",
-  "grupo": "Betabloqueadores",
-  "principio": "Hemifumarato de bisoprolol",
-  "comercial": "Concor",
-  "laboratorio": "Merck",
-  "doses": [
-   "1,25 mg",
-   "2,5 mg",
-   "5 mg",
-   "10 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m022",
-  "grupo": "Betabloqueadores",
-  "principio": "Carvedilol",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "3,125 mg",
-   "6,25 mg",
-   "12,5 mg",
-   "25 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas, junto às refeições",
-  "via": "Uso oral"
- },
- {
-  "id": "m023",
-  "grupo": "Betabloqueadores",
-  "principio": "Cloridrato de propranolol",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "10 mg",
-   "40 mg",
-   "80 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m024",
-  "grupo": "Betabloqueadores",
-  "principio": "Nebivolol",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "5 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m025",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Sacubitril + valsartana",
-  "comercial": "Entresto",
-  "laboratorio": "Novartis",
-  "doses": [
-   "24/26 mg",
-   "49/51 mg",
-   "97/103 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m026",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Cloridrato de ivabradina",
-  "comercial": "Procoralan",
-  "laboratorio": "Servier",
-  "doses": [
-   "5 mg",
-   "7,5 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas, junto às refeições",
-  "via": "Uso oral"
- },
- {
-  "id": "m027",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Dicloridrato de trimetazidina (liberação modificada)",
-  "comercial": "Vastarel MR",
-  "laboratorio": "Servier",
-  "doses": [
-   "35 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m028",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Mononitrato de isossorbida",
-  "comercial": "Monocordil",
-  "laboratorio": "Baldacci",
-  "doses": [
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas (8h e 14h)",
-  "via": "Uso oral"
- },
- {
-  "id": "m029",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Dinitrato de isossorbida",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "5 mg (sublingual)",
-   "10 mg"
-  ],
-  "posologia": "1 comprimido sublingual se dor no peito; procurar atendimento se não melhorar",
-  "via": "Uso oral"
- },
- {
-  "id": "m030",
-  "grupo": "Insuficiência cardíaca e angina",
-  "principio": "Digoxina",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "0,25 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m031",
-  "grupo": "Antiarrítmicos",
-  "principio": "Cloridrato de amiodarona",
-  "comercial": "Ancoron",
-  "laboratorio": "Libbs",
-  "doses": [
-   "100 mg",
-   "200 mg"
-  ],
-  "posologia": "1 comprimido ao dia, conforme orientação",
-  "via": "Uso oral"
- },
- {
-  "id": "m032",
-  "grupo": "Antiarrítmicos",
-  "principio": "Cloridrato de propafenona",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "150 mg",
-   "300 mg"
-  ],
-  "posologia": "1 comprimido de 8/8 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m033",
-  "grupo": "Antiarrítmicos",
-  "principio": "Cloridrato de verapamil",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "80 mg",
-   "120 mg"
-  ],
-  "posologia": "1 comprimido de 8/8 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m034",
-  "grupo": "Antiarrítmicos",
-  "principio": "Cloridrato de diltiazem",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "30 mg",
-   "60 mg"
-  ],
-  "posologia": "1 comprimido de 8/8 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m035",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Ácido acetilsalicílico",
-  "comercial": "Aspirina Prevent",
-  "laboratorio": "Bayer",
-  "doses": [
-   "100 mg"
-  ],
-  "posologia": "1 comprimido após o almoço",
-  "via": "Uso oral"
- },
- {
-  "id": "m036",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Bissulfato de clopidogrel",
-  "comercial": "Plavix",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "75 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m037",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Ticagrelor",
-  "comercial": "Brilinta",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "90 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m038",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Cloridrato de prasugrel",
-  "comercial": "Effient",
-  "laboratorio": "Daiichi Sankyo",
-  "doses": [
-   "5 mg",
-   "10 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m039",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Rivaroxabana",
-  "comercial": "Xarelto",
-  "laboratorio": "Bayer",
-  "doses": [
-   "10 mg",
-   "15 mg",
-   "20 mg"
-  ],
-  "posologia": "1 comprimido ao dia, junto ao jantar",
-  "via": "Uso oral"
- },
- {
-  "id": "m040",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Apixabana",
-  "comercial": "Eliquis",
-  "laboratorio": "Bristol-Myers Squibb / Pfizer",
-  "doses": [
-   "2,5 mg",
-   "5 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m041",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Etexilato de dabigatrana",
-  "comercial": "Pradaxa",
-  "laboratorio": "Boehringer Ingelheim",
-  "doses": [
-   "110 mg",
-   "150 mg"
-  ],
-  "posologia": "1 cápsula de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m042",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Edoxabana",
-  "comercial": "Lixiana",
-  "laboratorio": "Daiichi Sankyo",
-  "doses": [
-   "30 mg",
-   "60 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m043",
-  "grupo": "Antiagregantes e anticoagulantes",
-  "principio": "Varfarina sódica",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "5 mg"
-  ],
-  "posologia": "Conforme controle de INR (dose ajustada pela médica)",
-  "via": "Uso oral"
- },
- {
-  "id": "m044",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Atorvastatina cálcica",
-  "comercial": "Lipitor",
-  "laboratorio": "Viatris",
-  "doses": [
-   "10 mg",
-   "20 mg",
-   "40 mg",
-   "80 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m045",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Rosuvastatina cálcica",
-  "comercial": "Crestor",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "5 mg",
-   "10 mg",
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m046",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Sinvastatina",
-  "comercial": "Zocor",
-  "laboratorio": "Organon",
-  "doses": [
-   "10 mg",
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m047",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Pravastatina sódica",
-  "comercial": "Pravacol",
-  "laboratorio": "Bristol-Myers Squibb",
-  "doses": [
-   "10 mg",
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m048",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Ezetimiba",
-  "comercial": "Ezetrol",
-  "laboratorio": "Organon",
-  "doses": [
-   "10 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m049",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Ezetimiba + sinvastatina",
-  "comercial": "Vytorin",
-  "laboratorio": "Organon",
-  "doses": [
-   "10/20 mg",
-   "10/40 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m050",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Fenofibrato",
-  "comercial": "Lipidil",
-  "laboratorio": "Abbott",
-  "doses": [
-   "160 mg",
-   "200 mg"
-  ],
-  "posologia": "1 cápsula ao dia, junto a uma refeição",
-  "via": "Uso oral"
- },
- {
-  "id": "m051",
-  "grupo": "Colesterol e triglicérides",
-  "principio": "Evolocumabe",
-  "comercial": "Repatha",
-  "laboratorio": "Amgen",
-  "doses": [
-   "140 mg/mL"
-  ],
-  "posologia": "1 aplicação subcutânea a cada 14 dias",
-  "via": "Uso subcutâneo"
- },
- {
-  "id": "m052",
-  "grupo": "Diabetes",
-  "principio": "Cloridrato de metformina",
-  "comercial": "Glifage",
-  "laboratorio": "Merck",
-  "doses": [
-   "500 mg",
-   "850 mg",
-   "1 g"
-  ],
-  "posologia": "1 comprimido após o café e o jantar",
-  "via": "Uso oral"
- },
- {
-  "id": "m053",
-  "grupo": "Diabetes",
-  "principio": "Gliclazida (liberação modificada)",
-  "comercial": "Diamicron MR",
-  "laboratorio": "Servier",
-  "doses": [
-   "30 mg",
-   "60 mg"
-  ],
-  "posologia": "1 comprimido no café da manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m054",
-  "grupo": "Diabetes",
-  "principio": "Fosfato de sitagliptina",
-  "comercial": "Januvia",
-  "laboratorio": "MSD",
-  "doses": [
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m055",
-  "grupo": "Diabetes",
-  "principio": "Linagliptina",
-  "comercial": "Trayenta",
-  "laboratorio": "Boehringer Ingelheim",
-  "doses": [
-   "5 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m056",
-  "grupo": "Diabetes",
-  "principio": "Empagliflozina",
-  "comercial": "Jardiance",
-  "laboratorio": "Boehringer Ingelheim",
-  "doses": [
-   "10 mg",
-   "25 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m057",
-  "grupo": "Diabetes",
-  "principio": "Dapagliflozina",
-  "comercial": "Forxiga",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "10 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m058",
-  "grupo": "Diabetes",
-  "principio": "Semaglutida",
-  "comercial": "Ozempic",
-  "laboratorio": "Novo Nordisk",
-  "doses": [
-   "0,25 mg",
-   "0,5 mg",
-   "1 mg"
-  ],
-  "posologia": "1 aplicação subcutânea por semana",
-  "via": "Uso subcutâneo"
- },
- {
-  "id": "m059",
-  "grupo": "Tireoide",
-  "principio": "Levotiroxina sódica",
-  "comercial": "Puran T4",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "25 mcg",
-   "50 mcg",
-   "75 mcg",
-   "88 mcg",
-   "100 mcg"
-  ],
-  "posologia": "1 comprimido em jejum, 30 minutos antes do café",
-  "via": "Uso oral"
- },
- {
-  "id": "m060",
-  "grupo": "Tireoide",
-  "principio": "Levotiroxina sódica",
-  "comercial": "Synthroid",
-  "laboratorio": "Abbott",
-  "doses": [
-   "25 mcg",
-   "50 mcg",
-   "75 mcg",
-   "100 mcg"
-  ],
-  "posologia": "1 comprimido em jejum, 30 minutos antes do café",
-  "via": "Uso oral"
- },
- {
-  "id": "m061",
-  "grupo": "Tireoide",
-  "principio": "Levotiroxina sódica",
-  "comercial": "Euthyrox",
-  "laboratorio": "Merck",
-  "doses": [
-   "25 mcg",
-   "50 mcg",
-   "75 mcg",
-   "100 mcg"
-  ],
-  "posologia": "1 comprimido em jejum, 30 minutos antes do café",
-  "via": "Uso oral"
- },
- {
-  "id": "m062",
-  "grupo": "Estômago",
-  "principio": "Omeprazol",
-  "comercial": "Losec",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 cápsula em jejum",
-  "via": "Uso oral"
- },
- {
-  "id": "m063",
-  "grupo": "Estômago",
-  "principio": "Pantoprazol",
-  "comercial": "Pantozol",
-  "laboratorio": "Takeda",
-  "doses": [
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido em jejum",
-  "via": "Uso oral"
- },
- {
-  "id": "m064",
-  "grupo": "Estômago",
-  "principio": "Esomeprazol magnésico",
-  "comercial": "Nexium",
-  "laboratorio": "AstraZeneca",
-  "doses": [
-   "20 mg",
-   "40 mg"
-  ],
-  "posologia": "1 comprimido em jejum",
-  "via": "Uso oral"
- },
- {
-  "id": "m065",
-  "grupo": "Dor e febre",
-  "principio": "Dipirona monoidratada",
-  "comercial": "Novalgina",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "500 mg",
-   "1 g"
-  ],
-  "posologia": "1 comprimido de 6/6 horas se dor ou febre",
-  "via": "Uso oral"
- },
- {
-  "id": "m066",
-  "grupo": "Dor e febre",
-  "principio": "Paracetamol",
-  "comercial": "Tylenol",
-  "laboratorio": "Kenvue",
-  "doses": [
-   "500 mg",
-   "750 mg"
-  ],
-  "posologia": "1 comprimido de 6/6 horas se dor ou febre",
-  "via": "Uso oral"
- },
- {
-  "id": "m067",
-  "grupo": "Ansiedade, humor e sono",
-  "principio": "Alprazolam",
-  "comercial": "Frontal",
-  "laboratorio": "Viatris",
-  "doses": [
-   "0,25 mg",
-   "0,5 mg",
-   "1 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m068",
-  "grupo": "Ansiedade, humor e sono",
-  "principio": "Clonazepam",
-  "comercial": "Rivotril",
-  "laboratorio": "Roche",
-  "doses": [
-   "0,5 mg",
-   "2 mg"
-  ],
-  "posologia": "1 comprimido à noite",
-  "via": "Uso oral"
- },
- {
-  "id": "m069",
-  "grupo": "Ansiedade, humor e sono",
-  "principio": "Cloridrato de sertralina",
-  "comercial": "Zoloft",
-  "laboratorio": "Viatris",
-  "doses": [
-   "25 mg",
-   "50 mg",
-   "100 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m070",
-  "grupo": "Ansiedade, humor e sono",
-  "principio": "Oxalato de escitalopram",
-  "comercial": "Lexapro",
-  "laboratorio": "Lundbeck",
-  "doses": [
-   "10 mg",
-   "15 mg",
-   "20 mg"
-  ],
-  "posologia": "1 comprimido pela manhã",
-  "via": "Uso oral"
- },
- {
-  "id": "m071",
-  "grupo": "Ansiedade, humor e sono",
-  "principio": "Hemitartarato de zolpidem",
-  "comercial": "Stilnox",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "10 mg"
-  ],
-  "posologia": "1 comprimido ao deitar",
-  "via": "Uso oral"
- },
- {
-  "id": "m072",
-  "grupo": "Outros",
-  "principio": "Alopurinol",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "100 mg",
-   "300 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- },
- {
-  "id": "m073",
-  "grupo": "Outros",
-  "principio": "Colchicina",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "0,5 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas",
-  "via": "Uso oral"
- },
- {
-  "id": "m074",
-  "grupo": "Outros",
-  "principio": "Colecalciferol (vitamina D3)",
-  "comercial": "Depura",
-  "laboratorio": "Sanofi",
-  "doses": [
-   "1.000 UI",
-   "7.000 UI",
-   "50.000 UI"
-  ],
-  "posologia": "Conforme orientação",
-  "via": "Uso oral"
- },
- {
-  "id": "m075",
-  "grupo": "Outros",
-  "principio": "Cloreto de potássio",
-  "comercial": "",
-  "laboratorio": "",
-  "doses": [
-   "600 mg"
-  ],
-  "posologia": "1 comprimido de 12/12 horas, após as refeições",
-  "via": "Uso oral"
- },
- {
-  "id": "m076",
-  "grupo": "Outros",
-  "principio": "Amoxicilina",
-  "comercial": "Amoxil",
-  "laboratorio": "GSK",
-  "doses": [
-   "500 mg",
-   "875 mg"
-  ],
-  "posologia": "1 cápsula de 8/8 horas por 7 dias",
-  "via": "Uso oral"
- },
- {
-  "id": "m077",
-  "grupo": "Outros",
-  "principio": "Azitromicina",
-  "comercial": "Zitromax",
-  "laboratorio": "Pfizer",
-  "doses": [
-   "500 mg"
-  ],
-  "posologia": "1 comprimido ao dia por 3 dias",
-  "via": "Uso oral"
- },
- {
-  "id": "m078",
-  "grupo": "Outros",
-  "principio": "Loratadina",
-  "comercial": "Claritin",
-  "laboratorio": "Bayer",
-  "doses": [
-   "10 mg"
-  ],
-  "posologia": "1 comprimido ao dia",
-  "via": "Uso oral"
- }
+  {
+    "id": "m001",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Losartana potássica",
+    "comercial": "Cozaar",
+    "laboratorio": "Organon",
+    "doses": [
+      "25 mg",
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Cozaar",
+        "laboratorio": "Organon",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m002",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Valsartana",
+    "comercial": "Diovan",
+    "laboratorio": "Novartis",
+    "doses": [
+      "80 mg",
+      "160 mg",
+      "320 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Diovan",
+        "laboratorio": "Novartis",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m003",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Candesartana cilexetila",
+    "comercial": "Atacand",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "8 mg",
+      "16 mg",
+      "32 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Atacand",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m004",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Telmisartana",
+    "comercial": "Micardis",
+    "laboratorio": "Boehringer Ingelheim",
+    "doses": [
+      "40 mg",
+      "80 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Micardis",
+        "laboratorio": "Boehringer Ingelheim",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m005",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Olmesartana medoxomila",
+    "comercial": "Benicar",
+    "laboratorio": "Daiichi Sankyo",
+    "doses": [
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Benicar",
+        "laboratorio": "Daiichi Sankyo",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m006",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Maleato de enalapril",
+    "comercial": "Renitec",
+    "laboratorio": "Organon",
+    "doses": [
+      "5 mg",
+      "10 mg",
+      "20 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Renitec",
+        "laboratorio": "Organon",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m007",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Captopril",
+    "comercial": "Capoten",
+    "laboratorio": "Bristol-Myers Squibb",
+    "doses": [
+      "12,5 mg",
+      "25 mg",
+      "50 mg"
+    ],
+    "posologia": "1 comprimido de 8/8 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Capoten",
+        "laboratorio": "Bristol-Myers Squibb",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m008",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Ramipril",
+    "comercial": "Triatec",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "2,5 mg",
+      "5 mg",
+      "10 mg"
+    ],
+    "posologia": "1 cápsula pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Triatec",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m009",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Besilato de anlodipino",
+    "comercial": "Norvasc",
+    "laboratorio": "Viatris",
+    "doses": [
+      "5 mg",
+      "10 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Norvasc",
+        "laboratorio": "Viatris",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m010",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Nifedipino (liberação prolongada)",
+    "comercial": "Adalat Retard",
+    "laboratorio": "Bayer",
+    "doses": [
+      "20 mg",
+      "30 mg",
+      "60 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Adalat Retard",
+        "laboratorio": "Bayer",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m011",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Hidroclorotiazida",
+    "comercial": "Clorana",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "12,5 mg",
+      "25 mg",
+      "50 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Clorana",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m012",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Clortalidona",
+    "comercial": "Higroton",
+    "laboratorio": "Novartis",
+    "doses": [
+      "12,5 mg",
+      "25 mg",
+      "50 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Higroton",
+        "laboratorio": "Novartis",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m013",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Indapamida (liberação prolongada)",
+    "comercial": "Natrilix SR",
+    "laboratorio": "Servier",
+    "doses": [
+      "1,5 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Natrilix SR",
+        "laboratorio": "Servier",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m014",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Espironolactona",
+    "comercial": "Aldactone",
+    "laboratorio": "Pfizer",
+    "doses": [
+      "25 mg",
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Aldactone",
+        "laboratorio": "Pfizer",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m015",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Furosemida",
+    "comercial": "Lasix",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "40 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Lasix",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m016",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Cloridrato de hidralazina",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "25 mg",
+      "50 mg"
+    ],
+    "posologia": "1 comprimido de 8/8 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m017",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Metildopa",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "250 mg",
+      "500 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m018",
+    "grupo": "Anti-hipertensivos",
+    "principio": "Cloridrato de clonidina",
+    "comercial": "Atensina",
+    "laboratorio": "Boehringer Ingelheim",
+    "doses": [
+      "0,100 mg",
+      "0,150 mg",
+      "0,200 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Atensina",
+        "laboratorio": "Boehringer Ingelheim",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m019",
+    "grupo": "Betabloqueadores",
+    "principio": "Atenolol",
+    "comercial": "Atenol",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "25 mg",
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Atenol",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m020",
+    "grupo": "Betabloqueadores",
+    "principio": "Succinato de metoprolol",
+    "comercial": "Selozok",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "25 mg",
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Selozok",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m021",
+    "grupo": "Betabloqueadores",
+    "principio": "Hemifumarato de bisoprolol",
+    "comercial": "Concor",
+    "laboratorio": "Merck",
+    "doses": [
+      "1,25 mg",
+      "2,5 mg",
+      "5 mg",
+      "10 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Concor",
+        "laboratorio": "Merck",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m022",
+    "grupo": "Betabloqueadores",
+    "principio": "Carvedilol",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "3,125 mg",
+      "6,25 mg",
+      "12,5 mg",
+      "25 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas, junto às refeições",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m023",
+    "grupo": "Betabloqueadores",
+    "principio": "Cloridrato de propranolol",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "10 mg",
+      "40 mg",
+      "80 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m024",
+    "grupo": "Betabloqueadores",
+    "principio": "Nebivolol",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "5 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m025",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Sacubitril + valsartana",
+    "comercial": "Entresto",
+    "laboratorio": "Novartis",
+    "doses": [
+      "24/26 mg",
+      "49/51 mg",
+      "97/103 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Entresto",
+        "laboratorio": "Novartis",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m026",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Cloridrato de ivabradina",
+    "comercial": "Procoralan",
+    "laboratorio": "Servier",
+    "doses": [
+      "5 mg",
+      "7,5 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas, junto às refeições",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Procoralan",
+        "laboratorio": "Servier",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m027",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Dicloridrato de trimetazidina (liberação modificada)",
+    "comercial": "Vastarel MR",
+    "laboratorio": "Servier",
+    "doses": [
+      "35 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Vastarel MR",
+        "laboratorio": "Servier",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m028",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Mononitrato de isossorbida",
+    "comercial": "Monocordil",
+    "laboratorio": "Baldacci",
+    "doses": [
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas (8h e 14h)",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Monocordil",
+        "laboratorio": "Baldacci",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m029",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Dinitrato de isossorbida",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "5 mg (sublingual)",
+      "10 mg"
+    ],
+    "posologia": "1 comprimido sublingual se dor no peito; procurar atendimento se não melhorar",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m030",
+    "grupo": "Insuficiência cardíaca e angina",
+    "principio": "Digoxina",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "0,25 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m031",
+    "grupo": "Antiarrítmicos",
+    "principio": "Cloridrato de amiodarona",
+    "comercial": "Ancoron",
+    "laboratorio": "Libbs",
+    "doses": [
+      "100 mg",
+      "200 mg"
+    ],
+    "posologia": "1 comprimido ao dia, conforme orientação",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Ancoron",
+        "laboratorio": "Libbs",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m032",
+    "grupo": "Antiarrítmicos",
+    "principio": "Cloridrato de propafenona",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "150 mg",
+      "300 mg"
+    ],
+    "posologia": "1 comprimido de 8/8 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m033",
+    "grupo": "Antiarrítmicos",
+    "principio": "Cloridrato de verapamil",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "80 mg",
+      "120 mg"
+    ],
+    "posologia": "1 comprimido de 8/8 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m034",
+    "grupo": "Antiarrítmicos",
+    "principio": "Cloridrato de diltiazem",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "30 mg",
+      "60 mg"
+    ],
+    "posologia": "1 comprimido de 8/8 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m035",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Ácido acetilsalicílico",
+    "comercial": "Aspirina Prevent",
+    "laboratorio": "Bayer",
+    "doses": [
+      "100 mg"
+    ],
+    "posologia": "1 comprimido após o almoço",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Aspirina Prevent",
+        "laboratorio": "Bayer",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m036",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Bissulfato de clopidogrel",
+    "comercial": "Plavix",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "75 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Plavix",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m037",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Ticagrelor",
+    "comercial": "Brilinta",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "90 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Brilinta",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m038",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Cloridrato de prasugrel",
+    "comercial": "Effient",
+    "laboratorio": "Daiichi Sankyo",
+    "doses": [
+      "5 mg",
+      "10 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Effient",
+        "laboratorio": "Daiichi Sankyo",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m039",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Rivaroxabana",
+    "comercial": "Xarelto",
+    "laboratorio": "Bayer",
+    "doses": [
+      "10 mg",
+      "15 mg",
+      "20 mg"
+    ],
+    "posologia": "1 comprimido ao dia, junto ao jantar",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Xarelto",
+        "laboratorio": "Bayer",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m040",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Apixabana",
+    "comercial": "Eliquis",
+    "laboratorio": "Bristol-Myers Squibb / Pfizer",
+    "doses": [
+      "2,5 mg",
+      "5 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Eliquis",
+        "laboratorio": "Bristol-Myers Squibb / Pfizer",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m041",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Etexilato de dabigatrana",
+    "comercial": "Pradaxa",
+    "laboratorio": "Boehringer Ingelheim",
+    "doses": [
+      "110 mg",
+      "150 mg"
+    ],
+    "posologia": "1 cápsula de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Pradaxa",
+        "laboratorio": "Boehringer Ingelheim",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m042",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Edoxabana",
+    "comercial": "Lixiana",
+    "laboratorio": "Daiichi Sankyo",
+    "doses": [
+      "30 mg",
+      "60 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Lixiana",
+        "laboratorio": "Daiichi Sankyo",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m043",
+    "grupo": "Antiagregantes e anticoagulantes",
+    "principio": "Varfarina sódica",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "5 mg"
+    ],
+    "posologia": "Conforme controle de INR (dose ajustada pela médica)",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m044",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Atorvastatina cálcica",
+    "comercial": "Lipitor",
+    "laboratorio": "Viatris",
+    "doses": [
+      "10 mg",
+      "20 mg",
+      "40 mg",
+      "80 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Lipitor",
+        "laboratorio": "Viatris",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m045",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Rosuvastatina cálcica",
+    "comercial": "Crestor",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "5 mg",
+      "10 mg",
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Crestor",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m046",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Sinvastatina",
+    "comercial": "Zocor",
+    "laboratorio": "Organon",
+    "doses": [
+      "10 mg",
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Zocor",
+        "laboratorio": "Organon",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m047",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Pravastatina sódica",
+    "comercial": "Pravacol",
+    "laboratorio": "Bristol-Myers Squibb",
+    "doses": [
+      "10 mg",
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Pravacol",
+        "laboratorio": "Bristol-Myers Squibb",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m048",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Ezetimiba",
+    "comercial": "Ezetrol",
+    "laboratorio": "Organon",
+    "doses": [
+      "10 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Ezetrol",
+        "laboratorio": "Organon",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m049",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Ezetimiba + sinvastatina",
+    "comercial": "Vytorin",
+    "laboratorio": "Organon",
+    "doses": [
+      "10/20 mg",
+      "10/40 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Vytorin",
+        "laboratorio": "Organon",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m050",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Fenofibrato",
+    "comercial": "Lipidil",
+    "laboratorio": "Abbott",
+    "doses": [
+      "160 mg",
+      "200 mg"
+    ],
+    "posologia": "1 cápsula ao dia, junto a uma refeição",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Lipidil",
+        "laboratorio": "Abbott",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m051",
+    "grupo": "Colesterol e triglicérides",
+    "principio": "Evolocumabe",
+    "comercial": "Repatha",
+    "laboratorio": "Amgen",
+    "doses": [
+      "140 mg/mL"
+    ],
+    "posologia": "1 aplicação subcutânea a cada 14 dias",
+    "via": "Uso subcutâneo",
+    "opcoes": [
+      {
+        "marca": "Repatha",
+        "laboratorio": "Amgen",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m052",
+    "grupo": "Diabetes",
+    "principio": "Cloridrato de metformina",
+    "comercial": "Glifage",
+    "laboratorio": "Merck",
+    "doses": [
+      "500 mg",
+      "850 mg",
+      "1 g"
+    ],
+    "posologia": "1 comprimido após o café e o jantar",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Glifage",
+        "laboratorio": "Merck",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m053",
+    "grupo": "Diabetes",
+    "principio": "Gliclazida (liberação modificada)",
+    "comercial": "Diamicron MR",
+    "laboratorio": "Servier",
+    "doses": [
+      "30 mg",
+      "60 mg"
+    ],
+    "posologia": "1 comprimido no café da manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Diamicron MR",
+        "laboratorio": "Servier",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m054",
+    "grupo": "Diabetes",
+    "principio": "Fosfato de sitagliptina",
+    "comercial": "Januvia",
+    "laboratorio": "MSD",
+    "doses": [
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Januvia",
+        "laboratorio": "MSD",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m055",
+    "grupo": "Diabetes",
+    "principio": "Linagliptina",
+    "comercial": "Trayenta",
+    "laboratorio": "Boehringer Ingelheim",
+    "doses": [
+      "5 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Trayenta",
+        "laboratorio": "Boehringer Ingelheim",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m056",
+    "grupo": "Diabetes",
+    "principio": "Empagliflozina",
+    "comercial": "Jardiance",
+    "laboratorio": "Boehringer Ingelheim",
+    "doses": [
+      "10 mg",
+      "25 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Jardiance",
+        "laboratorio": "Boehringer Ingelheim",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m057",
+    "grupo": "Diabetes",
+    "principio": "Dapagliflozina",
+    "comercial": "Forxiga",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "10 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Forxiga",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m058",
+    "grupo": "Diabetes",
+    "principio": "Semaglutida",
+    "comercial": "Ozempic",
+    "laboratorio": "Novo Nordisk",
+    "doses": [
+      "0,25 mg",
+      "0,5 mg",
+      "1 mg"
+    ],
+    "posologia": "1 aplicação subcutânea por semana",
+    "via": "Uso subcutâneo",
+    "opcoes": [
+      {
+        "marca": "Ozempic",
+        "laboratorio": "Novo Nordisk",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m059",
+    "grupo": "Tireoide",
+    "principio": "Levotiroxina sódica",
+    "comercial": "Puran T4",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "25 mcg",
+      "50 mcg",
+      "75 mcg",
+      "88 mcg",
+      "100 mcg"
+    ],
+    "posologia": "1 comprimido em jejum, 30 minutos antes do café",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Puran T4",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m060",
+    "grupo": "Tireoide",
+    "principio": "Levotiroxina sódica",
+    "comercial": "Synthroid",
+    "laboratorio": "Abbott",
+    "doses": [
+      "25 mcg",
+      "50 mcg",
+      "75 mcg",
+      "100 mcg"
+    ],
+    "posologia": "1 comprimido em jejum, 30 minutos antes do café",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Synthroid",
+        "laboratorio": "Abbott",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m061",
+    "grupo": "Tireoide",
+    "principio": "Levotiroxina sódica",
+    "comercial": "Euthyrox",
+    "laboratorio": "Merck",
+    "doses": [
+      "25 mcg",
+      "50 mcg",
+      "75 mcg",
+      "100 mcg"
+    ],
+    "posologia": "1 comprimido em jejum, 30 minutos antes do café",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Euthyrox",
+        "laboratorio": "Merck",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m062",
+    "grupo": "Estômago",
+    "principio": "Omeprazol",
+    "comercial": "Losec",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 cápsula em jejum",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Losec",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m063",
+    "grupo": "Estômago",
+    "principio": "Pantoprazol",
+    "comercial": "Pantozol",
+    "laboratorio": "Takeda",
+    "doses": [
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido em jejum",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Pantozol",
+        "laboratorio": "Takeda",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m064",
+    "grupo": "Estômago",
+    "principio": "Esomeprazol magnésico",
+    "comercial": "Nexium",
+    "laboratorio": "AstraZeneca",
+    "doses": [
+      "20 mg",
+      "40 mg"
+    ],
+    "posologia": "1 comprimido em jejum",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Nexium",
+        "laboratorio": "AstraZeneca",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m065",
+    "grupo": "Dor e febre",
+    "principio": "Dipirona monoidratada",
+    "comercial": "Novalgina",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "500 mg",
+      "1 g"
+    ],
+    "posologia": "1 comprimido de 6/6 horas se dor ou febre",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Novalgina",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m066",
+    "grupo": "Dor e febre",
+    "principio": "Paracetamol",
+    "comercial": "Tylenol",
+    "laboratorio": "Kenvue",
+    "doses": [
+      "500 mg",
+      "750 mg"
+    ],
+    "posologia": "1 comprimido de 6/6 horas se dor ou febre",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Tylenol",
+        "laboratorio": "Kenvue",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m067",
+    "grupo": "Ansiedade, humor e sono",
+    "principio": "Alprazolam",
+    "comercial": "Frontal",
+    "laboratorio": "Viatris",
+    "doses": [
+      "0,25 mg",
+      "0,5 mg",
+      "1 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Frontal",
+        "laboratorio": "Viatris",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m068",
+    "grupo": "Ansiedade, humor e sono",
+    "principio": "Clonazepam",
+    "comercial": "Rivotril",
+    "laboratorio": "Roche",
+    "doses": [
+      "0,5 mg",
+      "2 mg"
+    ],
+    "posologia": "1 comprimido à noite",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Rivotril",
+        "laboratorio": "Roche",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m069",
+    "grupo": "Ansiedade, humor e sono",
+    "principio": "Cloridrato de sertralina",
+    "comercial": "Zoloft",
+    "laboratorio": "Viatris",
+    "doses": [
+      "25 mg",
+      "50 mg",
+      "100 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Zoloft",
+        "laboratorio": "Viatris",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m070",
+    "grupo": "Ansiedade, humor e sono",
+    "principio": "Oxalato de escitalopram",
+    "comercial": "Lexapro",
+    "laboratorio": "Lundbeck",
+    "doses": [
+      "10 mg",
+      "15 mg",
+      "20 mg"
+    ],
+    "posologia": "1 comprimido pela manhã",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Lexapro",
+        "laboratorio": "Lundbeck",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m071",
+    "grupo": "Ansiedade, humor e sono",
+    "principio": "Hemitartarato de zolpidem",
+    "comercial": "Stilnox",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "10 mg"
+    ],
+    "posologia": "1 comprimido ao deitar",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Stilnox",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m072",
+    "grupo": "Outros",
+    "principio": "Alopurinol",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "100 mg",
+      "300 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m073",
+    "grupo": "Outros",
+    "principio": "Colchicina",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "0,5 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m074",
+    "grupo": "Outros",
+    "principio": "Colecalciferol (vitamina D3)",
+    "comercial": "Depura",
+    "laboratorio": "Sanofi",
+    "doses": [
+      "1.000 UI",
+      "7.000 UI",
+      "50.000 UI"
+    ],
+    "posologia": "Conforme orientação",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Depura",
+        "laboratorio": "Sanofi",
+        "tipo": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "m075",
+    "grupo": "Outros",
+    "principio": "Cloreto de potássio",
+    "comercial": "",
+    "laboratorio": "",
+    "doses": [
+      "600 mg"
+    ],
+    "posologia": "1 comprimido de 12/12 horas, após as refeições",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m076",
+    "grupo": "Outros",
+    "principio": "Amoxicilina",
+    "comercial": "Amoxil",
+    "laboratorio": "GSK",
+    "doses": [
+      "500 mg",
+      "875 mg"
+    ],
+    "posologia": "1 cápsula de 8/8 horas por 7 dias",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Amoxil",
+        "laboratorio": "GSK",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Eurofarma",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Germed",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m077",
+    "grupo": "Outros",
+    "principio": "Azitromicina",
+    "comercial": "Zitromax",
+    "laboratorio": "Pfizer",
+    "doses": [
+      "500 mg"
+    ],
+    "posologia": "1 comprimido ao dia por 3 dias",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Zitromax",
+        "laboratorio": "Pfizer",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Neo Química",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Prati-Donaduzzi",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Teuto",
+        "tipo": "generico"
+      }
+    ]
+  },
+  {
+    "id": "m078",
+    "grupo": "Outros",
+    "principio": "Loratadina",
+    "comercial": "Claritin",
+    "laboratorio": "Bayer",
+    "doses": [
+      "10 mg"
+    ],
+    "posologia": "1 comprimido ao dia",
+    "via": "Uso oral",
+    "opcoes": [
+      {
+        "marca": "Claritin",
+        "laboratorio": "Bayer",
+        "tipo": "referencia"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Sandoz",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "EMS",
+        "tipo": "generico"
+      },
+      {
+        "marca": "",
+        "laboratorio": "Medley",
+        "tipo": "generico"
+      }
+    ]
+  }
 ]

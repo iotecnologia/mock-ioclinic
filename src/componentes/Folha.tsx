@@ -3,11 +3,12 @@
 // marca d'água e assinatura. A mesma folha aparece na prévia e na impressão.
 // "Papel timbrado": esconde a faixa e o cabeçalho (o papel já tem o timbre) e deixa a margem de cima livre.
 // Sem assinatura digital: a Dra. assina e carimba à mão.
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { Clinica } from '../tipos/modelos';
 import { br, extenso } from '../util/datas';
 import { mascaraCpf } from '../util/formato';
+import { gerarPdf } from '../util/pdf';
 import { LogoDra } from './LogoDra';
 
 export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paciente, children }: {
@@ -34,7 +35,7 @@ export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paci
             <span className="fl-selo">{titulo}</span>
             <div className="fl-emissao">Emissão: {br(data)}</div>
           </div>
-          <div className="fl-end"><span>{clinica.endereco}</span><b>{clinica.telefone}</b></div>
+          <div className="fl-end"><span>{clinica.endereco}</span><b>Tel. {clinica.telefone}{clinica.whatsapp ? <> · WhatsApp {clinica.whatsapp}</> : null}</b></div>
         </div>
       ) : <h1 className="fl-tit">{titulo}</h1>}
       {paciente && (
@@ -64,4 +65,18 @@ export function Imprimir({ children, aoTerminar }: { children: ReactNode; aoTerm
     return () => clearTimeout(t);
   }, [aoTerminar]);
   return createPortal(<div className="area-impressao">{children}</div>, document.body);
+}
+
+/** Desenha a folha fora da tela, em tamanho A4 real, gera o PDF e baixa. */
+export function BaixarPdf({ children, nome, aoTerminar }: { children: ReactNode; nome: string; aoTerminar: (erro?: string) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const feito = useRef(false);   // evita baixar duas vezes
+  useEffect(() => {
+    if (feito.current) return;
+    feito.current = true;
+    const folha = ref.current?.querySelector<HTMLElement>('.folha');
+    if (!folha) { aoTerminar('Folha não encontrada.'); return; }
+    gerarPdf(folha, nome).then(() => aoTerminar(), (e) => aoTerminar(String(e)));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return createPortal(<div className="area-pdf" ref={ref} aria-hidden>{children}</div>, document.body);
 }

@@ -13,7 +13,10 @@ export interface Clinica {
   rqe?: string;
   endereco: string;
   cidade: string;
+  /** Telefone fixo da clínica. */
   telefone: string;
+  /** WhatsApp da clínica. */
+  whatsapp?: string;
   /** Horário de atendimento por dia da semana (0 = domingo … 6 = sábado). Dia sem faixa = fechado. */
   horarios: Record<string, { inicio: string; fim: string }[]>;
   /** Grade da agenda em minutos (todos os horários começam em múltiplos disso). */
@@ -40,6 +43,13 @@ export interface Paciente {
   telefone: string; email?: string; endereco?: Endereco;
   contatoEmergencia?: string; observacoes?: string;
   consentimentoLgpd: boolean; consentimentoData?: string; criadoEm: string;
+  /**
+   * 'pre' = pré-cadastro feito no agendamento (só nome + WhatsApp). Vira paciente quando a recepção
+   * completa o cadastro na chegada. Se faltar ou cancelar, é apagado (LGPD: não guarda quem não veio).
+   * 'removido' = registro anônimo que fica no lugar do pré-cadastro apagado (só para a agenda não perder o horário).
+   * Sem valor = paciente cadastrado.
+   */
+  situacao?: 'pre' | 'removido';
 }
 
 export type StatusAgendamento = 'agendado' | 'confirmado' | 'chegou' | 'em_atendimento' | 'atendido' | 'faltou' | 'cancelado';
@@ -54,6 +64,8 @@ export interface Agendamento {
   status: StatusAgendamento;
   pagamento?: Pagamento;
   obs?: string;
+  /** Encaixe: marcado fora da grade livre (pode sobrepor outro horário). */
+  encaixe?: boolean;
   criadoEm: string;
 }
 
@@ -72,10 +84,14 @@ export type TipoDocumento = 'atestado' | 'receita' | 'pedido_exames' | 'comparec
 /** Documento emitido (impresso em papel timbrado, assinado e carimbado à mão). */
 export interface Documento { id: string; pacienteId: string; data: string; tipo: TipoDocumento; titulo: string; paragrafos: string[]; itens?: string[] }
 
-export interface Cid { codigo: string; descricao: string; grupo: string }
+/** `termos`: palavras do dia a dia para achar o CID pela situação (ex.: "dor no peito"). */
+export interface Cid { codigo: string; descricao: string; grupo: string; termos?: string[] }
 
-/** Remédio do catálogo de busca da receita. `comercial`/`laboratorio` = marca de referência (vazio quando não cadastrada). */
-export interface Medicamento { id: string; grupo: string; principio: string; comercial: string; laboratorio: string; doses: string[]; posologia: string; via: string }
+/** Uma apresentação do remédio no mercado: marca (vazio = genérico) e laboratório. */
+export interface OpcaoLab { marca: string; laboratorio: string; tipo: 'referencia' | 'generico' | 'similar' }
+/** Remédio do catálogo de busca da receita. `comercial`/`laboratorio` = marca de referência (vazio quando não cadastrada).
+ *  `opcoes` = referência + genéricos/similares com o laboratório de cada um (base de exemplo; versão final: tabela CMED/ANVISA). */
+export interface Medicamento { id: string; grupo: string; principio: string; comercial: string; laboratorio: string; doses: string[]; posologia: string; via: string; opcoes?: OpcaoLab[] }
 /** Exame do catálogo de busca do pedido de exames. */
 export interface ExameCatalogo { nome: string; grupo: string; preparo: string }
 

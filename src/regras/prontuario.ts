@@ -43,27 +43,64 @@ export function classificaPA(txt?: string): { nome: string; cls: string } | unde
   return { nome: 'PA ótima', cls: 't-ok' };
 }
 
-/** Busca de CID por código ("i10", "I48") ou por palavras da descrição, sem acento ("fibrila atrial"). */
+/**
+ * Busca de CID por código ("i10", "I48"), pela descrição ("fibrila atrial") ou pela SITUAÇÃO em palavras do dia a dia
+ * ("dor no peito", "pressão alta", "falta de ar") — cada CID tem `termos` com esses jeitos de falar. Sem acento.
+ * Ordem: código → situação com a frase inteira → descrição → palavras soltas.
+ */
 export function buscarCid(lista: Cid[], termo: string, max = 8): Cid[] {
-  const t = semAcento(termo);
+  const t = semAcento(termo).trim();
   if (!t) return [];
   const cod = t.replace(/[^a-z0-9]/g, '');
   const partes = t.split(/\s+/);
-  const porCodigo = lista.filter((c) => c.codigo.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(cod));
-  const porTexto = lista.filter((c) => !porCodigo.includes(c) && partes.every((p) => semAcento(c.descricao).includes(p)));
-  return [...porCodigo, ...porTexto].slice(0, max);
+  const pontua = (c: Cid): number => {
+    if (/^[a-z]\d/.test(cod) && c.codigo.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(cod)) return 100;
+    const desc = semAcento(c.descricao);
+    const termos = (c.termos ?? []).map(semAcento);
+    const exato = termos.indexOf(t);
+    if (exato >= 0) return 90 - exato;   // termo principal (o 1º da lista) vem antes
+    if (termos.some((x) => x.startsWith(t))) return 80;
+    if (termos.some((x) => x.includes(t))) return 70;
+    if (desc.includes(t)) return 60;
+    const tudo = desc + ' ' + termos.join(' ');
+    if (partes.every((p) => tudo.includes(p))) return 40;
+    return 0;
+  };
+  return lista.map((c, i) => ({ c, n: pontua(c), i })).filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n || a.i - b.i).slice(0, max).map((x) => x.c);
 }
 
-/** Busca de remédio pelo princípio ativo OU pelo nome comercial, sem acento e por partes ("losar", "cozaar", "metopro succ"). */
+/** Texto de busca de cada apresentação: marca + laboratório ("cozaar organon", " ems"). */
+const textoOpcoes = (m: Medicamento) => (m.opcoes ?? []).map((o) => semAcento(`${o.marca} ${o.laboratorio}`)).join(' | ');
+
+/**
+ * Busca de remédio pelo princípio ativo, pelo nome comercial OU pelo laboratório, sem acento e por partes
+ * ("losar", "cozaar", "metopro succ", "ems", "losartana medley").
+ */
 export function buscarMedicamento(lista: Medicamento[], termo: string, max = 8): Medicamento[] {
   const partes = semAcento(termo).split(/\s+/).filter(Boolean);
   if (!partes.length) return [];
   const pontua = (m: Medicamento) => {
-    const p = semAcento(m.principio), c = semAcento(m.comercial);
-    if (!partes.every((x) => p.includes(x) || c.includes(x))) return -1;
+    const p = semAcento(m.principio), c = semAcento(m.comercial), labs = textoOpcoes(m) + ' ' + semAcento(m.laboratorio);
+    if (!partes.every((x) => p.includes(x) || c.includes(x) || labs.includes(x))) return -1;
     return (p.startsWith(partes[0]) || c.startsWith(partes[0]) ? 2 : 0) + (m.laboratorio ? 1 : 0);
   };
   return lista.map((m) => [m, pontua(m)] as const).filter(([, n]) => n >= 0).sort((a, b) => b[1] - a[1]).slice(0, max).map(([m]) => m);
+}
+
+/** Qual apresentação mostrar já escolhida: a do laboratório/marca digitado; senão a de referência (ou a primeira). */
+export function opcaoBuscada(m: Medicamento, termo: string): number {
+  const partes = semAcento(termo).split(/\s+/).filter(Boolean);
+  const ops = m.opcoes ?? [];
+  const i = ops.findIndex((o) => { const t = semAcento(`${o.marca} ${o.laboratorio}`); return partes.some((x) => x.length >= 2 && t.split(/\s+/).some((w) => w.startsWith(x))); });
+  return i >= 0 ? i : 0;
+}
+
+/** Nome do remédio na receita: princípio + dose + apresentação escolhida ("Losartana potássica 50 mg (Cozaar® · Organon)"). */
+export function nomeNaReceita(m: Medicamento, dose: string, op?: { marca: string; laboratorio: string; tipo: string }): string {
+  const base = `${m.principio} ${dose}`;
+  if (!op) return base;
+  return op.marca ? `${base} (${op.marca}® · ${op.laboratorio})` : `${base} (genérico · ${op.laboratorio})`;
 }
 
 /** Busca de exame por palavras do nome, sem acento ("eco", "holter", "colesterol"). Não repete os já escolhidos. */

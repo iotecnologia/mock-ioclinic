@@ -5,7 +5,7 @@ import { useDados } from '../componentes/Dados';
 import { Avatar, Bloco, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { doDia } from '../regras/agenda';
-import { buscarPacientes, idade } from '../regras/paciente';
+import { buscarPacientes, cadastrados, idade, idadeTxt } from '../regras/paciente';
 import { extenso, hoje } from '../util/datas';
 
 export function Prontuario() {
@@ -14,7 +14,7 @@ export function Prontuario() {
   const hj = hoje();
   const [t, setT] = useState('');
   const lista = doDia(base, hj);
-  const res = t.trim().length >= 2 ? buscarPacientes(base.pacientes, t).slice(0, 10) : [];
+  const res = t.trim().length >= 2 ? buscarPacientes(cadastrados(base.pacientes), t).slice(0, 10) : [];
   return (
     <>
       <TituloPagina titulo="Prontuário" sub={`Atendimentos de ${extenso(hj)}`} />
@@ -28,9 +28,9 @@ export function Prontuario() {
                   const p = base.pacientes.find((x) => x.id === a.pacienteId)!;
                   const s = base.servicos.find((x) => x.id === a.servicoId)!;
                   return (
-                    <tr key={a.id} className="clic" onClick={() => nav(`/prontuario/${p.id}?ag=${a.id}`)}>
+                    <tr key={a.id} className={p.situacao ? '' : 'clic'} onClick={() => !p.situacao && nav(`/prontuario/${p.id}?ag=${a.id}`)} title={p.situacao === 'pre' ? 'Pré-cadastro: a recepção completa o cadastro na chegada' : undefined}>
                       <td className="mono">{a.hora}</td>
-                      <td><div className="cel-pac"><Avatar nome={p.nome} /><div>{p.nome}<div className="mut peq">{idade(p.nascimento, hj)} anos</div></div></div></td>
+                      <td><div className="cel-pac"><Avatar nome={p.nome} /><div>{p.nome}<div className="mut peq">{idadeTxt(p, hj)}</div></div></div></td>
                       <td><span className={'tipo tipo-' + s.tipo}>{s.curto}</span></td>
                       <td><TagStatus s={a.status} /></td>
                     </tr>

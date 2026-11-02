@@ -1,4 +1,5 @@
-// Campo de CID com busca inteligente: por código (I10) ou por palavras da descrição, sem acento.
+// Campo de CID com busca inteligente: por código (I10), pela descrição ou pela situação ("dor no peito"), sem acento.
+// Usado no prontuário e no atestado.
 import { useState } from 'react';
 import type { Cid } from '../tipos/modelos';
 import { useDados } from './Dados';
@@ -21,7 +22,7 @@ export function CidBusca({ valor, aoEscolher, disabled }: { valor?: { codigo: st
   return (
     <div className="cid-busca">
       <Icone n="busca" />
-      <input type="text" value={t} disabled={disabled} placeholder="Digite o código ou o nome (ex.: I10, palpitação, angina)"
+      <input type="text" value={t} disabled={disabled} placeholder="Código ou situação (ex.: I10, dor no peito, pressão alta, falta de ar)"
         onChange={(e) => { setT(e.target.value); setAberta(true); }} onFocus={() => setAberta(true)} onBlur={() => setTimeout(() => setAberta(false), 150)}
         onKeyDown={(e) => { if (e.key === 'Enter' && res[0]) { e.preventDefault(); aoEscolher(res[0]); setT(''); } }} />
       {aberta && t.trim() && (

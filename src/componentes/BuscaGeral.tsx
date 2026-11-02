@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDados } from './Dados';
 import { Icone } from './Icone';
-import { buscarPacientes, idade } from '../regras/paciente';
+import { buscarPacientes, cadastrados, idade } from '../regras/paciente';
 import { hoje } from '../util/datas';
 
 export function BuscaGeral() {
@@ -11,7 +11,7 @@ export function BuscaGeral() {
   const nav = useNavigate();
   const [t, setT] = useState('');
   const [aberta, setAberta] = useState(false);
-  const res = t.trim().length >= 2 ? buscarPacientes(base.pacientes, t).slice(0, 7) : [];
+  const res = t.trim().length >= 2 ? buscarPacientes(cadastrados(base.pacientes), t).slice(0, 7) : [];
   const abrir = (id: string) => { setT(''); setAberta(false); nav('/pacientes/' + id); };
   return (
     <div className="busca-geral">

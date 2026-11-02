@@ -3,23 +3,28 @@
 import { useState } from 'react';
 import type { ExameCatalogo, Medicamento } from '../tipos/modelos';
 import { Icone } from './Icone';
-import { buscarExame, buscarMedicamento } from '../regras/prontuario';
+import { buscarExame, buscarMedicamento, nomeNaReceita, opcaoBuscada } from '../regras/prontuario';
 import medicamentos from '../dados/medicamentos.json';
 import exames from '../dados/exames.json';
 
 const MEDS = medicamentos as Medicamento[];
 const EXAMES = exames as ExameCatalogo[];
 
-/** Busca de remédio: escolhe o remédio e a dose num clique; a posologia padrão vem junto (editável depois). */
-export function MedicamentoBusca({ aoEscolher }: { aoEscolher: (m: Medicamento, dose: string) => void }) {
+/**
+ * Busca de remédio (princípio ativo, marca ou laboratório): mostra as apresentações — referência e genéricos com o
+ * laboratório de cada um —, a Dra. escolhe a apresentação e clica na dose. A posologia padrão vem junto (editável depois).
+ */
+export function MedicamentoBusca({ aoEscolher }: { aoEscolher: (m: Medicamento, dose: string, nome: string) => void }) {
   const [t, setT] = useState('');
   const [aberta, setAberta] = useState(false);
+  const [escolhida, setEscolhida] = useState<Record<string, number>>({});   // apresentação escolhida por remédio
   const res = buscarMedicamento(MEDS, t);
-  const escolher = (m: Medicamento, dose: string) => { aoEscolher(m, dose); setT(''); setAberta(false); };
+  const opDe = (m: Medicamento) => escolhida[m.id] ?? opcaoBuscada(m, t);
+  const escolher = (m: Medicamento, dose: string) => { aoEscolher(m, dose, nomeNaReceita(m, dose, m.opcoes?.[opDe(m)])); setT(''); setAberta(false); setEscolhida({}); };
   return (
     <div className="busca-cat">
       <Icone n="busca" />
-      <input type="text" value={t} placeholder="Buscar remédio pelo princípio ativo ou nome comercial (ex.: losartana, Selozok)"
+      <input type="text" value={t} placeholder="Buscar remédio: princípio ativo, marca ou laboratório (ex.: losartana, Selozok, EMS)"
         onChange={(e) => { setT(e.target.value); setAberta(true); }} onFocus={() => setAberta(true)} onBlur={() => setTimeout(() => setAberta(false), 150)}
         onKeyDown={(e) => { if (e.key === 'Enter' && res[0]) { e.preventDefault(); escolher(res[0], res[0].doses[0]); } }} />
       {aberta && t.trim() && (
@@ -27,8 +32,19 @@ export function MedicamentoBusca({ aoEscolher }: { aoEscolher: (m: Medicamento, 
           {res.length ? res.map((m) => (
             <div key={m.id} className="med-op">
               <div className="med-nome"><b>{m.principio}</b>
-                <small>{m.comercial ? <>{m.comercial}<sup>®</sup> · {m.laboratorio}</> : 'marca de referência não cadastrada'} · {m.grupo}{m.via !== 'Uso oral' ? ` · ${m.via}` : ''}</small>
+                <small>{m.grupo}{m.via !== 'Uso oral' ? ` · ${m.via}` : ''}</small>
               </div>
+              {(m.opcoes?.length ?? 0) > 0 ? (
+                <div className="med-labs" role="radiogroup" aria-label={`Apresentação de ${m.principio}`}>
+                  {m.opcoes!.map((o, i) => (
+                    <button type="button" key={i} role="radio" aria-checked={opDe(m) === i} className={opDe(m) === i ? 'sel' : ''}
+                      onMouseDown={(e) => { e.preventDefault(); setEscolhida((x) => ({ ...x, [m.id]: i })); }}
+                      title={o.tipo === 'referencia' ? 'Medicamento de referência' : 'Medicamento genérico'}>
+                      {o.marca ? <>{o.marca}<sup>®</sup></> : 'Genérico'} · {o.laboratorio}{o.tipo === 'referencia' && <em> ref.</em>}
+                    </button>
+                  ))}
+                </div>
+              ) : <small className="mut">laboratório não cadastrado</small>}
               <div className="med-doses">
                 {m.doses.map((d) => <button type="button" key={d} onMouseDown={(e) => { e.preventDefault(); escolher(m, d); }} title={`Adicionar ${m.principio} ${d}`}>{d}</button>)}
               </div>

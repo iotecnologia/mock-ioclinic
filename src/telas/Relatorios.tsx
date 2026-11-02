@@ -1,10 +1,11 @@
-// Relatórios (só a médica): escolhe o relatório e o período, vê a tabela com total,
+// Relatórios (só a médica): escolhe o relatório e o período (o mesmo do Painel e do Financeiro), vê a tabela com total,
 // imprime (preto no branco; negrito só no título e no cabeçalho) ou exporta CSV para o Excel.
 import { useState } from 'react';
 import { useDados } from '../componentes/Dados';
 import { Bloco, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Imprimir } from '../componentes/Folha';
-import { celula, diasAtras, montarRelatorio, paraCsv, periodoMes, type TipoRelatorio } from '../regras/financeiro';
+import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
+import { celula, montarRelatorio, paraCsv, type TipoRelatorio } from '../regras/financeiro';
 import { br, hoje } from '../util/datas';
 import { moeda } from '../util/formato';
 
@@ -17,12 +18,10 @@ export function Relatorios() {
   const { base } = useDados();
   const hj = hoje();
   const [tipo, setTipo] = useState<TipoRelatorio>('receitas');
-  const [per, setPer] = useState(() => periodoMes(hj, 0));
+  const [per] = usePeriodo();
   const [imp, setImp] = useState(false);
   const valido = per.de && per.ate && per.de <= per.ate;
   const r = valido ? montarRelatorio(tipo, base, per.de, per.ate) : null;
-  const atalho = (p: { de: string; ate: string }) => setPer(p);
-  const igual = (p: { de: string; ate: string }) => p.de === per.de && p.ate === per.ate;
 
   const exportar = () => {
     if (!r) return;
@@ -64,13 +63,7 @@ export function Relatorios() {
         <div className="segmentado">{TIPOS.map((t) => <button type="button" key={t.id} className={tipo === t.id ? 'sel' : ''} onClick={() => setTipo(t.id)}>{t.nome}</button>)}</div>
       </div>
       <div className="barra">
-        <label className="per">De<input type="date" value={per.de} max={per.ate} onChange={(e) => setPer({ ...per, de: e.target.value })} /></label>
-        <label className="per">Até<input type="date" value={per.ate} min={per.de} onChange={(e) => setPer({ ...per, ate: e.target.value })} /></label>
-        <div className="segmentado peq">
-          <button type="button" className={igual(periodoMes(hj, 0)) ? 'sel' : ''} onClick={() => atalho(periodoMes(hj, 0))}>Este mês</button>
-          <button type="button" className={igual(periodoMes(hj, -1)) ? 'sel' : ''} onClick={() => atalho(periodoMes(hj, -1))}>Mês passado</button>
-          <button type="button" className={igual(diasAtras(hj, 89)) ? 'sel' : ''} onClick={() => atalho(diasAtras(hj, 89))}>Últimos 90 dias</button>
-        </div>
+        <SeletorPeriodo />
       </div>
 
       <Bloco titulo={r ? `${r.titulo} · ${br(per.de)} a ${br(per.ate)}` : 'Relatório'} extra={r && <span className="mut peq">{r.linhas.length} linhas</span>}>

@@ -10,7 +10,8 @@ import { Icone } from '../componentes/Icone';
 import { CidBusca } from '../componentes/CidBusca';
 import { ExameBusca } from '../componentes/Buscas';
 import { ConteudoDoc, EmitirDocumento } from '../componentes/EmitirDocumento';
-import { Folha, Imprimir } from '../componentes/Folha';
+import { BaixarPdf, Folha, Imprimir } from '../componentes/Folha';
+import { nomeArquivo } from '../util/pdf';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { classificaImc, classificaPA, imc } from '../regras/prontuario';
 import { NOME_DOC } from '../regras/documentos';
@@ -213,11 +214,19 @@ export function ProntuarioPaciente() {
 function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) {
   const { base } = useDados();
   const [imp, setImp] = useState(false);
+  const [pdf, setPdf] = useState(false);
+  const pac = base.pacientes.find((x) => x.id === d.pacienteId);
+  const folha = <Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={pac}><ConteudoDoc d={d} /></Folha>;
   return (
     <Modal titulo={`${NOME_DOC[d.tipo]} · ${br(d.data)}`} fechar={fechar}>
-      <div className="reimp"><Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={base.pacientes.find((x) => x.id === d.pacienteId)}><ConteudoDoc d={d} /></Folha></div>
-      <div className="rodape-modal"><button type="button" className="btn2" onClick={fechar}>Fechar</button><button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Reimprimir</button></div>
-      {imp && <Imprimir aoTerminar={() => setImp(false)}><Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={base.pacientes.find((x) => x.id === d.pacienteId)}><ConteudoDoc d={d} /></Folha></Imprimir>}
+      <div className="reimp">{folha}</div>
+      <div className="rodape-modal">
+        <button type="button" className="btn2" onClick={fechar}>Fechar</button>
+        <button type="button" className="btn2" disabled={pdf} onClick={() => setPdf(true)}><Icone n="pdf" /> {pdf ? 'Gerando…' : 'Baixar PDF'}</button>
+        <button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Reimprimir</button>
+      </div>
+      {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
+      {pdf && <BaixarPdf nome={nomeArquivo(NOME_DOC[d.tipo], pac?.nome, d.data)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
     </Modal>
   );
 }

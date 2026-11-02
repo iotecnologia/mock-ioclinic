@@ -1,5 +1,5 @@
 // Regras do paciente: idade, busca e histórico (linha do tempo).
-import type { BaseClinica, Paciente, Perfil } from '../tipos/modelos';
+import type { Agendamento, BaseClinica, Paciente, Perfil } from '../tipos/modelos';
 import { deIso, min } from '../util/datas';
 import { digitos, semAcento } from '../util/formato';
 import { STATUS } from './agenda';
@@ -9,6 +9,40 @@ export function idade(nascimento: string, ref: string): number {
   let i = r.getFullYear() - n.getFullYear();
   if (r.getMonth() < n.getMonth() || (r.getMonth() === n.getMonth() && r.getDate() < n.getDate())) i--;
   return i;
+}
+
+/** Idade para mostrar na tela ("54 anos"); pré-cadastro ainda não tem data de nascimento. */
+export function idadeTxt(p: Paciente, ref: string): string {
+  if (p.situacao === 'pre') return 'pré-cadastro';
+  if (p.situacao === 'removido' || !p.nascimento) return 'dados removidos';
+  return `${idade(p.nascimento, ref)} anos`;
+}
+
+/** Só os pacientes cadastrados de fato (sem pré-cadastros nem registros removidos). */
+export const cadastrados = (lista: Paciente[]) => lista.filter((p) => !p.situacao);
+
+// ------------------------------------------------------------------ pré-cadastro (LGPD)
+/** Registro anônimo que fica no lugar de um pré-cadastro apagado: a agenda mantém o horário e a falta, sem nenhum dado pessoal. */
+export const ID_REMOVIDO = 'pre-removido';
+export const PACIENTE_REMOVIDO: Paciente = {
+  id: ID_REMOVIDO, nome: 'Pré-cadastro removido', cpf: '', nascimento: '', sexo: 'O', telefone: '',
+  consentimentoLgpd: false, criadoEm: '2000-01-01', situacao: 'removido',
+};
+const ATIVO: Agendamento['status'][] = ['agendado', 'confirmado', 'chegou', 'em_atendimento'];
+
+/**
+ * Apaga o pré-cadastro de quem não veio: se o paciente pré-cadastrado não tem mais nenhum agendamento ativo
+ * (todos faltou/cancelado), o nome e o WhatsApp são apagados e os horários passam para o registro anônimo.
+ */
+export function limparPreCadastros<B extends Pick<BaseClinica, 'pacientes' | 'agendamentos'>>(b: B): B {
+  const apagar = new Set(b.pacientes
+    .filter((p) => p.situacao === 'pre' && !b.agendamentos.some((a) => a.pacienteId === p.id && ATIVO.includes(a.status)))
+    .map((p) => p.id));
+  if (!apagar.size) return b;
+  const pacientes = b.pacientes.filter((p) => !apagar.has(p.id));
+  if (!pacientes.some((p) => p.id === ID_REMOVIDO)) pacientes.push(PACIENTE_REMOVIDO);
+  const agendamentos = b.agendamentos.map((a) => (apagar.has(a.pacienteId) ? { ...a, pacienteId: ID_REMOVIDO, obs: undefined } : a));
+  return { ...b, pacientes, agendamentos };
 }
 
 /** Busca por nome (sem acento, qualquer parte) ou por CPF/telefone (só números). */

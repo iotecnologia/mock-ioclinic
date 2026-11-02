@@ -126,7 +126,7 @@ function Semana({ data, abrir, irDia }: { data: string; abrir: (a: Agendamento) 
                 const p = base.pacientes.find((x) => x.id === a.pacienteId)!;
                 const s = base.servicos.find((x) => x.id === a.servicoId)!;
                 return (
-                  <button type="button" key={a.id} className={'sem-ag tipo-' + s.tipo + ' st-' + a.status + (a.duracaoMin <= 30 ? ' curto' : '')} style={{ top: ((min(a.hora) - abre) / 30) * ALT + 1, height: (a.duracaoMin / 30) * ALT - 2 }} onClick={() => abrir(a)} title={`${a.hora} · ${p.nome} · ${s.nome}`}>
+                  <button type="button" key={a.id} className={'sem-ag tipo-' + s.tipo + ' st-' + a.status + (a.duracaoMin <= 30 ? ' curto' : '') + (a.encaixe ? ' encaixe' : '')} style={{ top: ((min(a.hora) - abre) / 30) * ALT + 1, height: (a.duracaoMin / 30) * ALT - 2 }} onClick={() => abrir(a)} title={`${a.hora} · ${p.nome} · ${s.nome}${a.encaixe ? ' · encaixe' : ''}`}>
                     <span className="mono">{a.hora}</span> {p.nome.split(' ')[0]} {p.nome.split(' ').slice(-1)[0][0]}.<small>{a.duracaoMin <= 30 ? '· ' : ''}{s.curto}</small>
                   </button>
                 );

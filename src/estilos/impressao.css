@@ -40,6 +40,10 @@
 .fl-ass b { color: #0C3257; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
 .fl-ass small { font-size: 10px; color: #547793; }
 .area-impressao { display: none; }
+/* PDF: folha A4 em tamanho real (96 dpi), desenhada fora da tela só para virar imagem */
+.area-pdf { position: fixed; left: -10000px; top: 0; pointer-events: none; }
+.area-pdf .folha { box-shadow: none; max-width: none; width: 794px; height: 1123px; aspect-ratio: auto; padding: 83px; border-radius: 0; font-size: 13px; }
+.area-pdf .folha.timbrado { padding-top: 170px; }
 
 @media print {
   @page { size: A4 portrait; margin: 0; }

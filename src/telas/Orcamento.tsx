@@ -7,10 +7,11 @@ import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
 import { Bloco, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
-import { Folha, Imprimir } from '../componentes/Folha';
+import { BaixarPdf, Folha, Imprimir } from '../componentes/Folha';
+import { nomeArquivo } from '../util/pdf';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { calcular, limiteDesconto, type FormaOrc, type ItemOrc } from '../regras/orcamento';
-import { buscarPacientes, idade } from '../regras/paciente';
+import { buscarPacientes, cadastrados, idade } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
 import { linkWhats, moeda, semAcento } from '../util/formato';
 
@@ -27,6 +28,7 @@ export function Orcamento() {
   const [forma, setForma] = useState<FormaOrc>('cartao');
   const [extra, setExtra] = useState(0);
   const [imp, setImp] = useState(false);
+  const [pdf, setPdf] = useState(false);
   const [copiado, setCopiado] = useState(false);
   const [agendar, setAgendar] = useState(false);
   const lim = limiteDesconto(usuario!.perfil, c);
@@ -40,7 +42,7 @@ export function Orcamento() {
   const add = (id: string) => { setItens((l) => (l.some((i) => i.servicoId === id) ? l.map((i) => (i.servicoId === id ? { ...i, qtd: i.qtd + 1 } : i)) : [...l, { servicoId: id, qtd: 1 }])); setBusca(''); };
   const qtd = (id: string, d: number) => setItens((l) => l.map((i) => (i.servicoId === id ? { ...i, qtd: i.qtd + d } : i)).filter((i) => i.qtd > 0));
   const limpar = () => { setItens([]); setPac(null); setNomeLivre(''); setExtra(0); setForma('cartao'); };
-  const resPac = buscaPac.trim().length >= 2 ? buscarPacientes(base.pacientes, buscaPac).slice(0, 5) : [];
+  const resPac = buscaPac.trim().length >= 2 ? buscarPacientes(cadastrados(base.pacientes), buscaPac).slice(0, 5) : [];
 
   const texto = [
     `*Orçamento · ${c.medica}* (${c.especialidade})`,
@@ -76,6 +78,7 @@ export function Orcamento() {
       <TituloPagina titulo="Orçamento" sub="Escolha os serviços. O sistema calcula cartão e PIX ao mesmo tempo.">
         <BotaoIcone icone="limpar" titulo="Limpar orçamento" onClick={limpar} disabled={vazio && !nome} />
         <BotaoIcone icone="imprimir" titulo="Imprimir orçamento" onClick={() => setImp(true)} disabled={vazio} />
+        <BotaoIcone icone="pdf" titulo={pdf ? 'Gerando PDF…' : 'Baixar orçamento em PDF'} onClick={() => setPdf(true)} disabled={vazio || pdf} />
         <a className={'btn2 ic zap' + (vazio || !pac ? ' desab' : '')} href={vazio || !pac ? undefined : linkWhats(pac.telefone, texto)} target="_blank" rel="noreferrer"
           title={pac ? 'Enviar pelo WhatsApp do paciente' : 'Escolha um paciente cadastrado para enviar pelo WhatsApp'} aria-label="Enviar pelo WhatsApp" aria-disabled={vazio || !pac}><Icone n="zap" /></a>
         <BotaoIcone icone={copiado ? 'check' : 'copiar'} titulo={copiado ? 'Copiado!' : 'Copiar texto do orçamento'} onClick={copiar} disabled={vazio} />
@@ -154,6 +157,7 @@ export function Orcamento() {
       </div>
 
       {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
+      {pdf && <BaixarPdf nome={nomeArquivo('orcamento', nome || undefined, hj)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
       {agendar && pac && <NovoAgendamento pacienteId={pac.id} servicoId={itens[0]?.servicoId} fechar={() => setAgendar(false)} />}
     </>
   );

@@ -53,6 +53,18 @@ export function horariosLivres(
   return livres;
 }
 
+/**
+ * Encaixe: todos os horários da grade do dia (livres ou não), para quando não sobrou horário livre.
+ * Só o dia precisa estar aberto; o encaixe pode sobrepor outro paciente.
+ */
+export function horariosEncaixe(data: string, b: BaseAgenda, agoraMin?: number): string[] {
+  const r: string[] = [];
+  for (const f of faixasDoDia(data, b)) {
+    for (let t = f.inicio; t < f.fim; t += b.clinica.gradeMin) if (agoraMin === undefined || t > agoraMin) r.push(hhmm(t));
+  }
+  return r;
+}
+
 /** Quantos blocos da grade (30 min) estão livres no dia — usado nas bolinhas do calendário. */
 export const blocosLivres = (data: string, b: BaseAgenda, agoraMin?: number) =>
   horariosLivres(data, b.clinica.gradeMin, b, { agoraMin }).length;
@@ -65,7 +77,9 @@ export type LinhaGrade =
 /** Grade do dia para a tela de agenda: livres, agendamentos e intervalo de almoço, em ordem. */
 export function gradeDoDia(data: string, b: BaseAgenda): LinhaGrade[] {
   const faixas = faixasDoDia(data, b);
-  const doDia = b.agendamentos.filter((a) => a.data === data && ocupaHorario(a)).sort((x, y) => min(x.hora) - min(y.hora));
+  const todos = b.agendamentos.filter((a) => a.data === data && ocupaHorario(a)).sort((x, y) => min(x.hora) - min(y.hora));
+  const doDia = todos.filter((a) => !a.encaixe);
+  const encaixes = todos.filter((a) => a.encaixe);
   const linhas: LinhaGrade[] = [];
   faixas.forEach((f, i) => {
     if (i > 0) linhas.push({ tipo: 'intervalo', hora: hhmm(faixas[i - 1].fim), ate: hhmm(f.inicio) });
@@ -76,10 +90,17 @@ export function gradeDoDia(data: string, b: BaseAgenda): LinhaGrade[] {
         if (min(ag.hora) === t) linhas.push({ tipo: 'ocupado', hora: ag.hora, ag });
         t = Math.max(t + b.clinica.gradeMin, min(ag.hora) + ag.duracaoMin);
       } else {
-        linhas.push({ tipo: 'livre', hora: hhmm(t) });
+        // horário tomado só por um encaixe não aparece como livre
+        if (!encaixes.some((e) => min(e.hora) <= t && min(e.hora) + e.duracaoMin > t)) linhas.push({ tipo: 'livre', hora: hhmm(t) });
         t += b.clinica.gradeMin;
       }
     }
   });
+  // cada encaixe entra logo depois da linha do horário em que ele cai
+  for (const e of encaixes) {
+    let pos = linhas.length;
+    for (let i = linhas.length - 1; i >= 0; i--) { if (linhas[i].tipo !== 'intervalo' && min(linhas[i].hora) <= min(e.hora)) { pos = i + 1; break; } if (i === 0) pos = 0; }
+    linhas.splice(pos, 0, { tipo: 'ocupado', hora: e.hora, ag: e });
+  }
   return linhas;
 }

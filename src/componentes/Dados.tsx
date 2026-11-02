@@ -5,10 +5,12 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { Agendamento, Atendimento, BaseClinica, Despesa, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
 import type { Repositorio } from '../repositorio/repositorio';
 import { hoje } from '../util/datas';
+import { limparPreCadastros } from '../regras/paciente';
 
 interface Acoes {
   salvarPaciente(p: Omit<Paciente, 'id' | 'criadoEm'> & { id?: string }): Paciente;
   agendar(a: Omit<Agendamento, 'id' | 'criadoEm' | 'status' | 'pagamento'>): Agendamento;
+  /** Faltou/cancelou: se o paciente era pré-cadastro e não tem outro horário, o pré-cadastro é apagado. */
   mudarStatus(id: string, status: StatusAgendamento): void;
   receber(id: string, forma: FormaPagamento, valor: number): void;
   /** Salva a evolução clínica e, se veio de um agendamento, marca como atendido. */
@@ -54,8 +56,11 @@ const hash = (s: string) => { let h = 0; for (const c of s) h = (h * 31 + c.char
 export function fecharDiasPassados(b: BaseClinica, hojeIso: string): BaseClinica {
   const desconto = b.clinica.descontoPix;
   const FORMAS: FormaPagamento[] = ['pix', 'pix', 'pix', 'cartao_credito', 'cartao_credito', 'cartao_debito', 'dinheiro'];
+  const pre = new Set(b.pacientes.filter((p) => p.situacao === 'pre').map((p) => p.id));
   const agendamentos = b.agendamentos.map((a): Agendamento => {
     if (a.data >= hojeIso || !['agendado', 'confirmado', 'chegou', 'em_atendimento'].includes(a.status)) return a;
+    // pré-cadastro que ficou para trás sem completar o cadastro = não veio
+    if (pre.has(a.pacienteId)) return { ...a, status: 'faltou', pagamento: undefined };
     const h = hash(a.id);
     if (h < 6 && a.status !== 'chegou' && a.status !== 'em_atendimento') return { ...a, status: 'faltou', pagamento: a.pagamento?.status === 'pago' ? a.pagamento : undefined };
     let pagamento = a.pagamento;
@@ -67,7 +72,7 @@ export function fecharDiasPassados(b: BaseClinica, hojeIso: string): BaseClinica
     return { ...a, status: 'atendido', pagamento };
   });
   const despesas = b.despesas.map((d) => (d.status === 'a_pagar' && d.data < hojeIso && d.id.startsWith('dp') ? { ...d, status: 'paga' as const, pagaEm: d.data } : d));
-  return { ...b, agendamentos, despesas };
+  return limparPreCadastros({ ...b, agendamentos, despesas });
 }
 const C = createContext<Ctx | null>(null);
 
@@ -124,7 +129,10 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
       return novo;
     },
     mudarStatus(id, status) {
-      atualizaAg(id, (a) => ({ ...a, status, pagamento: status === 'cancelado' || status === 'faltou' ? (a.pagamento?.status === 'pago' ? a.pagamento : undefined) : a.pagamento }));
+      setBase((b) => b && limparPreCadastros({
+        ...b,
+        agendamentos: b.agendamentos.map((a) => (a.id === id ? { ...a, status, pagamento: status === 'cancelado' || status === 'faltou' ? (a.pagamento?.status === 'pago' ? a.pagamento : undefined) : a.pagamento } : a)),
+      }));
     },
     receber(id, forma, valor) {
       atualizaAg(id, (a) => ({ ...a, pagamento: { status: 'pago', forma, valor, pagoEm: hoje() } }));

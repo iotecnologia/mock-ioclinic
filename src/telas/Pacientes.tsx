@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
 import { Avatar, BotaoIcone, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
-import { buscarPacientes, idade, resumoPaciente } from '../regras/paciente';
+import { buscarPacientes, cadastrados, idade, resumoPaciente } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
 import { cpfOculto } from '../util/formato';
 
@@ -16,14 +16,14 @@ export function Pacientes() {
   const hj = hoje();
   const [t, setT] = useState('');
   const [f, setF] = useState<Filtro>('todos');
-  const linhas = buscarPacientes(base.pacientes, t).map((p) => ({ p, r: resumoPaciente(p.id, base, hj) }));
+  const linhas = buscarPacientes(cadastrados(base.pacientes), t).map((p) => ({ p, r: resumoPaciente(p.id, base, hj) }));
   const umAno = somaDias(hj, -365);
   const filtradas = linhas.filter(({ p, r }) =>
     f === 'agendados' ? !!r.proximo : f === 'recall' ? !r.proximo && (!r.ultima || r.ultima.data < umAno) : f === 'lgpd' ? !p.consentimentoLgpd : true);
   const n = (x: Filtro) => linhas.filter(({ p, r }) => (x === 'agendados' ? !!r.proximo : x === 'recall' ? !r.proximo && (!r.ultima || r.ultima.data < umAno) : x === 'lgpd' ? !p.consentimentoLgpd : true)).length;
   return (
     <>
-      <TituloPagina titulo="Pacientes" sub={`${base.pacientes.length} pacientes cadastrados`}>
+      <TituloPagina titulo="Pacientes" sub={`${cadastrados(base.pacientes).length} pacientes cadastrados`}>
         <BotaoIcone icone="pacienteMais" titulo="Cadastrar paciente" pri onClick={() => nav('/pacientes/novo')} />
       </TituloPagina>
       <div className="barra">

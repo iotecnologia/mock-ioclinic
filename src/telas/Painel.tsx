@@ -1,13 +1,15 @@
-// Painel (BI) — só a médica. Indicadores do mês com variação sobre o mês anterior
-// (no mês corrente, compara com o MESMO período do mês anterior) e gráficos dos últimos 6 meses.
-import { useState } from 'react';
+// Painel (BI) — só a médica. Indicadores do período escolhido (dia, semana, mês, trimestre, ano ou personalizado)
+// com variação sobre o período anterior — se o período ainda não terminou, compara a parte que já passou com a
+// mesma parte do anterior — e gráficos de evolução. Mesmo período e mesmas contas do Financeiro e dos Relatórios.
 import { useDados } from '../componentes/Dados';
 import { Bloco, TituloPagina } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { Barras, BarrasAgrupadas, BarrasH, Proporcao } from '../componentes/Graficos';
 import { FORMAS } from '../componentes/Receber';
-import { fimDoMes, mesDe, nomeMesCurto, nomeMesLongo, ocupacaoSemana, porForma, receitaPorServico, resumoMes, serieMensal, somaMes, variacao } from '../regras/financeiro';
-import { hoje } from '../util/datas';
+import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
+import { ocupacaoSemana, porForma, receitaPorServico, resumoPeriodo, serieEvolucao, variacao } from '../regras/financeiro';
+import { comparacao, dias, nomeEvolucao, rotulo, rotuloCurto, ultimos } from '../regras/periodo';
+import { hoje, somaDias } from '../util/datas';
 import { moeda } from '../util/formato';
 
 const mil = (v: number) => (Math.abs(v) >= 1000 ? `R$ ${(v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} mil` : moeda(v));
@@ -24,37 +26,35 @@ function Var({ v, bom }: { v: number | null; bom: 'subir' | 'descer' }) {
 export function Painel() {
   const { base } = useDados();
   const hj = hoje();
-  const [mes, setMes] = useState(mesDe(hj));
-  const { atual: a, anterior: b, parcial, ate } = resumoMes(base, mes, hj);
-  const serie = serieMensal(base, mes, 6, hj);
-  const de = `${mes}-01`, fim = parcial ? ate : fimDoMes(mes);
-  const formas = porForma(base, de, fim);
-  const servicos = receitaPorServico(base, de, fim);
-  const ocup = ocupacaoSemana(base, `${somaMes(mes, -2)}-01`, fim);
-  const comp = parcial ? `vs. mesmo período de ${nomeMesLongo(somaMes(mes, -1)).split(' ')[0]}` : `vs. ${nomeMesLongo(somaMes(mes, -1)).split(' ')[0]}`;
+  const [p] = usePeriodo();
+  // valores: o período inteiro (iguais ao Financeiro e aos Relatórios)
+  const a = resumoPeriodo(base, p.de, p.ate);
+  // variação: compara partes equivalentes (período em andamento → só até hoje)
+  const cmp = comparacao(p, hj);
+  const ca = resumoPeriodo(base, cmp.atual.de, cmp.atual.ate);
+  const cb = resumoPeriodo(base, cmp.anterior.de, cmp.anterior.ate);
+  const serie = serieEvolucao(base, ultimos(p).map((x) => ({ de: x.de, ate: x.ate, rotulo: rotuloCurto(x) + (x.de <= hj && hj < x.ate ? '*' : '') })));
+  const formas = porForma(base, p.de, p.ate);
+  const servicos = receitaPorServico(base, p.de, p.ate);
+  // ocupação: o período escolhido; se for curto (menos de 4 semanas), as 4 semanas que terminam nele
+  const ateOc = p.ate < hj ? p.ate : hj;
+  const curto = dias(p.de, ateOc) < 27;
+  const ocup = ocupacaoSemana(base, curto ? somaDias(ateOc, -27) : p.de, ateOc);
+  const emAndamento = serie.some((s) => s.rotulo.endsWith('*'));
 
   const kpis = [
-    { rot: 'Receita', val: moeda(a.recebido), v: variacao(a.recebido, b.recebido), bom: 'subir' as const, ic: 'carteira' },
-    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(a.despesas, b.despesas), bom: 'descer' as const, ic: 'arquivo' },
-    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(a.lucro, b.lucro), bom: 'subir' as const, ic: 'grafico' },
-    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(a.atendidos, b.atendidos), bom: 'subir' as const, ic: 'estetoscopio' },
-    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(a.ticketMedio, b.ticketMedio), bom: 'subir' as const, ic: 'orcamento' },
-    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(a.taxaFaltas, b.taxaFaltas), bom: 'descer' as const, ic: 'falta' },
+    { rot: 'Receita', val: moeda(a.recebido), v: variacao(ca.recebido, cb.recebido), bom: 'subir' as const, ic: 'carteira' },
+    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(ca.despesas, cb.despesas), bom: 'descer' as const, ic: 'arquivo' },
+    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(ca.lucro, cb.lucro), bom: 'subir' as const, ic: 'grafico' },
+    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(ca.atendidos, cb.atendidos), bom: 'subir' as const, ic: 'estetoscopio' },
+    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(ca.ticketMedio, cb.ticketMedio), bom: 'subir' as const, ic: 'orcamento' },
+    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(ca.taxaFaltas, cb.taxaFaltas), bom: 'descer' as const, ic: 'falta' },
   ];
 
   return (
     <>
-      <TituloPagina titulo="Painel" sub={`${nomeMesLongo(mes)}${parcial ? ` · até hoje · comparação ${comp}` : ` · ${comp}`}`}>
-        <div className="nav-data">
-          <button type="button" className="icone-btn" title="Mês anterior" aria-label="Mês anterior" onClick={() => setMes(somaMes(mes, -1))} disabled={mes <= somaMes(mesDe(hj), -11)}><Icone n="esq" /></button>
-          <select className="sel-mes" value={mes} onChange={(e) => setMes(e.target.value)} aria-label="Mês" title="Escolher o mês">
-            {Array.from({ length: 12 }, (_, i) => somaMes(mesDe(hj), -i)).map((m) => {
-              const nome = nomeMesLongo(m).replace(' de ', ' ');   // "outubro 2026"
-              return <option key={m} value={m}>{nome[0].toUpperCase() + nome.slice(1)}</option>;
-            })}
-          </select>
-          <button type="button" className="icone-btn" title="Próximo mês" aria-label="Próximo mês" onClick={() => setMes(somaMes(mes, 1))} disabled={mes >= mesDe(hj)}><Icone n="dir" /></button>
-        </div>
+      <TituloPagina titulo="Painel" sub={`${rotulo(p)} · ${cmp.parcial ? 'variação até hoje × mesma parte do período anterior' : 'variação × período anterior'}`}>
+        <SeletorPeriodo />
       </TituloPagina>
 
       <div className="contadores c6">
@@ -62,17 +62,17 @@ export function Painel() {
       </div>
 
       <div className="grade-bi">
-        <Bloco titulo={<><Icone n="grafico" /> Receita x custo · últimos 6 meses</>} className="bi-largo">
+        <Bloco titulo={<><Icone n="grafico" /> Receita x custo · {nomeEvolucao(p)}</>} className="bi-largo">
           <div className="pad">
             <BarrasAgrupadas series={['Receita', 'Custo']} fmt={moeda} fmtEixo={mil}
-              grupos={serie.map((s) => ({ rotulo: nomeMesCurto(s.mes) + (s.mes === mesDe(hj) ? '*' : ''), valores: [s.receita, s.despesa] }))} />
-            {serie.some((s) => s.mes === mesDe(hj)) && <p className="nota">* mês em andamento: receita até hoje; custo com as despesas já lançadas do mês.</p>}
+              grupos={serie.map((s) => ({ rotulo: s.rotulo, valores: [s.receita, s.despesa] }))} />
+            {emAndamento && <p className="nota">* período em andamento: receita recebida até hoje; custo com as despesas lançadas no período.</p>}
           </div>
         </Bloco>
-        <Bloco titulo={<><Icone n="calendario" /> Agendamentos por mês</>}>
+        <Bloco titulo={<><Icone n="calendario" /> Agendamentos · {nomeEvolucao(p)}</>}>
           <div className="pad">
-            <Barras fmt={int} destacarUltimo={serie[serie.length - 1].mes === mesDe(hj)}
-              dados={serie.map((s) => ({ rotulo: nomeMesCurto(s.mes), valor: s.agendados, nota: `${s.atendidos} atendidos` }))} />
+            <Barras fmt={int} destacarUltimo={serie[serie.length - 1].rotulo.endsWith('*')}
+              dados={serie.map((s) => ({ rotulo: s.rotulo.replace('*', ''), valor: s.agendados, nota: `${s.atendidos} atendidos` }))} />
           </div>
         </Bloco>
         <Bloco titulo={<><Icone n="carteira" /> Formas de pagamento</>}>
@@ -86,7 +86,7 @@ export function Painel() {
         <Bloco titulo={<><Icone n="estetoscopio" /> Receita por serviço</>}>
           <div className="pad"><BarrasH dados={servicos.map((s) => ({ rotulo: s.nome, valor: s.valor }))} fmt={moeda} /></div>
         </Bloco>
-        <Bloco titulo={<><Icone n="semana" /> Ocupação da agenda por dia da semana</>} extra={<span className="mut peq">últimos 3 meses</span>}>
+        <Bloco titulo={<><Icone n="semana" /> Ocupação da agenda por dia da semana</>} extra={<span className="mut peq">{curto ? 'últimas 4 semanas do período' : 'no período'}</span>}>
           <div className="pad"><BarrasH dados={ocup.map((o) => ({ rotulo: o.dia, valor: o.pct }))} fmt={pct} max={100} /></div>
         </Bloco>
       </div>

@@ -1,877 +1,1449 @@
 [
- {
-  "codigo": "I10",
-  "descricao": "Hipertensão essencial (primária)",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I11.9",
-  "descricao": "Doença cardíaca hipertensiva sem insuficiência cardíaca",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I15.9",
-  "descricao": "Hipertensão secundária, não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I20.0",
-  "descricao": "Angina instável",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I20.9",
-  "descricao": "Angina pectoris, não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I21.9",
-  "descricao": "Infarto agudo do miocárdio não especificado",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I25.1",
-  "descricao": "Doença aterosclerótica do coração",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I25.2",
-  "descricao": "Infarto antigo do miocárdio",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I25.9",
-  "descricao": "Doença isquêmica crônica do coração não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I34.0",
-  "descricao": "Insuficiência (da valva) mitral",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I34.1",
-  "descricao": "Prolapso (da valva) mitral",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I35.0",
-  "descricao": "Estenose (da valva) aórtica",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I35.1",
-  "descricao": "Insuficiência (da valva) aórtica",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I42.0",
-  "descricao": "Cardiomiopatia dilatada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I42.1",
-  "descricao": "Cardiomiopatia obstrutiva hipertrófica",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I44.7",
-  "descricao": "Bloqueio de ramo esquerdo não especificado",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I45.1",
-  "descricao": "Outros bloqueios de ramo direito",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I47.1",
-  "descricao": "Taquicardia supraventricular",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I48",
-  "descricao": "Fibrilação e flutter atrial",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I49.1",
-  "descricao": "Despolarização atrial prematura (extrassístole atrial)",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I49.3",
-  "descricao": "Despolarização ventricular prematura (extrassístole ventricular)",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I49.9",
-  "descricao": "Arritmia cardíaca não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I50.0",
-  "descricao": "Insuficiência cardíaca congestiva",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I50.9",
-  "descricao": "Insuficiência cardíaca não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I51.7",
-  "descricao": "Cardiomegalia",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I63.9",
-  "descricao": "Infarto cerebral não especificado",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I65.2",
-  "descricao": "Oclusão e estenose da artéria carótida",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I70.2",
-  "descricao": "Aterosclerose das artérias das extremidades",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I73.9",
-  "descricao": "Doença vascular periférica não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I80.2",
-  "descricao": "Flebite e tromboflebite de outros vasos profundos dos membros inferiores",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I83.9",
-  "descricao": "Varizes dos membros inferiores sem úlcera ou inflamação",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I95.1",
-  "descricao": "Hipotensão ortostática",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "I95.9",
-  "descricao": "Hipotensão não especificada",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "Q21.1",
-  "descricao": "Comunicação interatrial",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "R00.0",
-  "descricao": "Taquicardia não especificada",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R00.1",
-  "descricao": "Bradicardia não especificada",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R00.2",
-  "descricao": "Palpitações",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R01.1",
-  "descricao": "Sopro cardíaco não especificado",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R03.0",
-  "descricao": "Valor elevado da pressão arterial sem diagnóstico de hipertensão",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R06.0",
-  "descricao": "Dispneia",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R07.2",
-  "descricao": "Dor precordial",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R07.4",
-  "descricao": "Dor torácica não especificada",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R42",
-  "descricao": "Tontura e instabilidade",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R53",
-  "descricao": "Mal-estar, fadiga",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R55",
-  "descricao": "Síncope e colapso",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R60.0",
-  "descricao": "Edema localizado",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R51",
-  "descricao": "Cefaleia",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "E10.9",
-  "descricao": "Diabetes mellitus tipo 1 sem complicações",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E11.9",
-  "descricao": "Diabetes mellitus tipo 2 sem complicações",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E66.9",
-  "descricao": "Obesidade não especificada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E78.0",
-  "descricao": "Hipercolesterolemia pura",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E78.1",
-  "descricao": "Hipergliceridemia pura",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E78.2",
-  "descricao": "Hiperlipidemia mista",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E78.5",
-  "descricao": "Hiperlipidemia não especificada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E03.9",
-  "descricao": "Hipotireoidismo não especificado",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E05.9",
-  "descricao": "Tireotoxicose não especificada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "E87.6",
-  "descricao": "Hipopotassemia",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "F17.2",
-  "descricao": "Tabagismo (síndrome de dependência ao fumo)",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "G47.3",
-  "descricao": "Apneia do sono",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "N18.9",
-  "descricao": "Doença renal crônica não especificada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "J44.9",
-  "descricao": "Doença pulmonar obstrutiva crônica não especificada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "F41.1",
-  "descricao": "Ansiedade generalizada",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "F41.0",
-  "descricao": "Transtorno de pânico",
-  "grupo": "Metabólicas"
- },
- {
-  "codigo": "Z00.0",
-  "descricao": "Exame médico geral",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z01.8",
-  "descricao": "Outros exames especiais especificados",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z01.8",
-  "descricao": "Avaliação pré-operatória",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z02.5",
-  "descricao": "Exame de aptidão para prática de esporte",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z02.7",
-  "descricao": "Obtenção de atestado médico",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z09.0",
-  "descricao": "Exame de seguimento após cirurgia",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z13.6",
-  "descricao": "Exame especial de rastreamento de doenças cardiovasculares",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z76.0",
-  "descricao": "Emissão de prescrição de repetição",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z82.4",
-  "descricao": "História familiar de doença isquêmica do coração",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z86.7",
-  "descricao": "História pessoal de doenças do aparelho circulatório",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z95.0",
-  "descricao": "Presença de marca-passo cardíaco",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z95.1",
-  "descricao": "Presença de enxerto de ponte aortocoronária",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z95.5",
-  "descricao": "Presença de implante e enxerto de angioplastia coronária",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z79.0",
-  "descricao": "Uso prolongado de anticoagulantes",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "L70.0",
-  "descricao": "Acne vulgar",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L70.9",
-  "descricao": "Acne não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L20.9",
-  "descricao": "Dermatite atópica não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L23.9",
-  "descricao": "Dermatite alérgica de contato",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L30.9",
-  "descricao": "Dermatite não especificada (Eczema)",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L40.0",
-  "descricao": "Psoríase vulgar",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L50.0",
-  "descricao": "Urticária alérgica",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L71.9",
-  "descricao": "Rosácea não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L82",
-  "descricao": "Ceratose seborreica",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L63.9",
-  "descricao": "Alopecia areata não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L65.0",
-  "descricao": "Eflúvio telógeno",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L80",
-  "descricao": "Vitiligo",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L81.1",
-  "descricao": "Cloasma / Melasma",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "B35.9",
-  "descricao": "Dermatofitose não especificada (Micose)",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "B02.9",
-  "descricao": "Herpes zoster sem complicações",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "B00.9",
-  "descricao": "Infecção por vírus do herpes não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "B07",
-  "descricao": "Verrugas de origem viral",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L02.9",
-  "descricao": "Abscesso cutâneo, furúnculo e carbúnculo",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L03.9",
-  "descricao": "Celulite não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "L73.9",
-  "descricao": "Foliculite e afecções foliculares",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "D22.9",
-  "descricao": "Nevo melanocítico não especificado (Pintas)",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "C44.9",
-  "descricao": "Neoplasia maligna da pele não especificada",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "B86",
-  "descricao": "Escabiose (Sarna)",
-  "grupo": "Dermatologia"
- },
- {
-  "codigo": "J00",
-  "descricao": "Nasofaringite aguda (Resfriado comum)",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J01.9",
-  "descricao": "Sinusite aguda não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J02.9",
-  "descricao": "Faringite aguda não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J03.9",
-  "descricao": "Amigdalite aguda não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J06.9",
-  "descricao": "Infecção aguda das vias aéreas superiores (IVAS)",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J11.1",
-  "descricao": "Influenza (Gripe) com manifestações respiratórias",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J18.9",
-  "descricao": "Pneumonia não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J20.9",
-  "descricao": "Bronquite aguda não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J30.4",
-  "descricao": "Rinite alérgica não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "J45.9",
-  "descricao": "Asma não especificada",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "R05",
-  "descricao": "Tosse persistente",
-  "grupo": "Respiratório"
- },
- {
-  "codigo": "I87.2",
-  "descricao": "Insuficiência venosa crônica (periférica)",
-  "grupo": "Cardiologia"
- },
- {
-  "codigo": "M54.5",
-  "descricao": "Dor lombar baixa (Lombalgia)",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M54.2",
-  "descricao": "Cervicalgia",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M54.4",
-  "descricao": "Lumbago com ciática (Lombociatalgia)",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M79.1",
-  "descricao": "Mialgia / Dores musculares",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M79.7",
-  "descricao": "Fibromialgia",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M75.1",
-  "descricao": "Síndrome do manguito rotador",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M77.9",
-  "descricao": "Entesopatia não especificada (Tendinite)",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M65.9",
-  "descricao": "Sinovite e tenossinovite não especificadas",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M17.9",
-  "descricao": "Gonartrose não especificada (Artrose do joelho)",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M16.9",
-  "descricao": "Coxartrose não especificada (Artrose do quadril)",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M19.9",
-  "descricao": "Artrose não especificada",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "M81.9",
-  "descricao": "Osteoporose não especificada",
-  "grupo": "Osteomuscular"
- },
- {
-  "codigo": "A09",
-  "descricao": "Diarreia e gastroenterite de origem infecciosa",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K21.9",
-  "descricao": "Doença do refluxo gastroesofágico (DRGE)",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K29.7",
-  "descricao": "Gastrite não especificada",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K25.9",
-  "descricao": "Úlcera gástrica não especificada",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K58.9",
-  "descricao": "Síndrome do intestino irritável",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K59.0",
-  "descricao": "Constipação intestinal",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K64.9",
-  "descricao": "Hemorroidas não especificadas",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K80.2",
-  "descricao": "Cálculo da vesícula biliar (Colelitíase)",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "K76.0",
-  "descricao": "Degeneração gordurosa do fígado (Esteatose hepática)",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "E55.9",
-  "descricao": "Deficiência de vitamina D não especificada",
-  "grupo": "Endócrino"
- },
- {
-  "codigo": "E79.0",
-  "descricao": "Hiperuricemia sem sinais de artrite inflamatória (ácido úrico alto)",
-  "grupo": "Endócrino"
- },
- {
-  "codigo": "G43.9",
-  "descricao": "Enxaqueca não especificada",
-  "grupo": "Neurologia"
- },
- {
-  "codigo": "G44.2",
-  "descricao": "Cefaleia tensional",
-  "grupo": "Neurologia"
- },
- {
-  "codigo": "G47.0",
-  "descricao": "Distúrbios do início e manutenção do sono (Insônia)",
-  "grupo": "Neurologia"
- },
- {
-  "codigo": "G56.0",
-  "descricao": "Síndrome do túnel do carpo",
-  "grupo": "Neurologia"
- },
- {
-  "codigo": "F32.9",
-  "descricao": "Episódio depressivo não especificado",
-  "grupo": "Psiquiatria"
- },
- {
-  "codigo": "F33.9",
-  "descricao": "Transtorno depressivo recorrente",
-  "grupo": "Psiquiatria"
- },
- {
-  "codigo": "F43.2",
-  "descricao": "Transtornos de adaptação / Estresse crônico",
-  "grupo": "Psiquiatria"
- },
- {
-  "codigo": "F90.0",
-  "descricao": "Distúrbios da atividade e da atenção (TDAH)",
-  "grupo": "Psiquiatria"
- },
- {
-  "codigo": "N39.0",
-  "descricao": "Infecção do trato urinário (ITU / Cistite)",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "N20.1",
-  "descricao": "Cálculo no ureter (Cólica nefrética / renal)",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "N40",
-  "descricao": "Hiperplasia da próstata (HPB)",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "N94.6",
-  "descricao": "Dismenorreia não especificada (Cólica menstrual)",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "N95.1",
-  "descricao": "Estados climatéricos e menopáusicos",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "N76.0",
-  "descricao": "Vaginite aguda (Candidíase / Gardnerella)",
-  "grupo": "Geniturinário"
- },
- {
-  "codigo": "C50.9",
-  "descricao": "Neoplasia maligna da mama não especificada (Câncer de mama)",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C50",
-  "descricao": "Neoplasia maligna da mama",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C50.4",
-  "descricao": "Neoplasia maligna do quadrante superior externo da mama",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C53.9",
-  "descricao": "Neoplasia maligna do colo do útero",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C61",
-  "descricao": "Neoplasia maligna da próstata (Câncer de próstata)",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C18.9",
-  "descricao": "Neoplasia maligna do cólon não especificada",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C34.9",
-  "descricao": "Neoplasia maligna dos brônquios ou pulmões",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "C73",
-  "descricao": "Neoplasia maligna da tireoide",
-  "grupo": "Oncologia"
- },
- {
-  "codigo": "N63",
-  "descricao": "Nódulo mamário não especificado",
-  "grupo": "Ginecologia"
- },
- {
-  "codigo": "N60.9",
-  "descricao": "Displasia mamária benigna",
-  "grupo": "Ginecologia"
- },
- {
-  "codigo": "R10",
-  "descricao": "Dor abdominal e pélvica",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R10.0",
-  "descricao": "Abdome agudo",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R10.1",
-  "descricao": "Dor localizada no abdome superior (Epigastralgia)",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R10.2",
-  "descricao": "Dor pélvica e perineal",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R10.3",
-  "descricao": "Dor localizada no abdome inferior",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R10.4",
-  "descricao": "Outras dores abdominais e as não especificadas (Dor na barriga)",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "K35.8",
-  "descricao": "Apendicite aguda não especificada",
-  "grupo": "Gastrointestinal"
- },
- {
-  "codigo": "B34.9",
-  "descricao": "Infecção viral não especificada (Virose)",
-  "grupo": "Infeccioso"
- },
- {
-  "codigo": "R50.9",
-  "descricao": "Febre não especificada",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R11",
-  "descricao": "Náusea e vômitos",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R30.0",
-  "descricao": "Disúria (Dor ao urinar)",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "R31",
-  "descricao": "Hematúria não especificada (Sangue na urina)",
-  "grupo": "Sintomas"
- },
- {
-  "codigo": "Z01.0",
-  "descricao": "Exame dos olhos e da visão",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z02.1",
-  "descricao": "Exame médico pré-admissional",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "Z71.3",
-  "descricao": "Aconselhamento e orientação dietética",
-  "grupo": "Rotina"
- },
- {
-  "codigo": "M10.9",
-  "descricao": "Gota não especificada",
-  "grupo": "Osteomuscular"
- }
+  {
+    "codigo": "I10",
+    "descricao": "Hipertensão essencial (primária)",
+    "grupo": "Cardiologia",
+    "termos": [
+      "pressão alta",
+      "hipertensão",
+      "has",
+      "pressão arterial alta"
+    ]
+  },
+  {
+    "codigo": "I11.9",
+    "descricao": "Doença cardíaca hipertensiva sem insuficiência cardíaca",
+    "grupo": "Cardiologia",
+    "termos": [
+      "pressão alta",
+      "coração aumentado pela pressão",
+      "cardiopatia hipertensiva"
+    ]
+  },
+  {
+    "codigo": "I15.9",
+    "descricao": "Hipertensão secundária, não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "pressão alta secundária",
+      "hipertensão secundária"
+    ]
+  },
+  {
+    "codigo": "I20.0",
+    "descricao": "Angina instável",
+    "grupo": "Cardiologia",
+    "termos": [
+      "dor no peito",
+      "aperto no peito",
+      "angina",
+      "dor no peito em repouso"
+    ]
+  },
+  {
+    "codigo": "I20.9",
+    "descricao": "Angina pectoris, não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "dor no peito",
+      "aperto no peito",
+      "angina",
+      "dor no peito ao esforço"
+    ]
+  },
+  {
+    "codigo": "I21.9",
+    "descricao": "Infarto agudo do miocárdio não especificado",
+    "grupo": "Cardiologia",
+    "termos": [
+      "infarto",
+      "ataque cardíaco",
+      "dor no peito forte",
+      "enfarte"
+    ]
+  },
+  {
+    "codigo": "I25.1",
+    "descricao": "Doença aterosclerótica do coração",
+    "grupo": "Cardiologia",
+    "termos": [
+      "entupimento das coronárias",
+      "coronária entupida",
+      "placa nas artérias do coração",
+      "doença coronariana"
+    ]
+  },
+  {
+    "codigo": "I25.2",
+    "descricao": "Infarto antigo do miocárdio",
+    "grupo": "Cardiologia",
+    "termos": [
+      "infarto antigo",
+      "já teve infarto",
+      "enfarte antigo"
+    ]
+  },
+  {
+    "codigo": "I25.9",
+    "descricao": "Doença isquêmica crônica do coração não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "isquemia",
+      "coração com pouco sangue",
+      "doença coronariana"
+    ]
+  },
+  {
+    "codigo": "I34.0",
+    "descricao": "Insuficiência (da valva) mitral",
+    "grupo": "Cardiologia",
+    "termos": [
+      "sopro",
+      "válvula mitral vazando",
+      "insuficiência mitral"
+    ]
+  },
+  {
+    "codigo": "I34.1",
+    "descricao": "Prolapso (da valva) mitral",
+    "grupo": "Cardiologia",
+    "termos": [
+      "prolapso",
+      "válvula mitral",
+      "sopro"
+    ]
+  },
+  {
+    "codigo": "I35.0",
+    "descricao": "Estenose (da valva) aórtica",
+    "grupo": "Cardiologia",
+    "termos": [
+      "estenose aórtica",
+      "válvula aórtica estreita",
+      "sopro"
+    ]
+  },
+  {
+    "codigo": "I35.1",
+    "descricao": "Insuficiência (da valva) aórtica",
+    "grupo": "Cardiologia",
+    "termos": [
+      "válvula aórtica vazando",
+      "sopro"
+    ]
+  },
+  {
+    "codigo": "I42.0",
+    "descricao": "Cardiomiopatia dilatada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "coração dilatado",
+      "coração grande",
+      "cardiomiopatia"
+    ]
+  },
+  {
+    "codigo": "I42.1",
+    "descricao": "Cardiomiopatia obstrutiva hipertrófica",
+    "grupo": "Cardiologia",
+    "termos": [
+      "coração grosso",
+      "hipertrofia",
+      "cardiomiopatia hipertrófica"
+    ]
+  },
+  {
+    "codigo": "I44.7",
+    "descricao": "Bloqueio de ramo esquerdo não especificado",
+    "grupo": "Cardiologia",
+    "termos": [
+      "bloqueio de ramo",
+      "bre",
+      "alteração no eletro"
+    ]
+  },
+  {
+    "codigo": "I45.1",
+    "descricao": "Outros bloqueios de ramo direito",
+    "grupo": "Cardiologia",
+    "termos": [
+      "bloqueio de ramo",
+      "brd",
+      "alteração no eletro"
+    ]
+  },
+  {
+    "codigo": "I47.1",
+    "descricao": "Taquicardia supraventricular",
+    "grupo": "Cardiologia",
+    "termos": [
+      "coração acelerado",
+      "taquicardia",
+      "batedeira",
+      "palpitação"
+    ]
+  },
+  {
+    "codigo": "I48",
+    "descricao": "Fibrilação e flutter atrial",
+    "grupo": "Cardiologia",
+    "termos": [
+      "fibrilação",
+      "arritmia",
+      "coração irregular",
+      "batedeira",
+      "palpitação",
+      "fa"
+    ]
+  },
+  {
+    "codigo": "I49.1",
+    "descricao": "Despolarização atrial prematura (extrassístole atrial)",
+    "grupo": "Cardiologia",
+    "termos": [
+      "extrassístole",
+      "batimento fora de hora",
+      "falha no coração",
+      "palpitação"
+    ]
+  },
+  {
+    "codigo": "I49.3",
+    "descricao": "Despolarização ventricular prematura (extrassístole ventricular)",
+    "grupo": "Cardiologia",
+    "termos": [
+      "extrassístole",
+      "batimento fora de hora",
+      "falha no coração",
+      "palpitação"
+    ]
+  },
+  {
+    "codigo": "I49.9",
+    "descricao": "Arritmia cardíaca não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "arritmia",
+      "coração irregular",
+      "batedeira",
+      "palpitação"
+    ]
+  },
+  {
+    "codigo": "I50.0",
+    "descricao": "Insuficiência cardíaca congestiva",
+    "grupo": "Cardiologia",
+    "termos": [
+      "insuficiência cardíaca",
+      "coração fraco",
+      "falta de ar",
+      "inchaço nas pernas",
+      "cansaço"
+    ]
+  },
+  {
+    "codigo": "I50.9",
+    "descricao": "Insuficiência cardíaca não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "insuficiência cardíaca",
+      "coração fraco",
+      "falta de ar",
+      "cansaço"
+    ]
+  },
+  {
+    "codigo": "I51.7",
+    "descricao": "Cardiomegalia",
+    "grupo": "Cardiologia",
+    "termos": [
+      "coração grande",
+      "coração aumentado",
+      "cardiomegalia"
+    ]
+  },
+  {
+    "codigo": "I63.9",
+    "descricao": "Infarto cerebral não especificado",
+    "grupo": "Cardiologia",
+    "termos": [
+      "avc",
+      "derrame",
+      "isquemia cerebral"
+    ]
+  },
+  {
+    "codigo": "I65.2",
+    "descricao": "Oclusão e estenose da artéria carótida",
+    "grupo": "Cardiologia",
+    "termos": [
+      "carótida entupida",
+      "entupimento da carótida",
+      "placa na carótida"
+    ]
+  },
+  {
+    "codigo": "I70.2",
+    "descricao": "Aterosclerose das artérias das extremidades",
+    "grupo": "Cardiologia",
+    "termos": [
+      "má circulação nas pernas",
+      "dor nas pernas ao andar",
+      "artéria entupida na perna"
+    ]
+  },
+  {
+    "codigo": "I73.9",
+    "descricao": "Doença vascular periférica não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "má circulação",
+      "circulação ruim",
+      "pés frios"
+    ]
+  },
+  {
+    "codigo": "I80.2",
+    "descricao": "Flebite e tromboflebite de outros vasos profundos dos membros inferiores",
+    "grupo": "Cardiologia",
+    "termos": [
+      "trombose",
+      "tvp",
+      "coágulo na perna",
+      "perna inchada e dolorida"
+    ]
+  },
+  {
+    "codigo": "I83.9",
+    "descricao": "Varizes dos membros inferiores sem úlcera ou inflamação",
+    "grupo": "Cardiologia",
+    "termos": [
+      "varizes",
+      "veias dilatadas",
+      "vasinhos"
+    ]
+  },
+  {
+    "codigo": "I95.1",
+    "descricao": "Hipotensão ortostática",
+    "grupo": "Cardiologia",
+    "termos": [
+      "pressão baixa ao levantar",
+      "tontura ao levantar",
+      "queda de pressão"
+    ]
+  },
+  {
+    "codigo": "I95.9",
+    "descricao": "Hipotensão não especificada",
+    "grupo": "Cardiologia",
+    "termos": [
+      "pressão baixa",
+      "hipotensão"
+    ]
+  },
+  {
+    "codigo": "Q21.1",
+    "descricao": "Comunicação interatrial",
+    "grupo": "Cardiologia",
+    "termos": [
+      "cia",
+      "sopro",
+      "buraco no coração"
+    ]
+  },
+  {
+    "codigo": "R00.0",
+    "descricao": "Taquicardia não especificada",
+    "grupo": "Sintomas",
+    "termos": [
+      "coração acelerado",
+      "taquicardia",
+      "batedeira",
+      "palpitação"
+    ]
+  },
+  {
+    "codigo": "R00.1",
+    "descricao": "Bradicardia não especificada",
+    "grupo": "Sintomas",
+    "termos": [
+      "coração lento",
+      "bradicardia",
+      "pulso baixo"
+    ]
+  },
+  {
+    "codigo": "R00.2",
+    "descricao": "Palpitações",
+    "grupo": "Sintomas",
+    "termos": [
+      "palpitação",
+      "batedeira",
+      "coração disparado",
+      "coração acelerado"
+    ]
+  },
+  {
+    "codigo": "R01.1",
+    "descricao": "Sopro cardíaco não especificado",
+    "grupo": "Sintomas",
+    "termos": [
+      "sopro",
+      "sopro no coração"
+    ]
+  },
+  {
+    "codigo": "R03.0",
+    "descricao": "Valor elevado da pressão arterial sem diagnóstico de hipertensão",
+    "grupo": "Sintomas",
+    "termos": [
+      "pressão alta",
+      "pico de pressão",
+      "pressão elevada"
+    ]
+  },
+  {
+    "codigo": "R06.0",
+    "descricao": "Dispneia",
+    "grupo": "Sintomas",
+    "termos": [
+      "falta de ar",
+      "cansaço",
+      "dispneia",
+      "fôlego curto"
+    ]
+  },
+  {
+    "codigo": "R07.2",
+    "descricao": "Dor precordial",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor no peito",
+      "dor precordial",
+      "aperto no peito"
+    ]
+  },
+  {
+    "codigo": "R07.4",
+    "descricao": "Dor torácica não especificada",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor no peito",
+      "dor torácica",
+      "pontada no peito"
+    ]
+  },
+  {
+    "codigo": "R42",
+    "descricao": "Tontura e instabilidade",
+    "grupo": "Sintomas",
+    "termos": [
+      "tontura",
+      "vertigem",
+      "labirintite",
+      "zonzeira"
+    ]
+  },
+  {
+    "codigo": "R53",
+    "descricao": "Mal-estar, fadiga",
+    "grupo": "Sintomas",
+    "termos": [
+      "cansaço",
+      "fadiga",
+      "fraqueza",
+      "mal estar",
+      "indisposição"
+    ]
+  },
+  {
+    "codigo": "R55",
+    "descricao": "Síncope e colapso",
+    "grupo": "Sintomas",
+    "termos": [
+      "desmaio",
+      "síncope",
+      "apagou",
+      "perda de consciência"
+    ]
+  },
+  {
+    "codigo": "R60.0",
+    "descricao": "Edema localizado",
+    "grupo": "Sintomas",
+    "termos": [
+      "inchaço",
+      "edema",
+      "perna inchada",
+      "pé inchado"
+    ]
+  },
+  {
+    "codigo": "R51",
+    "descricao": "Cefaleia",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor de cabeça",
+      "cefaleia"
+    ]
+  },
+  {
+    "codigo": "E10.9",
+    "descricao": "Diabetes mellitus tipo 1 sem complicações",
+    "grupo": "Metabólicas",
+    "termos": [
+      "diabetes",
+      "açúcar alto",
+      "glicose alta",
+      "diabetes tipo 1"
+    ]
+  },
+  {
+    "codigo": "E11.9",
+    "descricao": "Diabetes mellitus tipo 2 sem complicações",
+    "grupo": "Metabólicas",
+    "termos": [
+      "diabetes",
+      "açúcar alto",
+      "glicose alta",
+      "diabetes tipo 2"
+    ]
+  },
+  {
+    "codigo": "E66.9",
+    "descricao": "Obesidade não especificada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "obesidade",
+      "sobrepeso",
+      "excesso de peso"
+    ]
+  },
+  {
+    "codigo": "E78.0",
+    "descricao": "Hipercolesterolemia pura",
+    "grupo": "Metabólicas",
+    "termos": [
+      "colesterol alto",
+      "ldl alto",
+      "gordura no sangue"
+    ]
+  },
+  {
+    "codigo": "E78.1",
+    "descricao": "Hipergliceridemia pura",
+    "grupo": "Metabólicas",
+    "termos": [
+      "triglicerídeos altos",
+      "triglicérides alto",
+      "gordura no sangue"
+    ]
+  },
+  {
+    "codigo": "E78.2",
+    "descricao": "Hiperlipidemia mista",
+    "grupo": "Metabólicas",
+    "termos": [
+      "colesterol alto",
+      "triglicerídeos altos",
+      "dislipidemia",
+      "gordura no sangue"
+    ]
+  },
+  {
+    "codigo": "E78.5",
+    "descricao": "Hiperlipidemia não especificada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "colesterol alto",
+      "dislipidemia",
+      "gordura no sangue"
+    ]
+  },
+  {
+    "codigo": "E03.9",
+    "descricao": "Hipotireoidismo não especificado",
+    "grupo": "Metabólicas",
+    "termos": [
+      "tireoide",
+      "hipotireoidismo",
+      "tireoide lenta"
+    ]
+  },
+  {
+    "codigo": "E05.9",
+    "descricao": "Tireotoxicose não especificada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "tireoide",
+      "hipertireoidismo",
+      "tireoide acelerada"
+    ]
+  },
+  {
+    "codigo": "E87.6",
+    "descricao": "Hipopotassemia",
+    "grupo": "Metabólicas",
+    "termos": [
+      "potássio baixo",
+      "câimbra"
+    ]
+  },
+  {
+    "codigo": "F17.2",
+    "descricao": "Tabagismo (síndrome de dependência ao fumo)",
+    "grupo": "Metabólicas",
+    "termos": [
+      "fumante",
+      "cigarro",
+      "tabagismo",
+      "fuma"
+    ]
+  },
+  {
+    "codigo": "G47.3",
+    "descricao": "Apneia do sono",
+    "grupo": "Metabólicas",
+    "termos": [
+      "ronco",
+      "apneia",
+      "para de respirar dormindo"
+    ]
+  },
+  {
+    "codigo": "N18.9",
+    "descricao": "Doença renal crônica não especificada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "rim",
+      "insuficiência renal",
+      "doença renal"
+    ]
+  },
+  {
+    "codigo": "J44.9",
+    "descricao": "Doença pulmonar obstrutiva crônica não especificada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "dpoc",
+      "enfisema",
+      "bronquite crônica",
+      "falta de ar"
+    ]
+  },
+  {
+    "codigo": "F41.1",
+    "descricao": "Ansiedade generalizada",
+    "grupo": "Metabólicas",
+    "termos": [
+      "ansiedade",
+      "nervosismo",
+      "preocupação"
+    ]
+  },
+  {
+    "codigo": "F41.0",
+    "descricao": "Transtorno de pânico",
+    "grupo": "Metabólicas",
+    "termos": [
+      "pânico",
+      "crise de pânico",
+      "crise de ansiedade"
+    ]
+  },
+  {
+    "codigo": "Z00.0",
+    "descricao": "Exame médico geral",
+    "grupo": "Rotina",
+    "termos": [
+      "check-up",
+      "checkup",
+      "exame de rotina",
+      "consulta de rotina"
+    ]
+  },
+  {
+    "codigo": "Z01.8",
+    "descricao": "Outros exames especiais especificados",
+    "grupo": "Rotina"
+  },
+  {
+    "codigo": "Z01.8",
+    "descricao": "Avaliação pré-operatória",
+    "grupo": "Rotina",
+    "termos": [
+      "pré-operatório",
+      "risco cirúrgico",
+      "avaliação para cirurgia"
+    ]
+  },
+  {
+    "codigo": "Z02.5",
+    "descricao": "Exame de aptidão para prática de esporte",
+    "grupo": "Rotina",
+    "termos": [
+      "academia",
+      "esporte",
+      "atestado para atividade física",
+      "liberação para exercício"
+    ]
+  },
+  {
+    "codigo": "Z02.7",
+    "descricao": "Obtenção de atestado médico",
+    "grupo": "Rotina",
+    "termos": [
+      "atestado",
+      "atestado médico"
+    ]
+  },
+  {
+    "codigo": "Z09.0",
+    "descricao": "Exame de seguimento após cirurgia",
+    "grupo": "Rotina",
+    "termos": [
+      "pós-operatório",
+      "retorno após cirurgia"
+    ]
+  },
+  {
+    "codigo": "Z13.6",
+    "descricao": "Exame especial de rastreamento de doenças cardiovasculares",
+    "grupo": "Rotina",
+    "termos": [
+      "check-up do coração",
+      "rastreamento cardiológico",
+      "avaliação cardiológica"
+    ]
+  },
+  {
+    "codigo": "Z76.0",
+    "descricao": "Emissão de prescrição de repetição",
+    "grupo": "Rotina",
+    "termos": [
+      "renovar receita",
+      "receita de uso contínuo",
+      "repetir receita"
+    ]
+  },
+  {
+    "codigo": "Z82.4",
+    "descricao": "História familiar de doença isquêmica do coração",
+    "grupo": "Rotina",
+    "termos": [
+      "infarto na família",
+      "histórico familiar",
+      "pai teve infarto"
+    ]
+  },
+  {
+    "codigo": "Z86.7",
+    "descricao": "História pessoal de doenças do aparelho circulatório",
+    "grupo": "Rotina",
+    "termos": [
+      "histórico de doença do coração",
+      "já teve problema no coração"
+    ]
+  },
+  {
+    "codigo": "Z95.0",
+    "descricao": "Presença de marca-passo cardíaco",
+    "grupo": "Rotina",
+    "termos": [
+      "marca-passo",
+      "marcapasso"
+    ]
+  },
+  {
+    "codigo": "Z95.1",
+    "descricao": "Presença de enxerto de ponte aortocoronária",
+    "grupo": "Rotina",
+    "termos": [
+      "ponte de safena",
+      "safena",
+      "cirurgia de ponte"
+    ]
+  },
+  {
+    "codigo": "Z95.5",
+    "descricao": "Presença de implante e enxerto de angioplastia coronária",
+    "grupo": "Rotina",
+    "termos": [
+      "stent",
+      "angioplastia",
+      "cateterismo com stent"
+    ]
+  },
+  {
+    "codigo": "Z79.0",
+    "descricao": "Uso prolongado de anticoagulantes",
+    "grupo": "Rotina",
+    "termos": [
+      "anticoagulante",
+      "afinar o sangue",
+      "varfarina",
+      "marevan"
+    ]
+  },
+  {
+    "codigo": "L70.0",
+    "descricao": "Acne vulgar",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L70.9",
+    "descricao": "Acne não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L20.9",
+    "descricao": "Dermatite atópica não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L23.9",
+    "descricao": "Dermatite alérgica de contato",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L30.9",
+    "descricao": "Dermatite não especificada (Eczema)",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L40.0",
+    "descricao": "Psoríase vulgar",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L50.0",
+    "descricao": "Urticária alérgica",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L71.9",
+    "descricao": "Rosácea não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L82",
+    "descricao": "Ceratose seborreica",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L63.9",
+    "descricao": "Alopecia areata não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L65.0",
+    "descricao": "Eflúvio telógeno",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L80",
+    "descricao": "Vitiligo",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L81.1",
+    "descricao": "Cloasma / Melasma",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "B35.9",
+    "descricao": "Dermatofitose não especificada (Micose)",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "B02.9",
+    "descricao": "Herpes zoster sem complicações",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "B00.9",
+    "descricao": "Infecção por vírus do herpes não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "B07",
+    "descricao": "Verrugas de origem viral",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L02.9",
+    "descricao": "Abscesso cutâneo, furúnculo e carbúnculo",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L03.9",
+    "descricao": "Celulite não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "L73.9",
+    "descricao": "Foliculite e afecções foliculares",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "D22.9",
+    "descricao": "Nevo melanocítico não especificado (Pintas)",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "C44.9",
+    "descricao": "Neoplasia maligna da pele não especificada",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "B86",
+    "descricao": "Escabiose (Sarna)",
+    "grupo": "Dermatologia"
+  },
+  {
+    "codigo": "J00",
+    "descricao": "Nasofaringite aguda (Resfriado comum)",
+    "grupo": "Respiratório",
+    "termos": [
+      "resfriado",
+      "nariz escorrendo",
+      "coriza"
+    ]
+  },
+  {
+    "codigo": "J01.9",
+    "descricao": "Sinusite aguda não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "sinusite"
+    ]
+  },
+  {
+    "codigo": "J02.9",
+    "descricao": "Faringite aguda não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "dor de garganta",
+      "faringite"
+    ]
+  },
+  {
+    "codigo": "J03.9",
+    "descricao": "Amigdalite aguda não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "amigdalite",
+      "dor de garganta",
+      "placas na garganta"
+    ]
+  },
+  {
+    "codigo": "J06.9",
+    "descricao": "Infecção aguda das vias aéreas superiores (IVAS)",
+    "grupo": "Respiratório",
+    "termos": [
+      "ivas",
+      "gripe",
+      "resfriado",
+      "infecção respiratória"
+    ]
+  },
+  {
+    "codigo": "J11.1",
+    "descricao": "Influenza (Gripe) com manifestações respiratórias",
+    "grupo": "Respiratório",
+    "termos": [
+      "gripe",
+      "influenza"
+    ]
+  },
+  {
+    "codigo": "J18.9",
+    "descricao": "Pneumonia não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "pneumonia"
+    ]
+  },
+  {
+    "codigo": "J20.9",
+    "descricao": "Bronquite aguda não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "bronquite",
+      "tosse com catarro"
+    ]
+  },
+  {
+    "codigo": "J30.4",
+    "descricao": "Rinite alérgica não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "rinite",
+      "alergia respiratória",
+      "espirros"
+    ]
+  },
+  {
+    "codigo": "J45.9",
+    "descricao": "Asma não especificada",
+    "grupo": "Respiratório",
+    "termos": [
+      "asma",
+      "bronquite asmática",
+      "chiado no peito"
+    ]
+  },
+  {
+    "codigo": "R05",
+    "descricao": "Tosse persistente",
+    "grupo": "Respiratório",
+    "termos": [
+      "tosse"
+    ]
+  },
+  {
+    "codigo": "I87.2",
+    "descricao": "Insuficiência venosa crônica (periférica)",
+    "grupo": "Cardiologia",
+    "termos": [
+      "má circulação",
+      "pernas pesadas",
+      "inchaço nas pernas",
+      "insuficiência venosa"
+    ]
+  },
+  {
+    "codigo": "M54.5",
+    "descricao": "Dor lombar baixa (Lombalgia)",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "dor nas costas",
+      "dor lombar",
+      "lombalgia"
+    ]
+  },
+  {
+    "codigo": "M54.2",
+    "descricao": "Cervicalgia",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "dor no pescoço",
+      "cervicalgia"
+    ]
+  },
+  {
+    "codigo": "M54.4",
+    "descricao": "Lumbago com ciática (Lombociatalgia)",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "dor ciática",
+      "dor nas costas que desce para a perna"
+    ]
+  },
+  {
+    "codigo": "M79.1",
+    "descricao": "Mialgia / Dores musculares",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "dor muscular",
+      "dor no corpo",
+      "mialgia"
+    ]
+  },
+  {
+    "codigo": "M79.7",
+    "descricao": "Fibromialgia",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "fibromialgia",
+      "dor no corpo todo"
+    ]
+  },
+  {
+    "codigo": "M75.1",
+    "descricao": "Síndrome do manguito rotador",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M77.9",
+    "descricao": "Entesopatia não especificada (Tendinite)",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M65.9",
+    "descricao": "Sinovite e tenossinovite não especificadas",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M17.9",
+    "descricao": "Gonartrose não especificada (Artrose do joelho)",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M16.9",
+    "descricao": "Coxartrose não especificada (Artrose do quadril)",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M19.9",
+    "descricao": "Artrose não especificada",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "M81.9",
+    "descricao": "Osteoporose não especificada",
+    "grupo": "Osteomuscular"
+  },
+  {
+    "codigo": "A09",
+    "descricao": "Diarreia e gastroenterite de origem infecciosa",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "diarreia",
+      "gastroenterite",
+      "intestino solto"
+    ]
+  },
+  {
+    "codigo": "K21.9",
+    "descricao": "Doença do refluxo gastroesofágico (DRGE)",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "refluxo",
+      "azia",
+      "queimação"
+    ]
+  },
+  {
+    "codigo": "K29.7",
+    "descricao": "Gastrite não especificada",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "gastrite",
+      "dor no estômago",
+      "queimação"
+    ]
+  },
+  {
+    "codigo": "K25.9",
+    "descricao": "Úlcera gástrica não especificada",
+    "grupo": "Gastrointestinal"
+  },
+  {
+    "codigo": "K58.9",
+    "descricao": "Síndrome do intestino irritável",
+    "grupo": "Gastrointestinal"
+  },
+  {
+    "codigo": "K59.0",
+    "descricao": "Constipação intestinal",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "intestino preso",
+      "prisão de ventre"
+    ]
+  },
+  {
+    "codigo": "K64.9",
+    "descricao": "Hemorroidas não especificadas",
+    "grupo": "Gastrointestinal"
+  },
+  {
+    "codigo": "K80.2",
+    "descricao": "Cálculo da vesícula biliar (Colelitíase)",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "pedra na vesícula"
+    ]
+  },
+  {
+    "codigo": "K76.0",
+    "descricao": "Degeneração gordurosa do fígado (Esteatose hepática)",
+    "grupo": "Gastrointestinal",
+    "termos": [
+      "gordura no fígado",
+      "esteatose"
+    ]
+  },
+  {
+    "codigo": "E55.9",
+    "descricao": "Deficiência de vitamina D não especificada",
+    "grupo": "Endócrino",
+    "termos": [
+      "vitamina d baixa"
+    ]
+  },
+  {
+    "codigo": "E79.0",
+    "descricao": "Hiperuricemia sem sinais de artrite inflamatória (ácido úrico alto)",
+    "grupo": "Endócrino",
+    "termos": [
+      "ácido úrico alto",
+      "hiperuricemia"
+    ]
+  },
+  {
+    "codigo": "G43.9",
+    "descricao": "Enxaqueca não especificada",
+    "grupo": "Neurologia",
+    "termos": [
+      "enxaqueca",
+      "dor de cabeça forte"
+    ]
+  },
+  {
+    "codigo": "G44.2",
+    "descricao": "Cefaleia tensional",
+    "grupo": "Neurologia",
+    "termos": [
+      "dor de cabeça",
+      "cefaleia tensional"
+    ]
+  },
+  {
+    "codigo": "G47.0",
+    "descricao": "Distúrbios do início e manutenção do sono (Insônia)",
+    "grupo": "Neurologia",
+    "termos": [
+      "insônia",
+      "não consegue dormir"
+    ]
+  },
+  {
+    "codigo": "G56.0",
+    "descricao": "Síndrome do túnel do carpo",
+    "grupo": "Neurologia"
+  },
+  {
+    "codigo": "F32.9",
+    "descricao": "Episódio depressivo não especificado",
+    "grupo": "Psiquiatria",
+    "termos": [
+      "depressão",
+      "tristeza"
+    ]
+  },
+  {
+    "codigo": "F33.9",
+    "descricao": "Transtorno depressivo recorrente",
+    "grupo": "Psiquiatria"
+  },
+  {
+    "codigo": "F43.2",
+    "descricao": "Transtornos de adaptação / Estresse crônico",
+    "grupo": "Psiquiatria",
+    "termos": [
+      "estresse",
+      "stress"
+    ]
+  },
+  {
+    "codigo": "F90.0",
+    "descricao": "Distúrbios da atividade e da atenção (TDAH)",
+    "grupo": "Psiquiatria"
+  },
+  {
+    "codigo": "N39.0",
+    "descricao": "Infecção do trato urinário (ITU / Cistite)",
+    "grupo": "Geniturinário",
+    "termos": [
+      "infecção urinária",
+      "cistite",
+      "ardência ao urinar"
+    ]
+  },
+  {
+    "codigo": "N20.1",
+    "descricao": "Cálculo no ureter (Cólica nefrética / renal)",
+    "grupo": "Geniturinário",
+    "termos": [
+      "pedra no rim",
+      "cálculo renal",
+      "cólica renal"
+    ]
+  },
+  {
+    "codigo": "N40",
+    "descricao": "Hiperplasia da próstata (HPB)",
+    "grupo": "Geniturinário"
+  },
+  {
+    "codigo": "N94.6",
+    "descricao": "Dismenorreia não especificada (Cólica menstrual)",
+    "grupo": "Geniturinário"
+  },
+  {
+    "codigo": "N95.1",
+    "descricao": "Estados climatéricos e menopáusicos",
+    "grupo": "Geniturinário"
+  },
+  {
+    "codigo": "N76.0",
+    "descricao": "Vaginite aguda (Candidíase / Gardnerella)",
+    "grupo": "Geniturinário"
+  },
+  {
+    "codigo": "C50.9",
+    "descricao": "Neoplasia maligna da mama não especificada (Câncer de mama)",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C50",
+    "descricao": "Neoplasia maligna da mama",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C50.4",
+    "descricao": "Neoplasia maligna do quadrante superior externo da mama",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C53.9",
+    "descricao": "Neoplasia maligna do colo do útero",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C61",
+    "descricao": "Neoplasia maligna da próstata (Câncer de próstata)",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C18.9",
+    "descricao": "Neoplasia maligna do cólon não especificada",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C34.9",
+    "descricao": "Neoplasia maligna dos brônquios ou pulmões",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "C73",
+    "descricao": "Neoplasia maligna da tireoide",
+    "grupo": "Oncologia"
+  },
+  {
+    "codigo": "N63",
+    "descricao": "Nódulo mamário não especificado",
+    "grupo": "Ginecologia"
+  },
+  {
+    "codigo": "N60.9",
+    "descricao": "Displasia mamária benigna",
+    "grupo": "Ginecologia"
+  },
+  {
+    "codigo": "R10",
+    "descricao": "Dor abdominal e pélvica",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor abdominal",
+      "dor na barriga"
+    ]
+  },
+  {
+    "codigo": "R10.0",
+    "descricao": "Abdome agudo",
+    "grupo": "Sintomas"
+  },
+  {
+    "codigo": "R10.1",
+    "descricao": "Dor localizada no abdome superior (Epigastralgia)",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor no estômago",
+      "epigastralgia"
+    ]
+  },
+  {
+    "codigo": "R10.2",
+    "descricao": "Dor pélvica e perineal",
+    "grupo": "Sintomas"
+  },
+  {
+    "codigo": "R10.3",
+    "descricao": "Dor localizada no abdome inferior",
+    "grupo": "Sintomas"
+  },
+  {
+    "codigo": "R10.4",
+    "descricao": "Outras dores abdominais e as não especificadas (Dor na barriga)",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor na barriga",
+      "dor abdominal"
+    ]
+  },
+  {
+    "codigo": "K35.8",
+    "descricao": "Apendicite aguda não especificada",
+    "grupo": "Gastrointestinal"
+  },
+  {
+    "codigo": "B34.9",
+    "descricao": "Infecção viral não especificada (Virose)",
+    "grupo": "Infeccioso",
+    "termos": [
+      "virose"
+    ]
+  },
+  {
+    "codigo": "R50.9",
+    "descricao": "Febre não especificada",
+    "grupo": "Sintomas",
+    "termos": [
+      "febre"
+    ]
+  },
+  {
+    "codigo": "R11",
+    "descricao": "Náusea e vômitos",
+    "grupo": "Sintomas",
+    "termos": [
+      "enjoo",
+      "vômito",
+      "náusea"
+    ]
+  },
+  {
+    "codigo": "R30.0",
+    "descricao": "Disúria (Dor ao urinar)",
+    "grupo": "Sintomas",
+    "termos": [
+      "dor ao urinar",
+      "ardência ao urinar"
+    ]
+  },
+  {
+    "codigo": "R31",
+    "descricao": "Hematúria não especificada (Sangue na urina)",
+    "grupo": "Sintomas"
+  },
+  {
+    "codigo": "Z01.0",
+    "descricao": "Exame dos olhos e da visão",
+    "grupo": "Rotina"
+  },
+  {
+    "codigo": "Z02.1",
+    "descricao": "Exame médico pré-admissional",
+    "grupo": "Rotina"
+  },
+  {
+    "codigo": "Z71.3",
+    "descricao": "Aconselhamento e orientação dietética",
+    "grupo": "Rotina"
+  },
+  {
+    "codigo": "M10.9",
+    "descricao": "Gota não especificada",
+    "grupo": "Osteomuscular",
+    "termos": [
+      "gota",
+      "ácido úrico",
+      "dor no dedão"
+    ]
+  }
 ]

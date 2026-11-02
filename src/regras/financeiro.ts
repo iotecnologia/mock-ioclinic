@@ -143,7 +143,7 @@ export function montarRelatorio(tipo: TipoRelatorio, b: Base, de: string, ate: s
     return { titulo: 'Fluxo de caixa', colunas: [{ titulo: 'Data' }, { titulo: 'Entradas', num: true }, { titulo: 'Saídas', num: true }, { titulo: 'Saldo do dia', num: true }, { titulo: 'Acumulado', num: true }],
       linhas, total: ['Total', +te.toFixed(2), +ts.toFixed(2), +(te - ts).toFixed(2), acum] };
   }
-  const l = b.pacientes.filter((p) => p.criadoEm >= de && p.criadoEm <= ate).sort((x, y) => x.criadoEm.localeCompare(y.criadoEm));
+  const l = b.pacientes.filter((p) => !p.situacao && p.criadoEm >= de && p.criadoEm <= ate).sort((x, y) => x.criadoEm.localeCompare(y.criadoEm));
   return { titulo: 'Pacientes novos', colunas: [{ titulo: 'Cadastro' }, { titulo: 'Paciente' }, { titulo: 'Celular' }, { titulo: 'Bairro' }, { titulo: 'Termo LGPD' }],
     linhas: l.map((p) => [p.criadoEm, p.nome, p.telefone, p.endereco?.bairro ?? '', p.consentimentoLgpd ? 'Aceito' : 'Pendente']), total: [`${l.length} pacientes`, '', '', '', ''] };
 }
@@ -171,3 +171,14 @@ export function periodoMes(hojeIso: string, rel: number): { de: string; ate: str
   return { de: `${m}-01`, ate: rel === 0 ? hojeIso : fimDoMes(m) };
 }
 export const diasAtras = (hojeIso: string, n: number) => ({ de: somaDias(hojeIso, -n), ate: hojeIso });
+
+/**
+ * Evolução para os gráficos do Painel: receita, custo, agendamentos e atendidos de cada período da lista.
+ * Mesma conta do Financeiro e dos Relatórios (receita pela data do pagamento, custo pelo vencimento).
+ */
+export function serieEvolucao(b: Base, periodos: { de: string; ate: string; rotulo: string }[]) {
+  return periodos.map((p) => {
+    const r = resumoPeriodo(b, p.de, p.ate);
+    return { ...p, receita: r.recebido, despesa: r.despesas, agendados: r.agendamentos, atendidos: r.atendidos };
+  });
+}

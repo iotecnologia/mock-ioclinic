@@ -5,8 +5,10 @@ import type { Documento, Paciente, TipoDocumento } from '../tipos/modelos';
 import { useDados } from './Dados';
 import { Modal } from './Comuns';
 import { Icone } from './Icone';
-import { Folha, Imprimir } from './Folha';
+import { BaixarPdf, Folha, Imprimir } from './Folha';
+import { nomeArquivo } from '../util/pdf';
 import { ExameBusca, MedicamentoBusca } from './Buscas';
+import { CidBusca } from './CidBusca';
 import { atestado, comparecimento, NOME_DOC, pedidoExames, receita } from '../regras/documentos';
 import { hhmm, hoje, min } from '../util/datas';
 
@@ -23,11 +25,18 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   const [tipo, setTipo] = useState<TipoDocumento>(tipoInicial);
   const [timbrado, setTimbrado] = useState(false);
   const [imprimindo, setImprimindo] = useState(false);
+  const [baixando, setBaixando] = useState(false);
   const [emitidos, setEmitidos] = useState<string[]>([]);
   // atestado
   const [dias, setDias] = useState(1);
   const [inicio, setInicio] = useState(hj);
   const [comCid, setComCid] = useState(false);
+  // CID do atestado: vem do atendimento, mas pode ser buscado/trocado aqui (código ou situação)
+  const [cidAt, setCidAt] = useState<{ codigo: string; descricao: string } | undefined>(() => {
+    if (!cid) return undefined;
+    const [codigo, ...resto] = cid.split(' · ');
+    return { codigo, descricao: resto.join(' · ') };
+  });
   // receita
   const resumo = base.resumos.find((r) => r.pacienteId === paciente.id);
   const [itens, setItens] = useState<{ nome: string; uso: string }[]>(() => [{ nome: '', uso: '' }]);
@@ -39,7 +48,7 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   const [ate, setAte] = useState(hora ? hhmm(min(hora) + 60) : '09:00');
 
   const doc: Omit<Documento, 'id'> =
-    tipo === 'atestado' ? atestado(paciente, { data: hj, dias, inicio, cid: comCid ? cid : undefined })
+    tipo === 'atestado' ? atestado(paciente, { data: hj, dias, inicio, cid: comCid && cidAt ? `${cidAt.codigo} · ${cidAt.descricao}` : undefined })
     : tipo === 'receita' ? receita(paciente, { data: hj, itens })
     : tipo === 'pedido_exames' ? pedidoExames(paciente, { data: hj, exames: sel, indicacao: indicacao || undefined })
     : comparecimento(paciente, { data: hj, de, ate });
@@ -47,7 +56,10 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   const exClinica = base.servicos.filter((s) => s.tipo === 'exame').map((s) => s.nome);
   const marca = (x: string) => setSel((l) => (l.includes(x) ? l.filter((y) => y !== x) : [...l, x]));
 
-  const imprimir = () => { acoes.emitirDocumento(doc); setEmitidos((e) => [...e, NOME_DOC[tipo]]); setImprimindo(true); };
+  const registrar = () => { acoes.emitirDocumento(doc); setEmitidos((e) => (e.includes(NOME_DOC[tipo]) ? e : [...e, NOME_DOC[tipo]])); };
+  const imprimir = () => { registrar(); setImprimindo(true); };
+  const baixar = () => { registrar(); setBaixando(true); };
+  const folha = <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha>;
 
   return (
     <Modal titulo={`Documentos · ${paciente.nome}`} fechar={fechar} largo>
@@ -60,8 +72,9 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
             <>
               <label>Dias de afastamento<input type="number" min={0} max={90} value={dias} onChange={(e) => setDias(Math.max(0, Number(e.target.value)))} /></label>
               <label>A partir de<input type="date" value={inicio} onChange={(e) => setInicio(e.target.value)} /></label>
-              <label className="chk-linha"><input type="checkbox" checked={comCid} disabled={!cid} onChange={(e) => setComCid(e.target.checked)} />
-                <span>Incluir CID {cid ? <b className="mono">{cid.split(' ')[0]}</b> : '(informe o CID no atendimento)'}<small>Só com autorização do paciente (Resolução CFM).</small></span></label>
+              <label>CID-10<CidBusca valor={cidAt} aoEscolher={(c) => { setCidAt(c ? { codigo: c.codigo, descricao: c.descricao } : undefined); if (c) setComCid(true); }} /></label>
+              <label className="chk-linha"><input type="checkbox" checked={comCid && !!cidAt} disabled={!cidAt} onChange={(e) => setComCid(e.target.checked)} />
+                <span>Incluir o CID no atestado {cidAt ? <b className="mono">{cidAt.codigo}</b> : '(busque o CID acima)'}<small>Só com autorização do paciente (Resolução CFM).</small></span></label>
             </>
           )}
           {tipo === 'receita' && (
@@ -71,7 +84,7 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
                   {resumo.medicamentos.map((m) => { const [nome, uso] = m.split(' — '); return <button type="button" key={m} className="chip-sug" onClick={() => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, uso: uso ?? '' }])}><Icone n="mais" /> {nome}</button>; })}
                 </div>
               )}
-              <MedicamentoBusca aoEscolher={(m, dose) => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome: `${m.principio} ${dose}`, uso: m.posologia }])} />
+              <MedicamentoBusca aoEscolher={(m, _dose, nome) => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, uso: m.posologia }])} />
               {itens.map((it, i) => (
                 <div key={i} className="linha-med">
                   <input placeholder="Medicamento e dose" value={it.nome} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, nome: e.target.value } : x)))} />
@@ -101,14 +114,16 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
           {emitidos.length > 0 && <div className="certo-peq"><Icone n="check" /> Emitido nesta consulta: {emitidos.join(', ')}</div>}
           <div className="rodape-modal">
             <button type="button" className="btn2" onClick={fechar}>Fechar</button>
+            <button type="button" className="btn2" disabled={vazio || baixando} onClick={baixar}><Icone n="pdf" /> {baixando ? 'Gerando…' : 'Baixar PDF'}</button>
             <button type="button" className="btn2 pri" disabled={vazio} onClick={imprimir}><Icone n="imprimir" /> Imprimir</button>
           </div>
         </div>
         <div className="emitir-previa">
-          <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha>
+          {folha}
         </div>
       </div>
-      {imprimindo && <Imprimir aoTerminar={() => setImprimindo(false)}><Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha></Imprimir>}
+      {imprimindo && <Imprimir aoTerminar={() => setImprimindo(false)}>{folha}</Imprimir>}
+      {baixando && <BaixarPdf nome={nomeArquivo(NOME_DOC[tipo], paciente.nome, hj)} aoTerminar={() => setBaixando(false)}>{folha}</BaixarPdf>}
     </Modal>
   );
 }
