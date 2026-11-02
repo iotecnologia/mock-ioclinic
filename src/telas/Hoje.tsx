@@ -61,7 +61,7 @@ export function Hoje() {
       </TituloPagina>
 
       <div className="contadores">
-        <Contador icone="calendario" valor={c.total} rotulo="pacientes hoje" sel={!filtro} onClick={() => setFiltro(null)} titulo="Mostrar todos os pacientes de hoje" />
+        <Contador icone="calendario" valor={c.total} rotulo="pacientes hoje" onClick={() => setFiltro(null)} titulo="Mostrar todos os pacientes de hoje" />
         <Contador icone="check" valor={c.confirmados} rotulo="confirmados" sel={filtro === 'confirmados'} onClick={() => alterna('confirmados')} titulo="Filtrar: só os confirmados" />
         <Contador icone="estetoscopio" valor={c.atendidos} rotulo="atendidos" sel={filtro === 'atendidos'} onClick={() => alterna('atendidos')} titulo="Filtrar: só os atendidos" />
         <Contador icone="relogio" valor={livres} rotulo="horários livres" onClick={() => nav('/agenda?data=' + hj)} titulo="Abrir a agenda do dia para ver os horários livres" />

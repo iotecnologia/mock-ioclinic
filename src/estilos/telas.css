@@ -491,8 +491,8 @@ table.tab th.dir { text-align: right; }
 @keyframes zap-pulsa { 0%, 100% { box-shadow: 0 0 0 0 rgba(37,162,68,.45); } 50% { box-shadow: 0 0 0 6px rgba(37,162,68,0); } }
 
 /* ---------- cards clicáveis (filtram ou abrem o detalhe) ---------- */
-.app .contadores > button.contador { background: var(--painel); border: 1px solid var(--linha); border-radius: 14px; box-shadow: var(--sombra); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; font: inherit; color: var(--texto); cursor: pointer; min-width: 0; transition: border-color .15s, box-shadow .15s, transform .15s; }
-.app .contadores > button.contador:hover { border-color: var(--destaque-2); transform: translateY(-1px); }
+.app .contadores > button.contador { background: var(--painel); border: 1px solid var(--linha); border-radius: 14px; box-shadow: var(--sombra); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; font: inherit; color: var(--texto); cursor: pointer; min-width: 0; transition: border-color .15s, box-shadow .15s; }
+.app .contadores > button.contador:hover { border-color: var(--destaque-2); }
 .app .contadores > button.contador.sel { border-color: var(--destaque-2); box-shadow: 0 0 0 2px color-mix(in srgb, var(--destaque-2) 35%, transparent), var(--sombra); }
 .app .contadores > button.contador:focus-visible { outline: 2px solid var(--destaque-2); outline-offset: 2px; }
 .contadores > button.contador b, .contadores > button.contador span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

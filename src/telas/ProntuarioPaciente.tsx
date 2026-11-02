@@ -219,6 +219,24 @@ function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: 
   const ag = base.agendamentos.find((x) => x.id === a.agendamentoId);
   const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
   const vImc = imc(a.pesoKg, a.alturaCm), cImc = classificaImc(vImc), cPa = classificaPA(a.pa);
+  const pac = base.pacientes.find((x) => x.id === a.pacienteId);
+  const [imp, setImp] = useState(false);
+  const [pdf, setPdf] = useState(false);
+  const sinais = [a.pa && `PA ${a.pa} mmHg${cPa ? ` (${cPa.nome})` : ''}`, a.fc && `FC ${a.fc} bpm`, a.pesoKg && `Peso ${a.pesoKg} kg`, a.alturaCm && `Altura ${a.alturaCm} cm`, vImc && `IMC ${vImc}${cImc ? ` (${cImc.nome})` : ''}`].filter(Boolean).join(' · ');
+  // folha da evolução para imprimir/baixar (mesmo visual dos outros documentos, com assinatura da Dra.)
+  const folha = (
+    <Folha clinica={base.clinica} titulo="Evolução clínica" data={hoje()} paciente={pac}>
+      <p><b>Atendimento:</b> {br(a.data)}{serv ? ` · ${serv.nome}` : ''}</p>
+      {sinais && <p><b>Sinais vitais:</b> {sinais}</p>}
+      <p><b>Queixa principal:</b> {a.queixa}</p>
+      {a.hda && <p><b>História da doença atual:</b> {a.hda}</p>}
+      {a.exameFisico && <p><b>Exame físico:</b> {a.exameFisico}</p>}
+      {a.cid && <p><b>Hipótese diagnóstica:</b> {a.cid} · {a.cidDescricao}</p>}
+      <p><b>Conduta:</b> {a.conduta}</p>
+      {!!a.examesSolicitados?.length && <p><b>Exames solicitados:</b> {a.examesSolicitados.join(' · ')}</p>}
+      {!!a.retornoDias && <p><b>Retorno:</b> em {a.retornoDias} dias</p>}
+    </Folha>
+  );
   return (
     <Modal titulo={`Evolução de ${br(a.data)}${serv ? ` · ${serv.nome}` : ''}`} fechar={fechar} largo>
       <div className="evol-lida">
@@ -244,8 +262,14 @@ function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: 
             {docs.map((d) => <li key={d.id}><button type="button" onClick={() => abrirDoc(d)} title="Ver, reimprimir ou baixar PDF"><Icone n="arquivo" /><span>{NOME_DOC[d.tipo]}<small>{br(d.data)}</small></span><Icone n="imprimir" /></button></li>)}
           </ul>
         )}
-        <div className="rodape-modal"><button type="button" className="btn2" onClick={fechar}>Fechar</button></div>
+        <div className="rodape-modal">
+          <button type="button" className="btn2" onClick={fechar}>Fechar</button>
+          <button type="button" className="btn2" disabled={pdf} onClick={() => setPdf(true)}><Icone n="pdf" /> {pdf ? 'Gerando…' : 'Baixar PDF'}</button>
+          <button type="button" className="btn2 pri" onClick={() => setImp(true)}><Icone n="imprimir" /> Imprimir evolução</button>
+        </div>
       </div>
+      {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
+      {pdf && <BaixarPdf nome={nomeArquivo('evolucao', pac?.nome, a.data)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
     </Modal>
   );
 }
