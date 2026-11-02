@@ -154,3 +154,5 @@ table.tab td.acoes-linha { padding-top: 6px; padding-bottom: 6px; }
   .grade2.fin table.tab td.acoes-linha { padding-right: 10px; }
   .grade2.fin .acoes-linha .btn2 { margin-left: 2px; }
 }
+.rel-modal { box-shadow: none; }
+.rel-modal .rel-rolagem { max-height: 60vh; }

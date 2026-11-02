@@ -2,7 +2,6 @@
 // Painel e dos Relatórios) — recebido, despesas, saldo e a receber;
 // tabelas de receitas e despesas; lançar despesa e marcar como paga; recebido por forma de pagamento.
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { CategoriaDespesa, Despesa, FormaPagamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
 import { Bloco, BotaoIcone, Contador, FiltroAtivo, Modal, Rolagem, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
@@ -10,7 +9,9 @@ import { Icone } from '../componentes/Icone';
 import { Proporcao } from '../componentes/Graficos';
 import { FORMAS } from '../componentes/Receber';
 import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
-import { porForma, recebimentos, resumoPeriodo } from '../regras/financeiro';
+import { montarRelatorio, porForma, recebimentos, resumoPeriodo } from '../regras/financeiro';
+import { TabelaRelatorio } from '../componentes/TabelaRelatorio';
+import { DetalheAgendamento } from '../componentes/DetalheAgendamento';
 import { rotulo } from '../regras/periodo';
 import { br, hoje } from '../util/datas';
 import { moeda } from '../util/formato';
@@ -18,12 +19,12 @@ import { moeda } from '../util/formato';
 export const CATEGORIAS: CategoriaDespesa[] = ['Aluguel e condomínio', 'Pessoal', 'Contas de consumo', 'Serviços', 'Material e insumos', 'Equipamentos', 'Impostos', 'Marketing', 'Outros'];
 const LIMITE = 12;
 
-type Vista = 'tudo' | 'receitas' | 'despesas' | 'areceber';
+type Vista = 'tudo' | 'receitas' | 'despesas' | 'areceber' | 'fluxo';
 const FORMA_IDS: FormaPagamento[] = ['pix', 'cartao_credito', 'cartao_debito', 'dinheiro'];
 
 export function Financeiro() {
   const { base, acoes } = useDados();
-  const nav = useNavigate();
+  const [agAberto, setAgAberto] = useState<string | null>(null);   // agendamento a receber aberto numa janela
   const hj = hoje();
   const [p] = usePeriodo();
   const [todasRec, setTodasRec] = useState(false);
@@ -47,7 +48,7 @@ export function Financeiro() {
   const nomeS = (id: string) => base.servicos.find((s) => s.id === id)?.curto ?? id;
   const saldo = +(r.recebido - r.despesasPagas).toFixed(2);
   const mostra = (v: Vista) => vista === 'tudo' || vista === v;
-  const filtroNome = forma ? FORMAS[forma] : cat ? cat : vista === 'receitas' ? 'receitas' : vista === 'despesas' ? 'despesas' : vista === 'areceber' ? 'a receber' : null;
+  const filtroNome = forma ? FORMAS[forma] : cat ? cat : vista === 'receitas' ? 'receitas' : vista === 'despesas' ? 'despesas' : vista === 'areceber' ? 'a receber' : vista === 'fluxo' ? 'fluxo de caixa' : null;
 
   return (
     <>
@@ -59,7 +60,7 @@ export function Financeiro() {
       <div className="contadores c4">
         <Contador icone="carteira" valor={moeda(r.recebido)} rotulo="recebido no período" sel={vista === 'receitas'} onClick={() => ver('receitas')} titulo="Filtrar: só as receitas recebidas" />
         <Contador icone="arquivo" valor={moeda(r.despesas)} rotulo="despesas do período" sel={vista === 'despesas'} onClick={() => ver('despesas')} titulo="Filtrar: só as despesas" />
-        <Contador icone="grafico" valor={moeda(saldo)} rotulo="saldo (recebido − pago)" cls={saldo < 0 ? 'negativo' : ''} onClick={() => nav('/relatorios?tipo=fluxo')} titulo="Abrir o relatório de fluxo de caixa do período" />
+        <Contador icone="grafico" valor={moeda(saldo)} rotulo="saldo (recebido − pago)" cls={saldo < 0 ? 'negativo' : ''} sel={vista === 'fluxo'} onClick={() => ver('fluxo')} titulo="Ver o fluxo de caixa do período (entradas, saídas e acumulado)" />
         <Contador icone="relogio" valor={moeda(r.aReceber)} rotulo="a receber" cls={r.aReceber ? 'alerta' : ''} sel={vista === 'areceber'} onClick={() => ver('areceber')} titulo="Ver quem falta pagar" />
       </div>
       {filtroNome && <div className="barra"><FiltroAtivo nome={filtroNome} limpar={() => { setVista('tudo'); setForma(null); setCat(null); }} /></div>}
@@ -71,11 +72,10 @@ export function Financeiro() {
               {pendentes.length === 0 ? <Vazio>Nenhum pagamento pendente no período.</Vazio> : (
                 <Rolagem>
                   <table className="tab">
-                    <thead><tr><th>Data</th><th>Paciente</th><th>Serviço</th><th>Situação</th><th className="dir">Valor</th><th /></tr></thead>
+                    <thead><tr><th>Data</th><th>Paciente</th><th>Serviço</th><th>Situação</th><th className="dir">Valor</th></tr></thead>
                     <tbody>
                       {pendentes.map((a) => (
-                        <tr key={a.id}><td className="mono">{dt(a.data)}</td><td>{nomeP(a.pacienteId)}</td><td>{nomeS(a.servicoId)}</td><td><TagStatus s={a.status} /></td><td className="dir mono">{moeda(a.pagamento!.valor)}</td>
-                          <td className="acoes-linha"><BotaoIcone icone="calendario" titulo="Abrir a agenda do dia" cls="peq" onClick={() => nav('/agenda?data=' + a.data)} /></td></tr>
+                        <tr key={a.id} className="clic" title="Ver o agendamento" onClick={() => setAgAberto(a.id)}><td className="mono">{dt(a.data)}</td><td>{nomeP(a.pacienteId)}</td><td>{nomeS(a.servicoId)}</td><td><TagStatus s={a.status} /></td><td className="dir mono">{moeda(a.pagamento!.valor)}</td></tr>
                       ))}
                     </tbody>
                   </table>
@@ -83,7 +83,12 @@ export function Financeiro() {
               )}
             </Bloco>
           )}
-          {mostra('receitas') && vista !== 'areceber' && (
+          {vista === 'fluxo' && (
+            <Bloco titulo={<><Icone n="grafico" /> Fluxo de caixa</>} extra={<span className="mut peq">entradas, saídas e saldo acumulado por dia</span>}>
+              <TabelaRelatorio r={montarRelatorio('fluxo', base, de, ate)} />
+            </Bloco>
+          )}
+          {mostra('receitas') && vista !== 'areceber' && vista !== 'fluxo' && (
             <Bloco titulo={<><Icone n="carteira" /> Receitas recebidas</>} extra={<span className="mut peq">{rec.length} pagamentos</span>}>
               {rec.length === 0 ? <Vazio>Nenhum recebimento {forma ? 'nesta forma de pagamento' : 'neste período'}.</Vazio> : (
                 <>
@@ -103,7 +108,7 @@ export function Financeiro() {
             </Bloco>
           )}
 
-          {mostra('despesas') && vista !== 'areceber' && !forma && (
+          {mostra('despesas') && vista !== 'areceber' && vista !== 'fluxo' && !forma && (
             <Bloco titulo={<><Icone n="arquivo" /> Despesas{cat ? ` · ${cat}` : ''}</>} extra={<span className="mut peq">pagas {moeda(r.despesasPagas)} · a pagar {moeda(r.aPagar)}</span>}>
               {despVis.length === 0 ? <Vazio>Nenhuma despesa neste período.</Vazio> : (
                 <Rolagem>
@@ -145,6 +150,7 @@ export function Financeiro() {
           </Bloco>
         </div>
       </div>
+      {agAberto && <DetalheAgendamento id={agAberto} fechar={() => setAgAberto(null)} />}
       {lancar && <LancarDespesa dataPadrao={de <= hj && hj <= ate ? hj : de} fechar={() => setLancar(false)} />}
     </>
   );

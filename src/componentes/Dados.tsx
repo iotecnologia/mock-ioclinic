@@ -29,7 +29,7 @@ interface Acoes {
   resolverRemarcar(id: string): void;
 }
 /** Aviso que aparece no canto da tela (ex.: resposta do paciente no WhatsApp). */
-export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string; /** fica até fechar */ fixo?: boolean }
+export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string; /** clicar no aviso abre o detalhe na mesma tela */ acao?: () => void; /** fica até fechar */ fixo?: boolean }
 interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void; avisar(a: Aviso): void }
 
 /** Segundos até a resposta simulada do paciente chegar (demonstração). */

@@ -3,7 +3,8 @@
 // `rapida`: ao recarregar a página já logado, só espera os dados ficarem prontos (sem a sequência inteira).
 import { useEffect, useState } from 'react';
 import type { Perfil } from '../tipos/modelos';
-import { Logo } from './Marca';
+import { CreditoIO, nomeCurto } from './Marca';
+import { LogoDra } from './LogoDra';
 import clinica from '../dados/clinica.json';
 
 const PASSOS: Record<Perfil, string[]> = {
@@ -29,12 +30,13 @@ export function Abertura({ nome, perfil, dadosProntos, rapida, fim }: { nome: st
   const msg = i < passos.length ? passos[i] : dadosProntos ? 'Tudo pronto!' : 'Finalizando…';
   return (
     <div className="abertura" role="status" aria-live="polite">
-      <div className="abertura-logo"><Logo tam={96} /><span className="onda" /><span className="onda o2" /></div>
-      <div className="abertura-nome">IO CLINIC</div>
-      <div className="abertura-sub">{clinica.medica} · {clinica.especialidade}</div>
+      <div className="abertura-logo"><LogoDra tam={96} tinta="clara" /><span className="onda" /><span className="onda o2" /></div>
+      <div className="abertura-nome dra">{nomeCurto(clinica.medica)}</div>
+      <div className="abertura-sub">{clinica.especialidade}</div>
       <div className="abertura-ola">{saud}, {nome}!</div>
       <div className="abertura-barra"><span style={{ width: `${rapida ? (dadosProntos ? 100 : 60) : Math.min(100, (i / passos.length) * 100)}%` }} /></div>
       <div className="abertura-msg">{msg}</div>
+      <div className="abertura-io"><CreditoIO /></div>
     </div>
   );
 }

@@ -214,7 +214,7 @@ export function ProntuarioPaciente() {
 }
 
 /** Evolução anterior completa (clicada na lista), com os documentos emitidos no mesmo dia. */
-function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: Documento[]; abrirDoc: (d: Documento) => void; fechar: () => void }) {
+export function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: Documento[]; abrirDoc: (d: Documento) => void; fechar: () => void }) {
   const { base } = useDados();
   const ag = base.agendamentos.find((x) => x.id === a.agendamentoId);
   const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
@@ -274,7 +274,7 @@ function DetalheEvolucao({ a, docs, abrirDoc, fechar }: { a: Atendimento; docs: 
   );
 }
 
-function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) {
+export function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) {
   const { base } = useDados();
   const [imp, setImp] = useState(false);
   const [pdf, setPdf] = useState(false);

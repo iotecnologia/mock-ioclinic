@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
-import { Bloco, BotaoIcone, Contador, FiltroAtivo, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Bloco, BotaoIcone, Contador, FiltroAtivo, Modal, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { aConfirmar, contagem, doDia, lembretesPendentes, proximoPaciente } from '../regras/agenda';
-import { blocosLivres, situacaoDia } from '../regras/disponibilidade';
+import { blocosLivres, gradeDoDia, situacaoDia } from '../regras/disponibilidade';
 import { idadeTxt } from '../regras/paciente';
 import { agoraMin, brCurto, extenso, hoje, nomeDiaCurto, somaDias } from '../util/datas';
 import { linkWhats, moeda } from '../util/formato';
@@ -26,6 +26,10 @@ export function Hoje() {
   // filtro da "Agenda de hoje" ligado pelos cards
   const [filtro, setFiltro] = useState<'confirmados' | 'atendidos' | 'areceber' | null>(null);
   const alterna = (f: typeof filtro) => setFiltro((x) => (x === f ? null : f));
+  const [verLivres, setVerLivres] = useState(false);
+  const [diaAberto, setDiaAberto] = useState<string | null>(null);                      // próximo dia aberto numa janela                                   // janela dos horários livres
+  const [novoEm, setNovoEm] = useState<{ data: string; hora?: string } | null>(null);  // agendar num horário livre
+  const [remarcarAg, setRemarcarAg] = useState<{ id: string; pacienteId: string; servicoId: string } | null>(null);
   const hj = hoje();
   const medica = usuario!.perfil === 'medica';
   const lista = doDia(base, hj);
@@ -64,7 +68,7 @@ export function Hoje() {
         <Contador icone="calendario" valor={c.total} rotulo="pacientes hoje" onClick={() => setFiltro(null)} titulo="Mostrar todos os pacientes de hoje" />
         <Contador icone="check" valor={c.confirmados} rotulo="confirmados" sel={filtro === 'confirmados'} onClick={() => alterna('confirmados')} titulo="Filtrar: só os confirmados" />
         <Contador icone="estetoscopio" valor={c.atendidos} rotulo="atendidos" sel={filtro === 'atendidos'} onClick={() => alterna('atendidos')} titulo="Filtrar: só os atendidos" />
-        <Contador icone="relogio" valor={livres} rotulo="horários livres" onClick={() => nav('/agenda?data=' + hj)} titulo="Abrir a agenda do dia para ver os horários livres" />
+        <Contador icone="relogio" valor={livres} rotulo="horários livres" onClick={() => setVerLivres(true)} titulo="Ver os horários livres e agendar" />
         <Contador icone="carteira" valor={c.aReceber} rotulo="a receber" cls={c.aReceber ? 'alerta' : ''} sel={filtro === 'areceber'} onClick={() => alterna('areceber')} titulo="Filtrar: quem falta pagar" />
       </div>
 
@@ -120,7 +124,7 @@ export function Hoje() {
                 const cons = l.filter((a) => nomeS(a.servicoId).tipo !== 'exame').length;
                 return (
                   <li key={d}>
-                    <button type="button" onClick={() => nav('/agenda?data=' + d)}>
+                    <button type="button" onClick={() => setDiaAberto(d)} title="Ver os agendamentos deste dia">
                       <span className="pd-data"><b>{nomeDiaCurto(d)}</b>{brCurto(d)}</span>
                       <span className="pd-txt">{l.length ? <>{l.length} agendamento{l.length > 1 ? 's' : ''} <small>{cons} consulta{cons !== 1 ? 's' : ''} · {l.length - cons} exame{l.length - cons !== 1 ? 's' : ''}</small></> : <span className="mut">agenda livre</span>}</span>
                       <span className="pd-hora mono">{l[0]?.hora ?? ''}</span>
@@ -141,7 +145,7 @@ export function Hoje() {
                   <li key={'r' + a.id} className="tf-alerta">
                     <span className="mono">{a.data === hj ? a.hora : brCurto(a.data)}</span><span className="tf-nome">{p.nome}<small>{s.curto} · {a.hora}</small></span>
                     <a className="btn2 peq ic zap" href={linkWhats(p.telefone, msgRemarcar(base.clinica, p))} target="_blank" rel="noreferrer" title="Conversar no WhatsApp para remarcar" aria-label="Conversar no WhatsApp para remarcar"><Icone n="zap" /></a>
-                    <BotaoIcone icone="calendario" titulo="Abrir a agenda do dia" cls="peq" onClick={() => nav('/agenda?data=' + a.data)} />
+                    <BotaoIcone icone="calendario" titulo="Remarcar: escolher novo dia e horário" cls="peq" onClick={() => setRemarcarAg({ id: a.id, pacienteId: a.pacienteId, servicoId: a.servicoId })} />
                     <BotaoIcone icone="check" titulo="Já tratei (remarcado ou mantido)" cls="peq verde" onClick={() => acoes.resolverRemarcar(a.id)} />
                   </li>
                 );
@@ -174,6 +178,35 @@ export function Hoje() {
         </div>
       </div>
       {novo && <NovoAgendamento fechar={() => setNovo(false)} />}
+      {novoEm && <NovoAgendamento data={novoEm.data} hora={novoEm.hora} fechar={() => setNovoEm(null)} />}
+      {remarcarAg && <NovoAgendamento pacienteId={remarcarAg.pacienteId} servicoId={remarcarAg.servicoId} fechar={() => setRemarcarAg(null)}
+        aoAgendar={() => { acoes.mudarStatus(remarcarAg.id, 'cancelado'); acoes.resolverRemarcar(remarcarAg.id); }} />}
+      {diaAberto && (() => {
+        const l = doDia(base, diaAberto);
+        return (
+          <Modal titulo={`${nomeDiaCurto(diaAberto)}, ${brCurto(diaAberto)} · ${l.length} agendamento${l.length !== 1 ? 's' : ''}`} fechar={() => setDiaAberto(null)} largo>
+            {l.length === 0 ? <Vazio>Agenda livre neste dia.</Vazio> : <div className="lista-ag">{l.map((a) => <LinhaAgendamento key={a.id} ag={a} />)}</div>}
+            <div className="rodape-modal">
+              <button type="button" className="btn2" onClick={() => setDiaAberto(null)}>Fechar</button>
+              <button type="button" className="btn2 pri" onClick={() => { setDiaAberto(null); setNovoEm({ data: diaAberto }); }}><Icone n="mais" /> Agendar neste dia</button>
+            </div>
+          </Modal>
+        );
+      })()}
+      {verLivres && (() => {
+        // hoje; se a clínica não abre hoje, o próximo dia de atendimento
+        const dia = sit.aberto ? hj : proximos[0];
+        const agora = agoraMin();
+        const l = dia ? gradeDoDia(dia, base).filter((x) => x.tipo === 'livre' && (dia !== hj || Number(x.hora.slice(0, 2)) * 60 + Number(x.hora.slice(3)) > agora)) : [];
+        return (
+          <Modal titulo={dia ? `Horários livres · ${dia === hj ? 'hoje' : nomeDiaCurto(dia) + ', ' + brCurto(dia)}` : 'Horários livres'} fechar={() => setVerLivres(false)}>
+            {!sit.aberto && dia && <p className="mut peq">{sit.motivo} hoje. Mostrando o próximo dia de atendimento.</p>}
+            {l.length === 0 ? <Vazio>Nenhum horário livre.</Vazio> : (
+              <div className="horas">{l.map((x) => <button type="button" key={x.hora} className="hora mono" title={`Agendar às ${x.hora}`} onClick={() => { setVerLivres(false); setNovoEm({ data: dia!, hora: x.hora }); }}>{x.hora}</button>)}</div>
+            )}
+          </Modal>
+        );
+      })()}
     </>
   );
 }

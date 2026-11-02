@@ -3,10 +3,14 @@
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Icone } from './Icone';
-import { Logo, Marca } from './Marca';
+import { CreditoIO, Marca, nomeCurto } from './Marca';
+import { LogoDra } from './LogoDra';
 import { useDados, type Aviso } from './Dados';
 import { WHATS_AUTOMATICO } from './WhatsAuto';
-import { lembretesPendentes } from '../regras/agenda';
+import { aConfirmar, lembretesPendentes } from '../regras/agenda';
+import { msgLembrete } from '../regras/mensagens';
+import { linkWhats } from '../util/formato';
+import { BotaoIcone, Modal } from './Comuns';
 import { agoraMin, brCurto, hoje, somaDias } from '../util/datas';
 import { BuscaGeral } from './BuscaGeral';
 import { Avatar } from './Comuns';
@@ -19,7 +23,7 @@ const SUB_PADRAO: Record<string, string> = { pacientes: 'Ficha do paciente', pro
 
 export function Shell() {
   const s = useSessao();
-  const { restaurar } = useDados();
+  const { base, restaurar } = useDados();
   const perfil = s.usuario!.perfil;
   const [claro, setClaro] = useState(() => local.ler('tema-claro', true));
   const loc = useLocation();
@@ -49,10 +53,10 @@ export function Shell() {
             );
           })}
         </nav>
-        <div className="lat-rodape">v0.1 · mock de apresentação</div>
+        <div className="lat-rodape"><CreditoIO /></div>
       </aside>
       <header className="topo">
-        <div className="topo-marca"><Logo tam={30} /><b>IO CLINIC</b></div>
+        <div className="topo-marca"><LogoDra tam={30} /><b>{nomeCurto(base.clinica.medica)}</b></div>
         {!naInicial && <button type="button" className="icone-btn voltar" onClick={voltar} title="Voltar para a página anterior" aria-label="Voltar para a página anterior"><Icone n="esq" /></button>}
         <div className="migalha">Início{atual && <> &nbsp;/&nbsp; {sub ? atual.nome : <b>{atual.nome}</b>}</>}{sub && <> &nbsp;/&nbsp; <b>{sub}</b></>}</div>
         <BuscaGeral />
@@ -84,7 +88,7 @@ function AvisoItem({ a, fechar }: { a: Aviso; fechar: () => void }) {
   useEffect(() => { if (a.fixo) return; const t = setTimeout(fechar, 8000); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={'aviso-flut ' + a.tipo}>
-      <span onClick={() => { if (a.link) { nav(a.link); fechar(); } }} className={a.link ? 'clic' : ''}>{a.texto}</span>
+      <span onClick={() => { if (a.acao) a.acao(); else if (a.link) { nav(a.link); fechar(); } }} className={a.acao || a.link ? 'clic' : ''}>{a.texto}</span>
       <button type="button" className="icone-btn" title="Fechar aviso" aria-label="Fechar aviso" onClick={fechar}><Icone n="x" /></button>
     </div>
   );
@@ -95,8 +99,9 @@ function AvisoItem({ a, fechar }: { a: Aviso; fechar: () => void }) {
  * Confere a cada minuto. Depois de fechado, só volta se aparecer paciente novo para lembrar.
  */
 function AlertaLembretes() {
-  const { base, avisar, fecharAviso } = useDados();
+  const { base, acoes, avisar, fecharAviso } = useDados();
   const [agora, setAgora] = useState(agoraMin());
+  const [aberto, setAberto] = useState(false);   // janela com os lembretes, aberta pelo aviso
   useEffect(() => { const t = setInterval(() => setAgora(agoraMin()), 60000); return () => clearInterval(t); }, []);
   const hj = hoje();
   const { dia, lista, hora } = lembretesPendentes(base, hj, agora);
@@ -109,7 +114,29 @@ function AlertaLembretes() {
     if (visto) return;
     try { sessionStorage.setItem('ioclinic:' + id, '1'); } catch { /* sem armazenamento */ }
     const quando = dia === somaDias(hj, 1) ? 'amanhã' : brCurto(dia!);
-    avisar({ id, tipo: 'alerta', fixo: true, link: '/hoje', texto: `⏰ Hora de enviar os lembretes de ${quando} pelo WhatsApp · ${lista.length} paciente${lista.length > 1 ? 's' : ''}` });
+    avisar({ id, tipo: 'alerta', fixo: true, acao: () => setAberto(true), texto: `⏰ Hora de enviar os lembretes de ${quando} pelo WhatsApp · ${lista.length} paciente${lista.length > 1 ? 's' : ''}` });
   }, [id, tem]); // eslint-disable-line react-hooks/exhaustive-deps
-  return null;
+  if (!aberto || !dia) return null;
+  // mesma lista do "Para fazer", aqui mesmo: enviar pelo WhatsApp e marcar quem confirmou
+  const todos = aConfirmar(base, dia).filter((a) => a.whats?.resposta !== 'remarcar');
+  return (
+    <Modal titulo={`Lembretes de ${dia === somaDias(hj, 1) ? 'amanhã' : brCurto(dia)} · WhatsApp`} fechar={() => setAberto(false)}>
+      {todos.length === 0 ? <p className="mut">Todos já confirmaram.</p> : (
+        <ul className="tarefas">
+          {todos.map((a) => {
+            const p = base.pacientes.find((x) => x.id === a.pacienteId)!, s = base.servicos.find((x) => x.id === a.servicoId)!;
+            const enviado = !!a.whats?.lembreteEm;
+            return (
+              <li key={a.id}>
+                <span className="mono">{a.hora}</span><span className="tf-nome">{p.nome}<small>{s.curto}{enviado && <em className="zap-st ok"> · lembrete enviado ✓</em>}</small></span>
+                <a className={'btn2 peq ic zap' + (!enviado ? ' pulsa' : '')} href={linkWhats(p.telefone, msgLembrete(base.clinica, p, s, a))} target="_blank" rel="noreferrer" title="Enviar lembrete pelo WhatsApp" aria-label="Enviar lembrete pelo WhatsApp"
+                  onClick={() => acoes.registrarWhats(a.id, { modo: 'manual', lembreteEm: new Date().toISOString() })}><Icone n="zap" /></a>
+                <BotaoIcone icone="check" titulo="Marcar como confirmado" cls="peq verde" onClick={() => acoes.mudarStatus(a.id, 'confirmado')} />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Modal>
+  );
 }

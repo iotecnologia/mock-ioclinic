@@ -19,7 +19,7 @@ import { useWhatsAuto } from './WhatsAuto';
 const PASSOS = ['Paciente', 'Serviço', 'Dia e horário', 'Confirmar'];
 const PRE = '__pre';   // paciente ainda não gravado: o pré-cadastro só é salvo ao confirmar o agendamento
 
-export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string }) {
+export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoAgendar }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string; aoAgendar?: (a: Agendamento) => void }) {
   const { base, acoes } = useDados();
   const hj = hoje();
   const [auto] = useWhatsAuto();
@@ -83,6 +83,7 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: {
       ...(auto ? { whats: { modo: 'auto' as const, confirmacaoEm: new Date().toISOString() } } : {}),
     });
     setFeito(a);
+    aoAgendar?.(a);
   };
 
   if (feito && paciente && servico) {

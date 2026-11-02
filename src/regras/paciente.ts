@@ -64,6 +64,8 @@ export interface ItemHistorico {
   data: string; hora?: string;
   tipo: 'agendamento' | 'pagamento' | 'clinico' | 'documento' | 'cadastro';
   titulo: string; detalhe?: string; status?: string; statusCls?: string;
+  /** de onde veio (para abrir o detalhe na mesma tela) */
+  agId?: string; atId?: string; docId?: string;
 }
 
 type BaseHist = Pick<BaseClinica, 'agendamentos' | 'servicos' | 'atendimentos' | 'pacientes'> & Partial<Pick<BaseClinica, 'documentos'>>;
@@ -77,21 +79,21 @@ export function historico(pacienteId: string, b: BaseHist, perfil: Perfil): Item
   const pac = b.pacientes.find((p) => p.id === pacienteId);
   for (const a of b.agendamentos.filter((x) => x.pacienteId === pacienteId)) {
     const s = b.servicos.find((x) => x.id === a.servicoId);
-    itens.push({ data: a.data, hora: a.hora, tipo: 'agendamento', titulo: s?.nome ?? a.servicoId, status: STATUS[a.status].nome, statusCls: STATUS[a.status].cls });
+    itens.push({ data: a.data, hora: a.hora, tipo: 'agendamento', titulo: s?.nome ?? a.servicoId, status: STATUS[a.status].nome, statusCls: STATUS[a.status].cls, agId: a.id });
     if (a.pagamento?.status === 'pago') {
-      itens.push({ data: a.pagamento.pagoEm ?? a.data, hora: a.hora, tipo: 'pagamento', titulo: 'Pagamento recebido', detalhe: `${s?.curto ?? ''} · ${a.pagamento.forma ?? ''}`, status: 'pago' });
+      itens.push({ data: a.pagamento.pagoEm ?? a.data, hora: a.hora, tipo: 'pagamento', titulo: 'Pagamento recebido', detalhe: `${s?.curto ?? ''} · ${a.pagamento.forma ?? ''}`, status: 'pago', agId: a.id });
     }
     if (perfil === 'medica') {
       const at = b.atendimentos.find((x) => x.agendamentoId === a.id);
       if (at) {
         const sinais = [at.pa && `PA ${at.pa}`, at.fc && `FC ${at.fc} bpm`, at.pesoKg && `${at.pesoKg} kg`].filter(Boolean).join(' · ');
-        itens.push({ data: at.data, hora: a.hora, tipo: 'clinico', titulo: at.cid ? `${at.cid} · ${at.cidDescricao}` : 'Evolução clínica', detalhe: [at.queixa, sinais, at.conduta].filter(Boolean).join(' — ') });
+        itens.push({ atId: at.id, data: at.data, hora: a.hora, tipo: 'clinico', titulo: at.cid ? `${at.cid} · ${at.cidDescricao}` : 'Evolução clínica', detalhe: [at.queixa, sinais, at.conduta].filter(Boolean).join(' — ') });
       }
     }
   }
   if (perfil === 'medica') {
     for (const d of (b.documentos ?? []).filter((x) => x.pacienteId === pacienteId)) {
-      itens.push({ data: d.data, tipo: 'documento', titulo: d.titulo, detalhe: (d.itens ?? d.paragrafos.slice(-1)).join(' · ').slice(0, 160) });
+      itens.push({ docId: d.id, data: d.data, tipo: 'documento', titulo: d.titulo, detalhe: (d.itens ?? d.paragrafos.slice(-1)).join(' · ').slice(0, 160) });
     }
   }
   if (pac) itens.push({ data: pac.criadoEm, tipo: 'cadastro', titulo: 'Cadastro do paciente', detalhe: pac.consentimentoLgpd ? 'Termo LGPD aceito' : 'Termo LGPD pendente' });

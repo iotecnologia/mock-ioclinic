@@ -2,13 +2,14 @@
 // com variação sobre o período anterior — se o período ainda não terminou, compara a parte que já passou com a
 // mesma parte do anterior — e gráficos de evolução. Mesmo período e mesmas contas do Financeiro e dos Relatórios.
 import { useDados } from '../componentes/Dados';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Bloco, Contador, TituloPagina } from '../componentes/Comuns';
+import { ModalRelatorio } from '../componentes/TabelaRelatorio';
 import { Icone } from '../componentes/Icone';
 import { Barras, BarrasAgrupadas, BarrasH, Proporcao } from '../componentes/Graficos';
 import { FORMAS } from '../componentes/Receber';
 import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
-import { ocupacaoSemana, porForma, receitaPorServico, resumoPeriodo, serieEvolucao, variacao } from '../regras/financeiro';
+import { montarRelatorio, ocupacaoSemana, porForma, receitaPorServico, resumoPeriodo, serieEvolucao, variacao, type TipoRelatorio } from '../regras/financeiro';
 import { comparacao, dias, nomeEvolucao, rotulo, rotuloCurto, ultimos } from '../regras/periodo';
 import { hoje, somaDias } from '../util/datas';
 import { moeda } from '../util/formato';
@@ -26,7 +27,7 @@ function Var({ v, bom }: { v: number | null; bom: 'subir' | 'descer' }) {
 
 export function Painel() {
   const { base } = useDados();
-  const nav = useNavigate();
+  const [detalhe, setDetalhe] = useState<{ tipo: TipoRelatorio; situacao?: string; nome: string } | null>(null);   // card aberto numa janela
   const hj = hoje();
   const [p] = usePeriodo();
   // valores: o período inteiro (iguais ao Financeiro e aos Relatórios)
@@ -45,12 +46,12 @@ export function Painel() {
   const emAndamento = serie.some((s) => s.rotulo.endsWith('*'));
 
   const kpis = [
-    { rot: 'Receita', val: moeda(a.recebido), v: variacao(ca.recebido, cb.recebido), bom: 'subir' as const, ic: 'carteira', ir: 'tipo=receitas', dica: 'Ver as receitas do período' },
-    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(ca.despesas, cb.despesas), bom: 'descer' as const, ic: 'arquivo', ir: 'tipo=despesas', dica: 'Ver as despesas do período' },
-    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(ca.lucro, cb.lucro), bom: 'subir' as const, ic: 'grafico', ir: 'tipo=fluxo', dica: 'Ver o fluxo de caixa do período' },
-    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(ca.atendidos, cb.atendidos), bom: 'subir' as const, ic: 'estetoscopio', ir: 'tipo=atendimentos&situacao=atendido', dica: 'Ver os atendimentos do período' },
-    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(ca.ticketMedio, cb.ticketMedio), bom: 'subir' as const, ic: 'orcamento', ir: 'tipo=receitas', dica: 'Ver os pagamentos que formam o ticket médio' },
-    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(ca.taxaFaltas, cb.taxaFaltas), bom: 'descer' as const, ic: 'falta', ir: 'tipo=atendimentos&situacao=faltou', dica: 'Ver quem faltou no período' },
+    { rot: 'Receita', val: moeda(a.recebido), v: variacao(ca.recebido, cb.recebido), bom: 'subir' as const, ic: 'carteira', ir: { tipo: 'receitas' as TipoRelatorio }, dica: 'Ver as receitas do período' },
+    { rot: 'Despesas', val: moeda(a.despesas), v: variacao(ca.despesas, cb.despesas), bom: 'descer' as const, ic: 'arquivo', ir: { tipo: 'despesas' as TipoRelatorio }, dica: 'Ver as despesas do período' },
+    { rot: 'Lucro', val: moeda(a.lucro), v: variacao(ca.lucro, cb.lucro), bom: 'subir' as const, ic: 'grafico', ir: { tipo: 'fluxo' as TipoRelatorio }, dica: 'Ver o fluxo de caixa do período' },
+    { rot: 'Atendimentos', val: String(a.atendidos), v: variacao(ca.atendidos, cb.atendidos), bom: 'subir' as const, ic: 'estetoscopio', ir: { tipo: 'atendimentos' as TipoRelatorio, situacao: 'atendido' }, dica: 'Ver os atendimentos do período' },
+    { rot: 'Ticket médio', val: moeda(a.ticketMedio), v: variacao(ca.ticketMedio, cb.ticketMedio), bom: 'subir' as const, ic: 'orcamento', ir: { tipo: 'receitas' as TipoRelatorio }, dica: 'Ver os pagamentos que formam o ticket médio' },
+    { rot: 'Faltas', val: pct(a.taxaFaltas), v: variacao(ca.taxaFaltas, cb.taxaFaltas), bom: 'descer' as const, ic: 'falta', ir: { tipo: 'atendimentos' as TipoRelatorio, situacao: 'faltou' }, dica: 'Ver quem faltou no período' },
   ];
 
   return (
@@ -60,7 +61,7 @@ export function Painel() {
       </TituloPagina>
 
       <div className="contadores c6">
-        {kpis.map((k) => <Contador key={k.rot} icone={k.ic} valor={k.val} rotulo={<>{k.rot} <Var v={k.v} bom={k.bom} /></>} onClick={() => nav('/relatorios?' + k.ir)} titulo={k.dica} />)}
+        {kpis.map((k) => <Contador key={k.rot} icone={k.ic} valor={k.val} rotulo={<>{k.rot} <Var v={k.v} bom={k.bom} /></>} onClick={() => setDetalhe({ ...k.ir, nome: k.rot })} titulo={k.dica} />)}
       </div>
 
       <div className="grade-bi">
@@ -92,6 +93,10 @@ export function Painel() {
           <div className="pad"><BarrasH dados={ocup.map((o) => ({ rotulo: o.dia, valor: o.pct }))} fmt={pct} max={100} /></div>
         </Bloco>
       </div>
+      {detalhe && (() => {
+        const r = montarRelatorio(detalhe.tipo, base, p.de, p.ate, { situacao: detalhe.situacao });
+        return <ModalRelatorio r={{ ...r, titulo: detalhe.nome === 'Faltas' ? 'Faltas' : detalhe.nome === 'Atendimentos' ? 'Atendimentos realizados' : r.titulo }} periodo={rotulo(p)} fechar={() => setDetalhe(null)} />;
+      })()}
     </>
   );
 }

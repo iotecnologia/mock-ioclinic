@@ -9,6 +9,8 @@ import { Avatar, Bloco, BotaoIcone, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { FormPaciente, validar } from '../componentes/FormPaciente';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
+import { DetalheAgendamento } from '../componentes/DetalheAgendamento';
+import { DetalheEvolucao, Reimprimir } from './ProntuarioPaciente';
 import { historico, idade, resumoPaciente, type ItemHistorico } from '../regras/paciente';
 import { FORMAS } from '../componentes/Receber';
 import { br, hoje, nomeMes } from '../util/datas';
@@ -31,6 +33,7 @@ export function PacienteFicha() {
   const [rasc, setRasc] = useState<Omit<Paciente, 'id' | 'criadoEm'> & { id?: string } | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [versao, setVersao] = useState(0);
+  const [aberto, setAberto] = useState<ItemHistorico | null>(null);   // item do histórico aberto numa janela
   const p = base.pacientes.find((x) => x.id === id);
   if (!p) return <Vazio>Paciente não encontrado.</Vazio>;
   const hj = hoje();
@@ -50,12 +53,10 @@ export function PacienteFicha() {
   const descartar = () => { setEditando(false); setRasc(null); setErros({}); setVersao((v) => v + 1); };
 
   // agrupa por mês/ano para a linha do tempo
-  // cada item do histórico abre onde ele está: agenda do dia, prontuário ou dados cadastrais
-  const abrirItem = (i: { tipo: string; data: string }) => {
-    if (i.tipo === 'cadastro') setAba('dados');
-    else if ((i.tipo === 'clinico' || i.tipo === 'documento') && medica) nav('/prontuario/' + p.id);
-    else nav('/agenda?data=' + i.data);
-  };
+  // cada item do histórico abre o detalhe AQUI MESMO (janela), sem trocar de página
+  const abrirItem = (i: ItemHistorico) => { if (i.tipo === 'cadastro') setAba('dados'); else setAberto(i); };
+  const atAberto = aberto?.atId ? base.atendimentos.find((x) => x.id === aberto.atId) : undefined;
+  const docAberto = aberto?.docId ? base.documentos.find((x) => x.id === aberto.docId) : undefined;
   const grupos: { chave: string; itens: ItemHistorico[] }[] = [];
   for (const i of itens) {
     const chave = `${nomeMes(Number(i.data.slice(5, 7)) - 1)} de ${i.data.slice(0, 4)}`;
@@ -107,7 +108,7 @@ export function PacienteFicha() {
                   <div className="tl-mes">{g.chave}</div>
                   {g.itens.map((i, k) => (
                     <div key={k} className={'tl-item clic tl-' + i.tipo + (i.data > hj ? ' futuro' : '')} role="button" tabIndex={0}
-                      title={i.tipo === 'cadastro' ? 'Ver dados cadastrais' : i.tipo === 'clinico' || i.tipo === 'documento' ? 'Abrir o prontuário' : 'Abrir a agenda deste dia'}
+                      title={i.tipo === 'cadastro' ? 'Ver dados cadastrais' : i.tipo === 'clinico' ? 'Ver a evolução' : i.tipo === 'documento' ? 'Ver o documento' : 'Ver o agendamento'}
                       onClick={() => abrirItem(i)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && abrirItem(i)}>
                       <span className="tl-dot"><Icone n={ICONE[i.tipo]} /></span>
                       <div className="tl-data mono">{br(i.data).slice(0, 5)}{i.hora && <small>{i.hora}</small>}</div>
@@ -133,6 +134,9 @@ export function PacienteFicha() {
           <FormPaciente key={versao + p.id} inicial={p} editando={editando} aoMudar={setRasc} erros={erros} />
         </Bloco>
       )}
+      {aberto?.agId && <DetalheAgendamento id={aberto.agId} fechar={() => setAberto(null)} />}
+      {atAberto && <DetalheEvolucao a={atAberto} docs={base.documentos.filter((d) => d.pacienteId === p.id && d.data === atAberto.data)} abrirDoc={(d) => setAberto({ ...aberto!, atId: undefined, docId: d.id })} fechar={() => setAberto(null)} />}
+      {docAberto && <Reimprimir d={docAberto} fechar={() => setAberto(null)} />}
       {agendar && <NovoAgendamento pacienteId={p.id} fechar={fecharAgendar} />}
     </>
   );
