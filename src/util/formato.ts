@@ -38,7 +38,11 @@ export const mascaraTelefone = (s: string) => {
 export const mascaraCep = (s: string) => digitos(s).slice(0, 8).replace(/^(\d{5})(\d)/, '$1-$2');
 
 /** Link do WhatsApp com mensagem pronta. */
-export const linkWhats = (tel: string, msg: string) => `https://wa.me/55${digitos(tel)}?text=${encodeURIComponent(msg)}`;
+/**
+ * Link que abre o WhatsApp com a mensagem pronta.
+ * Usa api.whatsapp.com/send (e não wa.me): pelo wa.me, o WhatsApp Desktop/Web troca os emojis por "�".
+ */
+export const linkWhats = (tel: string, msg: string) => `https://api.whatsapp.com/send?phone=55${digitos(tel)}&text=${encodeURIComponent(msg)}`;
 
 /** localStorage protegido: só para conveniência (tema). Nunca para dado de paciente. */
 export const local = {

@@ -35,7 +35,7 @@ export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paci
             <span className="fl-selo">{titulo}</span>
             <div className="fl-emissao">Emissão: {br(data)}</div>
           </div>
-          <div className="fl-end"><span>{clinica.endereco}</span><b>Tel. {clinica.telefone}{clinica.whatsapp ? <> · WhatsApp {clinica.whatsapp}</> : null}</b></div>
+          <div className="fl-end"><span>{clinica.endereco}</span><b>{[clinica.telefone && `Tel. ${clinica.telefone}`, clinica.whatsapp && `WhatsApp ${clinica.whatsapp}`].filter(Boolean).join(' · ')}</b></div>
         </div>
       ) : <h1 className="fl-tit">{titulo}</h1>}
       {paciente && (
