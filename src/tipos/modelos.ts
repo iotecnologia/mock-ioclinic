@@ -52,6 +52,20 @@ export interface Paciente {
   situacao?: 'pre' | 'removido';
 }
 
+/**
+ * WhatsApp do agendamento. 'auto' = enviado pelo sistema (no mock, simulado); 'manual' = a recepção abriu o WhatsApp.
+ * Datas/horas em ISO. `resposta` só existe no automático (no manual, a resposta chega no WhatsApp da recepção).
+ */
+export interface ContatoWhats {
+  modo: 'auto' | 'manual';
+  confirmacaoEm?: string; lembreteEm?: string;
+  resposta?: 'confirmou' | 'remarcar'; respostaEm?: string;
+  /** já passou pela simulação de resposta (respondeu ou não). */
+  processado?: boolean;
+  /** a recepção já tratou o pedido de remarcação. */
+  resolvido?: boolean;
+}
+
 export type StatusAgendamento = 'agendado' | 'confirmado' | 'chegou' | 'em_atendimento' | 'atendido' | 'faltou' | 'cancelado';
 export type FormaPagamento = 'pix' | 'dinheiro' | 'cartao_credito' | 'cartao_debito';
 export interface Pagamento { status: 'pendente' | 'pago' | 'isento'; valor: number; forma?: FormaPagamento; pagoEm?: string }
@@ -66,6 +80,8 @@ export interface Agendamento {
   obs?: string;
   /** Encaixe: marcado fora da grade livre (pode sobrepor outro horário). */
   encaixe?: boolean;
+  /** Contato pelo WhatsApp: confirmação do agendamento, lembrete da véspera e resposta do paciente. */
+  whats?: ContatoWhats;
   criadoEm: string;
 }
 

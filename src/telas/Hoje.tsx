@@ -1,6 +1,6 @@
 // Tela inicial: o que tem para fazer hoje. Recepção e Dra. veem a mesma agenda; cada uma com as suas ações.
 // A Dra. vê também o "próximo paciente" em destaque. Nada de gráfico aqui: o BI fica em página própria.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
 import { useSessao } from '../acesso/Sessao';
@@ -13,6 +13,8 @@ import { blocosLivres, situacaoDia } from '../regras/disponibilidade';
 import { idadeTxt } from '../regras/paciente';
 import { agoraMin, brCurto, extenso, hoje, nomeDiaCurto, somaDias } from '../util/datas';
 import { linkWhats, moeda } from '../util/formato';
+import { msgLembrete, msgRemarcar } from '../regras/mensagens';
+import { ChaveWhatsAuto, useWhatsAuto } from '../componentes/WhatsAuto';
 
 function saudacao() { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; }
 
@@ -37,11 +39,19 @@ export function Hoje() {
   const aReceber = lista.filter((a) => a.pagamento?.status === 'pendente' && ['chegou', 'em_atendimento', 'atendido'].includes(a.status));
   const nomeP = (id: string) => base.pacientes.find((p) => p.id === id)!;
   const nomeS = (id: string) => base.servicos.find((s) => s.id === id)!;
+  const [auto] = useWhatsAuto();
+  // WhatsApp automático: o lembrete do próximo dia de atendimento sai sozinho (no mock, simulado ao abrir a tela)
+  const paraConfirmar = confirmar.filter((a) => a.whats?.resposta !== 'remarcar');   // quem pediu remarcar vai para a lista de cima
+  const semLembrete = auto ? confirmar.filter((a) => !a.whats?.lembreteEm).map((a) => a.id) : [];
+  useEffect(() => { if (semLembrete.length) acoes.enviarLembretes(semLembrete); }, [semLembrete.join()]); // eslint-disable-line react-hooks/exhaustive-deps
+  const remarcar = base.agendamentos
+    .filter((a) => a.whats?.resposta === 'remarcar' && !a.whats.resolvido && a.data >= hj && ['agendado', 'confirmado'].includes(a.status))
+    .sort((x, y) => x.data.localeCompare(y.data) || x.hora.localeCompare(y.hora));
+  const confirmaramZap = amanha ? doDia(base, amanha).filter((a) => a.whats?.resposta === 'confirmou').length : 0;
 
   return (
     <>
       <TituloPagina titulo={`${saudacao()}, ${usuario!.nome}`} sub={extenso(hj)}>
-        <BotaoIcone icone="pacienteMais" titulo="Novo paciente" onClick={() => nav('/pacientes/novo')} />
         <BotaoIcone icone="mais" titulo="Novo agendamento" pri onClick={() => setNovo(true)} />
       </TituloPagina>
 
@@ -108,26 +118,43 @@ export function Hoje() {
             </ul>
           </Bloco>
 
-          <Bloco titulo={<><Icone n="lista" /> Para fazer</>}>
+          <Bloco titulo={<><Icone n="lista" /> Para fazer</>} extra={<ChaveWhatsAuto />}>
             <ul className="tarefas">
-              {confirmar.length > 0 && <li className="t-cab">Confirmar {amanha && amanha === somaDias(hj, 1) ? 'amanhã' : brCurto(amanha!)} ({confirmar.length})</li>}
-              {confirmar.slice(0, 5).map((a) => {
+              {remarcar.length > 0 && <li className="t-cab alerta"><Icone n="alerta" /> Pediram para remarcar pelo WhatsApp ({remarcar.length})</li>}
+              {remarcar.map((a) => {
                 const p = nomeP(a.pacienteId), s = nomeS(a.servicoId);
-                const msg = `Olá, ${p.nome.split(' ')[0]}! Confirmando seu horário na clínica da ${base.clinica.medica}: ${s.nome}, ${extenso(a.data)}, às ${a.hora}. Podemos confirmar?`;
+                return (
+                  <li key={'r' + a.id} className="tf-alerta">
+                    <span className="mono">{a.data === hj ? a.hora : brCurto(a.data)}</span><span className="tf-nome">{p.nome}<small>{s.curto} · {a.hora}</small></span>
+                    <a className="btn2 peq ic zap" href={linkWhats(p.telefone, msgRemarcar(base.clinica, p))} target="_blank" rel="noreferrer" title="Conversar no WhatsApp para remarcar" aria-label="Conversar no WhatsApp para remarcar"><Icone n="zap" /></a>
+                    <BotaoIcone icone="calendario" titulo="Abrir a agenda do dia" cls="peq" onClick={() => nav('/agenda?data=' + a.data)} />
+                    <BotaoIcone icone="check" titulo="Já tratei (remarcado ou mantido)" cls="peq verde" onClick={() => acoes.resolverRemarcar(a.id)} />
+                  </li>
+                );
+              })}
+              {auto && !paraConfirmar.length && confirmaramZap > 0 && <li className="t-cab">Confirmações de {amanha === somaDias(hj, 1) ? 'amanhã' : brCurto(amanha!)}<small className="t-sub">✅ {confirmaramZap} paciente{confirmaramZap > 1 ? 's' : ''} {confirmaramZap > 1 ? "confirmaram" : "confirmou"} pelo WhatsApp</small></li>}
+              {paraConfirmar.length > 0 && <li className="t-cab">Confirmar {amanha && amanha === somaDias(hj, 1) ? 'amanhã' : brCurto(amanha!)} ({paraConfirmar.length}){auto && <small className="t-sub">lembrete automático pelo WhatsApp{confirmaramZap ? ` · ${confirmaramZap} já confirmaram ✅` : ''}</small>}</li>}
+              {paraConfirmar.slice(0, 6).map((a) => {
+                const p = nomeP(a.pacienteId), s = nomeS(a.servicoId);
+                const w = a.whats;
                 return (
                   <li key={a.id}>
-                    <span className="mono">{a.hora}</span><span className="tf-nome">{p.nome}<small>{s.curto}</small></span>
-                    <a className="btn2 peq ic zap" href={linkWhats(p.telefone, msg)} target="_blank" rel="noreferrer" title="Enviar confirmação pelo WhatsApp" aria-label="Enviar confirmação pelo WhatsApp"><Icone n="zap" /></a>
+                    <span className="mono">{a.hora}</span><span className="tf-nome">{p.nome}<small>{s.curto}
+                      {w?.modo === 'auto' && w.lembreteEm && (w.resposta === 'remarcar' ? <em className="zap-st no"> · pediu remarcar</em> : w.processado ? <em className="zap-st"> · sem resposta</em> : <em className="zap-st"> · ⏳ aguardando resposta</em>)}
+                      {w?.modo === 'manual' && w.lembreteEm && <em className="zap-st"> · lembrete enviado</em>}
+                    </small></span>
+                    <a className="btn2 peq ic zap" href={linkWhats(p.telefone, msgLembrete(base.clinica, p, s, a))} target="_blank" rel="noreferrer" title="Enviar lembrete pelo WhatsApp" aria-label="Enviar lembrete pelo WhatsApp"
+                      onClick={() => !auto && acoes.registrarWhats(a.id, { modo: 'manual', lembreteEm: new Date().toISOString() })}><Icone n="zap" /></a>
                     <BotaoIcone icone="check" titulo="Marcar como confirmado" cls="peq verde" onClick={() => acoes.mudarStatus(a.id, 'confirmado')} />
                   </li>
                 );
               })}
-              {confirmar.length > 5 && <li className="mut peq">+ {confirmar.length - 5} na agenda</li>}
+              {paraConfirmar.length > 6 && <li className="mut peq">+ {paraConfirmar.length - 6} na agenda</li>}
               {aReceber.length > 0 && <li className="t-cab">A receber hoje ({aReceber.length})</li>}
               {aReceber.map((a) => (
                 <li key={a.id}><span className="mono">{a.hora}</span><span className="tf-nome">{nomeP(a.pacienteId).nome}<small>{nomeS(a.servicoId).curto}</small></span><b className="mono">{moeda(a.pagamento!.valor)}</b></li>
               ))}
-              {!confirmar.length && !aReceber.length && <li className="mut">Tudo em dia.</li>}
+              {!paraConfirmar.length && !aReceber.length && !remarcar.length && <li className="mut">Tudo em dia.</li>}
             </ul>
           </Bloco>
         </div>

@@ -13,6 +13,8 @@ import { buscarPacientes, idadeTxt } from '../regras/paciente';
 import { blocosLivres, horariosEncaixe, horariosLivres, situacaoDia } from '../regras/disponibilidade';
 import { agoraMin, br, extenso, hoje, somaDias } from '../util/datas';
 import { digitos, linkWhats, mascaraTelefone, moeda } from '../util/formato';
+import { msgAgendamento } from '../regras/mensagens';
+import { useWhatsAuto } from './WhatsAuto';
 
 const PASSOS = ['Paciente', 'Serviço', 'Dia e horário', 'Confirmar'];
 const PRE = '__pre';   // paciente ainda não gravado: o pré-cadastro só é salvo ao confirmar o agendamento
@@ -20,6 +22,7 @@ const PRE = '__pre';   // paciente ainda não gravado: o pré-cadastro só é sa
 export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string }) {
   const { base, acoes } = useDados();
   const hj = hoje();
+  const [auto] = useWhatsAuto();
   const [passo, setPasso] = useState(pacienteId ? (servicoId ? 2 : 1) : 0);
   const [pac, setPac] = useState<string | undefined>(pacienteId);
   const [serv, setServ] = useState<string | undefined>(servicoId);
@@ -74,12 +77,18 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: {
       const novo = acoes.salvarPaciente(dados);
       pacienteId = novo.id; setPac(novo.id); setPre(null);
     }
-    const a = acoes.agendar({ pacienteId, servicoId: serv!, data: dia, hora: hr!, duracaoMin: servico!.duracaoMin, ...(encaixe ? { encaixe: true } : {}) });
+    const a = acoes.agendar({
+      pacienteId, servicoId: serv!, data: dia, hora: hr!, duracaoMin: servico!.duracaoMin, ...(encaixe ? { encaixe: true } : {}),
+      // WhatsApp automático ligado: a confirmação "sai" junto com o agendamento (no mock, simulado)
+      ...(auto ? { whats: { modo: 'auto' as const, confirmacaoEm: new Date().toISOString() } } : {}),
+    });
     setFeito(a);
   };
 
   if (feito && paciente && servico) {
-    const msg = `Olá, ${paciente.nome.split(' ')[0]}! Seu agendamento na clínica da ${base.clinica.medica} está marcado: ${servico.nome}, ${extenso(feito.data)}, às ${feito.hora}.${servico.preparo ? ' Preparo: ' + servico.preparo : ''} Por favor, confirme respondendo esta mensagem.`;
+    const msg = msgAgendamento(base.clinica, paciente, servico, feito);
+    const atual = base.agendamentos.find((x) => x.id === feito.id) ?? feito;
+    const w = atual.whats;
     return (
       <Modal titulo="Agendamento feito" fechar={fechar}>
         <div className="feito">
@@ -87,9 +96,24 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId }: {
           <h3>{paciente.nome}</h3>
           <p>{servico.nome}<br /><b>{extenso(feito.data)} · {feito.hora}</b></p>
           {(feito.encaixe || paciente.situacao === 'pre') && <p className="feito-tags">{feito.encaixe && <span className="tag t-at">encaixe</span>}{paciente.situacao === 'pre' && <span className="tag t-in">pré-cadastro · completar na chegada</span>}</p>}
-          {servico.preparo && <div className="preparo"><Icone n="info" /> {servico.preparo}</div>}
+          {w?.modo === 'auto' ? (
+            <div className="whats-env">
+              <div className="whats-st"><Icone n="zap" /> Confirmação enviada automaticamente para {paciente.telefone}
+                {w.resposta === 'confirmou' ? <span className="tag t-ok">paciente confirmou ✅</span>
+                  : w.resposta === 'remarcar' ? <span className="tag t-no">pediu para remarcar</span>
+                  : <span className="tag t-in">aguardando resposta…</span>}
+              </div>
+              <div className="bolha-whats">{msg}</div>
+              <small className="mut">Demonstração: no sistema final o envio é real, pela API oficial do WhatsApp Business.</small>
+            </div>
+          ) : (
+            <>
+              <div className="bolha-whats">{msg}</div>
+              {w?.confirmacaoEm && <div className="certo-peq"><Icone n="check" /> WhatsApp aberto para envio. A resposta do paciente chega no WhatsApp da clínica.</div>}
+            </>
+          )}
           <div className="rodape-modal centro">
-            <a className="btn2 zap" href={linkWhats(paciente.telefone, msg)} target="_blank" rel="noreferrer"><Icone n="zap" /> Enviar confirmação</a>
+            {w?.modo !== 'auto' && <a className="btn2 zap" href={linkWhats(paciente.telefone, msg)} target="_blank" rel="noreferrer" onClick={() => acoes.registrarWhats(feito.id, { modo: 'manual', confirmacaoEm: new Date().toISOString() })}><Icone n="zap" /> Enviar confirmação</a>}
             <button type="button" className="btn2" onClick={fechar}>Fechar</button>
           </div>
         </div>

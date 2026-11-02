@@ -2,10 +2,11 @@
 // MOCK: tudo o que for feito fica salvo NESTE navegador (localStorage) — os dados são fictícios.
 // No sistema real isso NÃO acontece: dado de paciente fica só no banco (backend io-clinic), nunca no navegador.
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import type { Agendamento, Atendimento, BaseClinica, Despesa, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
+import type { Agendamento, Atendimento, BaseClinica, ContatoWhats, Despesa, Documento, FormaPagamento, Paciente, ResumoClinico, StatusAgendamento } from '../tipos/modelos';
 import type { Repositorio } from '../repositorio/repositorio';
 import { hoje } from '../util/datas';
 import { limparPreCadastros } from '../regras/paciente';
+import { respostaSimulada } from '../regras/mensagens';
 
 interface Acoes {
   salvarPaciente(p: Omit<Paciente, 'id' | 'criadoEm'> & { id?: string }): Paciente;
@@ -20,8 +21,19 @@ interface Acoes {
   lancarDespesa(d: Omit<Despesa, 'id'>): Despesa;
   pagarDespesa(id: string): void;
   excluirDespesa(id: string): void;
+  /** Registra o contato pelo WhatsApp do agendamento (junta com o que já tinha). */
+  registrarWhats(id: string, w: Partial<ContatoWhats>): void;
+  /** Envia (no mock: simula) o lembrete da véspera para estes agendamentos. */
+  enviarLembretes(ids: string[]): void;
+  /** A recepção tratou o pedido de remarcação. */
+  resolverRemarcar(id: string): void;
 }
-interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void }
+/** Aviso que aparece no canto da tela (ex.: resposta do paciente no WhatsApp). */
+export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string }
+interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void }
+
+/** Segundos até a resposta simulada do paciente chegar (demonstração). */
+const ESPERA_RESPOSTA = 6;
 
 // ------------------------------------------------------------------ salvar no navegador (só no mock)
 export const CHAVE_DEMO = 'ioclinic:demo';
@@ -82,6 +94,9 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
   const [base, setBase] = useState<BaseClinica | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [versao, setVersao] = useState(0);   // muda ao restaurar → recarrega
+  const [avisos, setAvisos] = useState<Aviso[]>([]);
+  const baseRef = useRef<BaseClinica | null>(null);
+  baseRef.current = base;
   useEffect(() => {
     // deixa a tela de abertura aparecer antes de montar os dados
     const t = setTimeout(() => {
@@ -101,6 +116,48 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
     timer.current = setTimeout(() => gravar(base), 300);
   }, [base]);
   useEffect(() => () => clearTimeout(timer.current), []);
+  // DEMONSTRAÇÃO do WhatsApp automático: alguns segundos depois do envio, o paciente "responde".
+  // Confirmou → status Confirmado. Pediu para remarcar → alerta para a recepção. (Sistema final: webhook da API do WhatsApp.)
+  useEffect(() => {
+    const t = setInterval(() => {
+      const b = baseRef.current;
+      if (!b) return;
+      const agora = Date.now();
+      const prontos = b.agendamentos.filter((a) => {
+        const w = a.whats;
+        if (!w || w.modo !== 'auto' || w.processado) return false;
+        const enviado = Math.max(w.confirmacaoEm ? Date.parse(w.confirmacaoEm) : 0, w.lembreteEm ? Date.parse(w.lembreteEm) : 0);
+        return enviado > 0 && agora - enviado >= ESPERA_RESPOSTA * 1000;
+      });
+      if (!prontos.length) return;
+      const res = new Map(prontos.map((a) => [a.id, respostaSimulada(a.id, !a.whats!.lembreteEm)]));
+      // demonstração: num lote de 3+ lembretes, pelo menos um paciente pede para remarcar (para mostrar o alerta)
+      const lote = prontos.filter((a) => a.whats!.lembreteEm);
+      if (lote.length >= 3 && !lote.some((a) => res.get(a.id) === 'remarcar')) res.set(lote[lote.length - 1].id, 'remarcar');
+      const quando = new Date().toISOString();
+      setBase((x) => x && {
+        ...x,
+        agendamentos: x.agendamentos.map((a) => {
+          if (!res.has(a.id)) return a;
+          const r = res.get(a.id);
+          const whats: ContatoWhats = { ...a.whats!, processado: true, ...(r ? { resposta: r, respostaEm: quando } : {}) };
+          return { ...a, whats, status: r === 'confirmou' && a.status === 'agendado' ? 'confirmado' : a.status };
+        }),
+      });
+      const novos: Aviso[] = [];
+      for (const a of prontos) {
+        const r = res.get(a.id);
+        if (!r || !['agendado', 'confirmado'].includes(a.status)) continue;
+        const nome = b.pacientes.find((p) => p.id === a.pacienteId)?.nome ?? 'Paciente';
+        const quandoTxt = `${a.data.split('-').reverse().slice(0, 2).join('/')} às ${a.hora}`;
+        novos.push(r === 'confirmou'
+          ? { id: a.id + ':r', tipo: 'ok', texto: `💬 ${nome} confirmou pelo WhatsApp ✅ · ${quandoTxt}` }
+          : { id: a.id + ':r', tipo: 'alerta', texto: `💬 ${nome} pediu para remarcar · ${quandoTxt}`, link: '/hoje' });
+      }
+      if (novos.length) setAvisos((l) => [...l.filter((x) => !novos.some((n) => n.id === x.id)), ...novos].slice(-4));
+    }, 1500);
+    return () => clearInterval(t);
+  }, []);
   if (erro) return <div className="vazio">Não foi possível carregar os dados: {erro}</div>;
   if (!base) return null;
 
@@ -165,10 +222,22 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
     excluirDespesa(id) {
       setBase((b) => b && { ...b, despesas: b.despesas.filter((x) => x.id !== id) });
     },
+    registrarWhats(id, w) {
+      atualizaAg(id, (a) => ({ ...a, whats: { modo: 'manual', ...a.whats, ...w } }));
+    },
+    enviarLembretes(ids) {
+      const quando = new Date().toISOString();
+      const set = new Set(ids);
+      setBase((b) => b && { ...b, agendamentos: b.agendamentos.map((a) => (set.has(a.id) ? { ...a, whats: { ...a.whats, modo: 'auto', lembreteEm: quando, processado: false, resposta: undefined, resolvido: undefined } } : a)) });
+    },
+    resolverRemarcar(id) {
+      atualizaAg(id, (a) => ({ ...a, whats: { modo: 'auto', ...a.whats, resolvido: true } }));
+    },
   };
   /** Apaga o que foi salvo e gera a clínica fictícia de novo (para a próxima apresentação). */
   const restaurar = () => { clearTimeout(timer.current); apagarSalvo(); setBase(null); setVersao((v) => v + 1); };
-  return <C.Provider value={{ base, acoes, restaurar }}>{children}</C.Provider>;
+  const fecharAviso = (id: string) => setAvisos((l) => l.filter((x) => x.id !== id));
+  return <C.Provider value={{ base, acoes, restaurar, avisos, fecharAviso }}>{children}</C.Provider>;
 }
 
 export function useDados(): Ctx {

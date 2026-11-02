@@ -1,10 +1,10 @@
 // Estrutura da tela (mesmo padrão do Analiza): menu lateral por grupo, topo com busca e usuário, conteúdo, rodapé.
 // O menu mostra só as páginas que o perfil libera; itens "em breve" ficam foscos.
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Icone } from './Icone';
 import { Logo, Marca } from './Marca';
-import { useDados } from './Dados';
+import { useDados, type Aviso } from './Dados';
 import { BuscaGeral } from './BuscaGeral';
 import { Avatar } from './Comuns';
 import { local } from '../util/formato';
@@ -56,10 +56,27 @@ export function Shell() {
         </div>
       </header>
       <main className="conteudo"><Outlet /></main>
+      <Avisos />
       <nav className="nav-celular" aria-label="Menu">
         {PAGINAS.filter((p) => p.perfis.includes(perfil)).map((p) => <NavLink key={p.id} to={p.rota} className={({ isActive }) => (isActive ? 'ativo' : '')}><Icone n={p.icone} />{p.nome}</NavLink>)}
       </nav>
       <footer className="status"><span className="on">Mock funcional</span><span>Dados fictícios · salvos neste navegador</span><span className="dir">{s.usuario!.email} · {s.usuario!.cargo}</span></footer>
+    </div>
+  );
+}
+
+/** Avisos no canto da tela (ex.: resposta do paciente pelo WhatsApp). Somem sozinhos em 8 segundos. */
+function Avisos() {
+  const { avisos, fecharAviso } = useDados();
+  return <div className="avisos" role="status" aria-live="polite">{avisos.map((a) => <AvisoItem key={a.id} a={a} fechar={() => fecharAviso(a.id)} />)}</div>;
+}
+function AvisoItem({ a, fechar }: { a: Aviso; fechar: () => void }) {
+  const nav = useNavigate();
+  useEffect(() => { const t = setTimeout(fechar, 8000); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <div className={'aviso-flut ' + a.tipo}>
+      <span onClick={() => { if (a.link) { nav(a.link); fechar(); } }} className={a.link ? 'clic' : ''}>{a.texto}</span>
+      <button type="button" className="icone-btn" title="Fechar aviso" aria-label="Fechar aviso" onClick={fechar}><Icone n="x" /></button>
     </div>
   );
 }
