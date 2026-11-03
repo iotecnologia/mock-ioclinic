@@ -20,7 +20,8 @@ const pac = (id: string, situacao?: Paciente['situacao']): Paciente =>
 
 describe('pré-cadastro', () => {
   it('não aparece na lista de pacientes', () => expect(cadastrados([pac('a'), pac('b', 'pre')]).map((p) => p.id)).toEqual(['a']));
-  it('mostra "pré-cadastro" no lugar da idade', () => expect(idadeTxt(pac('b', 'pre'), '2026-11-01')).toBe('pré-cadastro'));
+  it('mostra "pré-cadastro" no lugar da idade quando não tem nascimento', () => expect(idadeTxt(pac('b', 'pre'), '2026-11-01')).toBe('pré-cadastro'));
+  it('pré-cadastro com data de nascimento já mostra a idade', () => expect(idadeTxt({ ...pac('b', 'pre'), nascimento: '1970-05-10' }, '2026-11-01')).toBe('56 anos'));
   it('agendado: o pré-cadastro fica', () => {
     const b = limparPreCadastros({ pacientes: [pac('b', 'pre')], agendamentos: [ag('1', 'b', '2026-11-03', '09:00')] });
     expect(b.pacientes.map((p) => p.id)).toEqual(['b']);

@@ -439,7 +439,7 @@ table.tab th.dir { text-align: right; }
 .lbl-peq { font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; }
 
 /* ---------- pré-cadastro e encaixe ---------- */
-.form-pre { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.form-pre { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 12px; }
 .form-pre label { display: grid; gap: 5px; font-size: 12px; font-weight: 600; color: var(--texto-suave); }
 .form-pre input { height: 40px; font-size: 14px; color: var(--texto); }
 .encaixe-btn { margin: 10px 0; }

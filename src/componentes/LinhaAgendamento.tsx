@@ -52,7 +52,8 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
           {ag.whats?.resposta === 'confirmou' && <span className="zap-tag ok" title="Confirmou pelo WhatsApp">💬 confirmou</span>}
           {ag.whats?.resposta === 'remarcar' && !ag.whats.resolvido && <span className="zap-tag no" title="Pediu para remarcar pelo WhatsApp">💬 pediu remarcar</span>}
           {ag.whats && !ag.whats.resposta && (ag.whats.confirmacaoEm || ag.whats.lembreteEm) && <span className="zap-tag" title={ag.whats.modo === 'auto' ? 'Mensagem enviada automaticamente' : 'Mensagem enviada pela recepção'}>💬 enviado</span>}
-          {pre ? <span className="tag t-in" title="Completar o cadastro quando o paciente chegar">pré-cadastro</span> : <span className="mut">{idadeTxt(pac, hoje())}</span>}
+          {pre && <span className="tag t-in" title="Completar o cadastro quando o paciente chegar">pré-cadastro</span>}
+          {(!pre || pac.nascimento) && <span className="mut">{idadeTxt(pac, hoje())}</span>}
           {ag.pagamento && ag.pagamento.status !== 'isento' && (
             <span className={pend ? 'pg pend' : 'pg ok'} title={pend ? 'Pagamento pendente' : 'Pago'}>{pend ? 'a receber ' + moeda(ag.pagamento.valor) : 'pago'}</span>
           )}

@@ -9,7 +9,7 @@ import { useDados } from './Dados';
 import { Modal } from './Comuns';
 import { Icone } from './Icone';
 import { CalendarioMes } from './CalendarioMes';
-import { buscarPacientes, idadeTxt } from '../regras/paciente';
+import { buscarPacientes, idade, idadeTxt } from '../regras/paciente';
 import { blocosLivres, horariosEncaixe, horariosLivres, situacaoDia } from '../regras/disponibilidade';
 import { agoraMin, br, extenso, hoje, somaDias } from '../util/datas';
 import { digitos, linkWhats, mascaraTelefone, moeda } from '../util/formato';
@@ -36,13 +36,13 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
   const [hr, setHr] = useState<string | undefined>(hora);
   const [busca, setBusca] = useState('');
   const [feito, setFeito] = useState<Agendamento | null>(null);
-  const [pre, setPre] = useState<{ nome: string; telefone: string } | null>(null);   // formulário do pré-cadastro aberto
+  const [pre, setPre] = useState<{ nome: string; telefone: string; nascimento: string } | null>(null);   // formulário do pré-cadastro aberto
   const [preErro, setPreErro] = useState('');
   const [encaixe, setEncaixe] = useState(false);       // horário escolhido é encaixe
   const [verEncaixe, setVerEncaixe] = useState(false); // mostrando a grade de encaixe
 
   const preDados: Paciente | undefined = pac === PRE && pre
-    ? { id: PRE, nome: pre.nome.trim(), telefone: pre.telefone, cpf: '', nascimento: '', sexo: 'O', consentimentoLgpd: false, criadoEm: hj, situacao: 'pre' }
+    ? { id: PRE, nome: pre.nome.trim(), telefone: pre.telefone, cpf: '', nascimento: pre.nascimento, sexo: 'O', consentimentoLgpd: false, criadoEm: hj, situacao: 'pre' }
     : undefined;
   const paciente = preDados ?? base.pacientes.find((p) => p.id === pac);
   const servico = base.servicos.find((s) => s.id === serv);
@@ -60,13 +60,15 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
   // abre o pré-cadastro já com o que foi digitado na busca (nome, ou telefone se digitou só números)
   const abrirPre = () => {
     const soNumero = /^[\d\s()+-]+$/.test(busca.trim()) && digitos(busca).length >= 8;
-    setPre({ nome: soNumero ? '' : busca.trim(), telefone: soNumero ? mascaraTelefone(busca) : '' });
+    setPre({ nome: soNumero ? '' : busca.trim(), telefone: soNumero ? mascaraTelefone(busca) : '', nascimento: '' });
     setPreErro('');
   };
   const continuarPre = () => {
     if (!pre) return;
     if (pre.nome.trim().split(/\s+/).length < 2) return setPreErro('Informe nome e sobrenome.');
     if (digitos(pre.telefone).length < 10) return setPreErro('Informe o WhatsApp com DDD.');
+    if (!pre.nascimento) return setPreErro('Informe a data de nascimento (para saber a idade do paciente).');
+    if (pre.nascimento > hj || pre.nascimento < '1900-01-01') return setPreErro('Data de nascimento inválida.');
     setPac(PRE); setPasso(1);
   };
 
@@ -156,9 +158,10 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
         <div className="etapa">
           <div className="form-pre">
             <label>Nome completo *<input autoFocus={!pre.nome} value={pre.nome} onChange={(e) => setPre({ ...pre, nome: e.target.value })} /></label>
-            <label>WhatsApp *<input autoFocus={!!pre.nome} value={pre.telefone} inputMode="tel" onChange={(e) => setPre({ ...pre, telefone: mascaraTelefone(e.target.value) })} placeholder="(19) 90000-0000" onKeyDown={(e) => e.key === 'Enter' && continuarPre()} /></label>
+            <label>WhatsApp *<input autoFocus={!!pre.nome} value={pre.telefone} inputMode="tel" onChange={(e) => setPre({ ...pre, telefone: mascaraTelefone(e.target.value) })} placeholder="(19) 90000-0000" /></label>
+            <label>Data de nascimento *<input type="date" value={pre.nascimento} max={hj} onChange={(e) => setPre({ ...pre, nascimento: e.target.value })} onKeyDown={(e) => e.key === 'Enter' && continuarPre()} />{pre.nascimento && pre.nascimento <= hj && <small className="mut">{idade(pre.nascimento, hj)} anos</small>}</label>
           </div>
-          <p className="mut peq">Pré-cadastro: só nome e WhatsApp, para confirmar a consulta. CPF, nascimento, endereço e o termo LGPD são preenchidos pela recepção quando o paciente chegar. Se ele faltar ou cancelar, o pré-cadastro é apagado.</p>
+          <p className="mut peq">Pré-cadastro: nome, WhatsApp (para confirmar a consulta) e data de nascimento (idade). CPF, endereço e o termo LGPD são preenchidos pela recepção quando o paciente chegar. Se ele faltar ou cancelar, o pré-cadastro é apagado.</p>
           {preErro && <div className="aviso"><Icone n="alerta" /> {preErro}</div>}
           <div className="rodape-modal">
             <button type="button" className="btn2" onClick={() => { setPre(null); if (pac === PRE) setPac(undefined); }}><Icone n="volta" /> Voltar à busca</button>

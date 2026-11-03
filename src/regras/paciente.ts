@@ -13,7 +13,7 @@ export function idade(nascimento: string, ref: string): number {
 
 /** Idade para mostrar na tela ("54 anos"); pré-cadastro ainda não tem data de nascimento. */
 export function idadeTxt(p: Paciente, ref: string): string {
-  if (p.situacao === 'pre') return 'pré-cadastro';
+  if (p.situacao === 'pre') return p.nascimento ? `${idade(p.nascimento, ref)} anos` : 'pré-cadastro';
   if (p.situacao === 'removido' || !p.nascimento) return 'dados removidos';
   return `${idade(p.nascimento, ref)} anos`;
 }
