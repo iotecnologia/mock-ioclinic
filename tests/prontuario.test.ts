@@ -45,11 +45,15 @@ describe('documentos', () => {
     const a = atestado(p, { data: '2026-10-20', dias: 2, inicio: '2026-10-20' });
     expect(a.paragrafos[0]).toContain('2 (dois) dias');
     expect(a.paragrafos.join(' ')).not.toContain('CID');
-    expect(atestado(p, { data: '2026-10-20', dias: 0, inicio: '2026-10-20', cid: 'I10' }).paragrafos[1]).toContain('I10');
+    const comCid = atestado(p, { data: '2026-10-20', hora: '10:30', dias: 0, inicio: '2026-10-20', cid: 'I10 · Hipertensão' });
+    expect(comCid.cid).toBe('I10 · Hipertensão');
+    expect(comCid.paragrafos[0]).toContain('às 10:30 horas');
   });
   it('receita numera e ignora linhas vazias', () => {
-    const r = receita(p, { data: '2026-10-20', itens: [{ nome: 'Losartana 50 mg', uso: '1 cp 12/12h' }, { nome: ' ', uso: '' }] });
-    expect(r.itens).toEqual(['1. Losartana 50 mg — 1 cp 12/12h']);
+    const r = receita(p, { data: '2026-10-20', itens: [{ nome: 'Losartana 50 mg', qtd: '1 caixa', uso: '1 cp 12/12h' }, { nome: ' ', uso: '' }], orientacoes: 'Manter hidratação.' });
+    expect(r.paragrafos[0]).toBe('—— USO ORAL ——');
+    expect(r.itens).toEqual(['1) Losartana 50 mg ——— 1 caixa\nPosologia: 1 cp 12/12h']);
+    expect(r.notas).toEqual(['ORIENTAÇÕES GERAIS AO PACIENTE:', 'Manter hidratação.']);
   });
   it('recepção não vê documentos no histórico (podem ter CID)', () => {
     const b = { pacientes: [p], servicos: [], agendamentos: [], atendimentos: [], documentos: [{ id: 'd', ...atestado(p, { data: '2026-10-20', dias: 1, inicio: '2026-10-20' }) }] };

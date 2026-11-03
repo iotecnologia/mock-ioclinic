@@ -12,6 +12,10 @@ export interface Clinica {
   /** Registro de especialista (opcional). */
   rqe?: string;
   endereco: string;
+  /** Linha do cabeçalho dos documentos depois do CRM/RQE (ex.: "Cardiologia Clínica & Diagnóstica"). */
+  subtitulo?: string;
+  /** Linha embaixo da assinatura (ex.: "Clínica de Cardiologia Integrada"). */
+  assinaturaSub?: string;
   cidade: string;
   /** Telefone fixo da clínica. */
   telefone: string;
@@ -100,7 +104,8 @@ export interface ResumoClinico { pacienteId: string; alergias: string; medicamen
 
 export type TipoDocumento = 'atestado' | 'receita' | 'pedido_exames' | 'comparecimento';
 /** Documento emitido (impresso em papel timbrado, assinado e carimbado à mão). */
-export interface Documento { id: string; pacienteId: string; data: string; tipo: TipoDocumento; titulo: string; paragrafos: string[]; itens?: string[] }
+/** `hora` = hora da emissão · `cid` = caixa do CID (só com autorização do paciente) · `notas` = orientações ao paciente. */
+export interface Documento { id: string; pacienteId: string; data: string; hora?: string; tipo: TipoDocumento; titulo: string; paragrafos: string[]; itens?: string[]; cid?: string; notas?: string[] }
 
 /** `termos`: palavras do dia a dia para achar o CID pela situação (ex.: "dor no peito"). */
 export interface Cid { codigo: string; descricao: string; grupo: string; termos?: string[] }

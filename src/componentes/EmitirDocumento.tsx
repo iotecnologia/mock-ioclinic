@@ -9,12 +9,20 @@ import { BaixarPdf, Folha, Imprimir } from './Folha';
 import { nomeArquivo } from '../util/pdf';
 import { ExameBusca, MedicamentoBusca } from './Buscas';
 import { CidBusca } from './CidBusca';
-import { atestado, comparecimento, NOME_DOC, pedidoExames, receita } from '../regras/documentos';
-import { hhmm, hoje, min } from '../util/datas';
+import { atestado, comparecimento, NOME_DOC, pedidoExames, receita, type ItemReceita } from '../regras/documentos';
+import { agoraMin, hhmm, hoje, min } from '../util/datas';
 
 
+/** Corpo do documento no modelo aprovado: texto, itens (receita/exames), caixa do CID e orientações ao paciente. */
 export function ConteudoDoc({ d }: { d: Omit<Documento, 'id'> }) {
-  return <>{d.paragrafos.map((p, i) => <p key={i}>{p}</p>)}{d.itens && <ul>{d.itens.map((x, i) => <li key={i}>{x}</li>)}</ul>}</>;
+  return (
+    <>
+      {d.paragrafos.map((p, i) => <p key={i} className={p.startsWith('——') ? 'fl-sec' : ''}>{p}</p>)}
+      {d.itens && <ul className="fl-itens">{d.itens.map((x, i) => <li key={i}>{x}</li>)}</ul>}
+      {d.cid && <div className="fl-cid"><b>Classificação Estatística Internacional (CID-10):</b> {d.cid.replace(' · ', ' — ')}</div>}
+      {d.notas && <div className="fl-notas">{d.notas.map((n, i) => <p key={i}>{n}</p>)}</div>}
+    </>
+  );
 }
 
 export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fechar }: {
@@ -39,7 +47,10 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   });
   // receita
   const resumo = base.resumos.find((r) => r.pacienteId === paciente.id);
-  const [itens, setItens] = useState<{ nome: string; uso: string }[]>(() => [{ nome: '', uso: '' }]);
+  const [itens, setItens] = useState<ItemReceita[]>(() => [{ nome: '', qtd: '', uso: '' }]);
+  const [orientacoes, setOrientacoes] = useState('');
+  // hora da emissão (aparece no cabeçalho: "Emissão: 03/11/2026 às 19:58")
+  const [horaEmissao] = useState(() => hhmm(agoraMin()));
   // pedido
   const [sel, setSel] = useState<string[]>(exames ?? []);
   const [indicacao, setIndicacao] = useState(cid ?? '');
@@ -48,10 +59,10 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   const [ate, setAte] = useState(hora ? hhmm(min(hora) + 60) : '09:00');
 
   const doc: Omit<Documento, 'id'> =
-    tipo === 'atestado' ? atestado(paciente, { data: hj, dias, inicio, cid: comCid && cidAt ? `${cidAt.codigo} · ${cidAt.descricao}` : undefined })
-    : tipo === 'receita' ? receita(paciente, { data: hj, itens })
-    : tipo === 'pedido_exames' ? pedidoExames(paciente, { data: hj, exames: sel, indicacao: indicacao || undefined })
-    : comparecimento(paciente, { data: hj, de, ate });
+    tipo === 'atestado' ? atestado(paciente, { data: hj, hora: horaEmissao, dias, inicio, cid: comCid && cidAt ? `${cidAt.codigo} · ${cidAt.descricao}` : undefined })
+    : tipo === 'receita' ? receita(paciente, { data: hj, hora: horaEmissao, itens, orientacoes })
+    : tipo === 'pedido_exames' ? pedidoExames(paciente, { data: hj, hora: horaEmissao, exames: sel, indicacao: indicacao || undefined })
+    : comparecimento(paciente, { data: hj, hora: horaEmissao, de, ate });
   const vazio = (tipo === 'receita' && !doc.itens?.length) || (tipo === 'pedido_exames' && !sel.length);
   const exClinica = base.servicos.filter((s) => s.tipo === 'exame').map((s) => s.nome);
   const marca = (x: string) => setSel((l) => (l.includes(x) ? l.filter((y) => y !== x) : [...l, x]));
@@ -59,7 +70,7 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
   const registrar = () => { acoes.emitirDocumento(doc); setEmitidos((e) => (e.includes(NOME_DOC[tipo]) ? e : [...e, NOME_DOC[tipo]])); };
   const imprimir = () => { registrar(); setImprimindo(true); };
   const baixar = () => { registrar(); setBaixando(true); };
-  const folha = <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha>;
+  const folha = <Folha clinica={base.clinica} titulo={doc.titulo} data={hj} hora={horaEmissao} timbrado={timbrado} paciente={paciente}><ConteudoDoc d={doc} /></Folha>;
 
   return (
     <Modal titulo={`Documentos · ${paciente.nome}`} fechar={fechar} largo>
@@ -81,18 +92,20 @@ export function EmitirDocumento({ paciente, tipoInicial, cid, exames, hora, fech
             <>
               {resumo && resumo.medicamentos.length > 0 && (
                 <div className="sugestoes-med"><span>Em uso — clique para repetir:</span>
-                  {resumo.medicamentos.map((m) => { const [nome, uso] = m.split(' — '); return <button type="button" key={m} className="chip-sug" onClick={() => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, uso: uso ?? '' }])}><Icone n="mais" /> {nome}</button>; })}
+                  {resumo.medicamentos.map((m) => { const [nome, uso] = m.split(' — '); return <button type="button" key={m} className="chip-sug" onClick={() => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, qtd: '1 caixa', uso: uso ?? '' }])}><Icone n="mais" /> {nome}</button>; })}
                 </div>
               )}
-              <MedicamentoBusca aoEscolher={(m, _dose, nome) => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, uso: m.posologia }])} />
+              <MedicamentoBusca aoEscolher={(m, _dose, nome) => setItens((l) => [...l.filter((x) => x.nome.trim()), { nome, qtd: '1 caixa', uso: m.posologia }])} />
               {itens.map((it, i) => (
                 <div key={i} className="linha-med">
                   <input placeholder="Medicamento e dose" value={it.nome} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, nome: e.target.value } : x)))} />
-                  <input placeholder="Como usar" value={it.uso} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, uso: e.target.value } : x)))} />
-                  <button type="button" className="icone-btn" title="Remover" aria-label="Remover" onClick={() => setItens((l) => (l.length > 1 ? l.filter((_, k) => k !== i) : [{ nome: '', uso: '' }]))}><Icone n="x" /></button>
+                  <input className="qtd-med" placeholder="Quantidade" value={it.qtd ?? ''} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, qtd: e.target.value } : x)))} />
+                  <input placeholder="Posologia" value={it.uso} onChange={(e) => setItens((l) => l.map((x, k) => (k === i ? { ...x, uso: e.target.value } : x)))} />
+                  <button type="button" className="icone-btn" title="Remover" aria-label="Remover" onClick={() => setItens((l) => (l.length > 1 ? l.filter((_, k) => k !== i) : [{ nome: '', qtd: '', uso: '' }]))}><Icone n="x" /></button>
                 </div>
               ))}
-              <button type="button" className="btn2 peq" onClick={() => setItens((l) => [...l, { nome: '', uso: '' }])}><Icone n="mais" /> Medicamento</button>
+              <button type="button" className="btn2 peq" onClick={() => setItens((l) => [...l, { nome: '', qtd: '', uso: '' }])}><Icone n="mais" /> Medicamento</button>
+              <label>Orientações gerais ao paciente<textarea rows={2} value={orientacoes} onChange={(e) => setOrientacoes(e.target.value)} placeholder="Ex.: manter hidratação adequada; retornar se não houver melhora em 10 dias" /></label>
             </>
           )}
           {tipo === 'pedido_exames' && (

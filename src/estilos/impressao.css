@@ -12,9 +12,9 @@
 .folha .marca-dagua { position: absolute !important; z-index: 0 !important; top: 50%; left: 50%; width: 52%; height: auto; transform: translate(-50%, -45%); opacity: .045; pointer-events: none; }
 .fl-cab { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; padding-bottom: 10px; border-bottom: 2px solid #0C3257; margin-bottom: 16px; }
 .fl-marca { display: flex; align-items: center; gap: 12px; }
-.fl-medica { font-size: 15px; font-weight: 700; color: #0C3257; letter-spacing: .1em; line-height: 1.2; }
-.fl-esp { font-size: 9px; font-weight: 600; color: #547793; letter-spacing: .12em; margin-top: 2px; }
-.fl-crm { font-size: 10px; color: #0C3257; margin-top: 1px; font-weight: 600; letter-spacing: .04em; }
+.fl-medica { font-size: 16px; font-weight: 700; color: #0C3257; letter-spacing: .14em; line-height: 1.2; }
+.fl-esp { font-size: 9px; font-weight: 600; color: #547793; letter-spacing: .14em; margin-top: 3px; }
+.fl-crm { font-size: 8.5px; color: #64748b; margin-top: 3px; font-weight: 500; }
 .fl-tipo { text-align: right; }
 .fl-selo { display: inline-block; padding: 4px 10px; background: #DEE8F4; border: 1px solid #91AFC7; border-radius: 6px; font-size: 9.5px; font-weight: 800; color: #0C3257; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
 .fl-emissao { font-size: 9.5px; color: #547793; margin-top: 5px; font-weight: 500; }
@@ -34,12 +34,19 @@
 .fl-corpo td { border-bottom: 1px solid #DEE8F4; padding: 5px 4px; font-weight: 400; }
 .fl-corpo td.n, .fl-corpo th.n { text-align: right; white-space: nowrap; }
 .fl-corpo .fl-nota { font-size: 11px; margin-top: 10px; color: #64748b; }
-.fl-local { text-align: right; margin: 14px 0 34px; font-size: 12px; }
-.fl-ass { display: grid; justify-items: center; font-size: 12px; padding-top: 8px; }
-.fl-ass span { width: 230px; border-top: 1.5px solid #0C3257; margin-bottom: 5px; }
+.fl-rodape { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #DEE8F4; }
+.fl-local { font-size: 11px; color: #64748b; padding-bottom: 4px; }
+.fl-ass { display: grid; justify-items: center; font-size: 12px; min-width: 210px; }
+.fl-ass span { width: 200px; border-top: 1.5px solid #0C3257; margin-bottom: 6px; }
 .fl-ass b { color: #0C3257; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
-.fl-ass small { font-size: 10px; color: #547793; }
-.fl-ass .fl-ass-crm { color: #0C3257; font-weight: 600; font-size: 10.5px; }
+.fl-ass small { font-size: 9px; color: #64748b; }
+.fl-ass .fl-ass-crm { color: #547793; font-weight: 600; font-size: 10px; margin-top: 1px; }
+/* corpo no modelo aprovado: receita (uso oral, 1) remédio ——— qtd, posologia), caixa do CID, orientações */
+.fl-corpo .fl-sec { margin: 6px 0 14px; letter-spacing: .02em; }
+.fl-corpo ul.fl-itens li { border-bottom: 0; padding: 0 0 12px; white-space: pre-line; }
+.fl-cid { display: inline-block; margin-top: 10px; padding: 8px 12px; background: #DEE8F4; border: 1px solid #91AFC7; border-radius: 8px; font-size: 11px; color: #0C3257; font-weight: 600; }
+.fl-notas p { margin: 0 0 4px; }
+.fl-notas p:first-child { margin-top: 6px; }
 .area-impressao { display: none; }
 /* PDF: folha A4 em tamanho real (96 dpi), desenhada fora da tela só para virar imagem */
 .area-pdf { position: fixed; left: -10000px; top: 0; pointer-events: none; }

@@ -214,7 +214,7 @@ export function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) 
   const [imp, setImp] = useState(false);
   const [pdf, setPdf] = useState(false);
   const pac = base.pacientes.find((x) => x.id === d.pacienteId);
-  const folha = <Folha clinica={base.clinica} titulo={d.titulo} data={d.data} paciente={pac}><ConteudoDoc d={d} /></Folha>;
+  const folha = <Folha clinica={base.clinica} titulo={d.titulo} data={d.data} hora={d.hora} paciente={pac}><ConteudoDoc d={d} /></Folha>;
   return (
     <Modal titulo={`${NOME_DOC[d.tipo]} · ${br(d.data)}`} fechar={fechar}>
       <div className="reimp">{folha}</div>

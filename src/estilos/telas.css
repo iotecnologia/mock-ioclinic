@@ -361,7 +361,7 @@ table.tab th.dir { text-align: right; }
 .sugestoes-med { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--texto-suave); }
 .app .chip-sug { height: 28px; padding: 0 10px; border-radius: 999px; border: 1px dashed var(--destaque-2); background: var(--gelo); color: var(--texto); font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
 .chip-sug svg { width: 13px; height: 13px; }
-.linha-med { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 8px; }
+.linha-med { display: grid; grid-template-columns: 1.3fr 0.6fr 1fr auto; gap: 8px; }
 .linha-med input { height: 38px; font-size: 13px; }
 .grupo-chk { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; }
 .grupo-chk > span { width: 100%; font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; }
