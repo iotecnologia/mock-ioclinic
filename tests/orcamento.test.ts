@@ -21,13 +21,17 @@ describe('orçamento', () => {
     expect(r.vezes).toBe(6);
     expect(r.parcela).toBeCloseTo(128.33, 2);
   });
-  it('PIX: 5% de desconto', () => {
-    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, c).total).toBe(332.5);
+  it('Dra.: PIX SEM desconto automático (valor cheio)', () => {
+    expect(c.descontoPix).toBe(0);
+    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, c).total).toBe(350);
   });
-  it('desconto extra antes do PIX', () => {
+  it('desconto só quando ela optar: 10% manual', () => {
     const r = calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 10, c);
     expect(r.descExtra).toBe(35);
-    expect(r.total).toBe(299.25);
+    expect(r.total).toBe(315);
+  });
+  it('se outra clínica configurar desconto automático no PIX, ele continua funcionando', () => {
+    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, { ...c, descontoPix: 5 }).total).toBe(332.5);
   });
   it('limite de desconto: recepção até o máximo da clínica, médica sem limite', () => {
     expect(limiteDesconto('recepcao', c)).toBe(10);

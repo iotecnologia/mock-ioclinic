@@ -28,6 +28,7 @@ export function Orcamento() {
   const [buscaPac, setBuscaPac] = useState('');
   const [forma, setForma] = useState<FormaOrc>('cartao');
   const [extra, setExtra] = useState(0);
+  const [darDesc, setDarDesc] = useState(false);   // desconto só quando a Dra./recepção optar (clicar no lápis)
   const [imp, setImp] = useState(false);
   const [pdf, setPdf] = useState(false);
   const [copiado, setCopiado] = useState(false);
@@ -42,18 +43,18 @@ export function Orcamento() {
   const sugest = busca.trim() ? pagos.filter((s) => semAcento(s.nome).includes(semAcento(busca))) : pagos;
   const add = (id: string) => { setItens((l) => (l.some((i) => i.servicoId === id) ? l.map((i) => (i.servicoId === id ? { ...i, qtd: i.qtd + 1 } : i)) : [...l, { servicoId: id, qtd: 1 }])); setBusca(''); };
   const qtd = (id: string, d: number) => setItens((l) => l.map((i) => (i.servicoId === id ? { ...i, qtd: i.qtd + d } : i)).filter((i) => i.qtd > 0));
-  const limpar = () => { setItens([]); setPac(null); setNomeLivre(''); setExtra(0); setForma('cartao'); };
+  const limpar = () => { setItens([]); setPac(null); setNomeLivre(''); setExtra(0); setDarDesc(false); setForma('cartao'); };
   const resPac = buscaPac.trim().length >= 2 ? buscarPacientes(cadastrados(base.pacientes), buscaPac).slice(0, 5) : [];
 
   const texto = [
-    `*Orçamento · ${c.medica}* (${c.especialidade})`,
+    `*Orçamento · ${c.medica} · ${c.crm}* (${c.especialidade})`,
     nome ? `Paciente: ${nome}` : '',
     '',
     ...r.linhas.map((l) => `• ${l.s.nome}${l.qtd > 1 ? ` (x${l.qtd})` : ''}: ${moeda(l.valor)}`),
     '',
     r.descExtra ? `Desconto: -${moeda(r.descExtra)}` : '',
     `*Cartão:* ${moeda(rCartao.total)} em até ${rCartao.vezes}x de ${moeda(rCartao.parcela)}`,
-    `*PIX ou dinheiro:* ${moeda(rPix.total)} (${c.descontoPix}% de desconto)`,
+    `*PIX ou dinheiro:* ${moeda(rPix.total)}${c.descontoPix ? ` (${c.descontoPix}% de desconto)` : ' à vista'}`,
     `Válido até ${br(validade)}.`,
   ].filter((x, i, l) => x !== '' || (i > 0 && l[i - 1] !== '')).join('\n').trim();
   const copiar = async () => { try { await navigator.clipboard.writeText(texto.replace(/\*/g, '')); setCopiado(true); setTimeout(() => setCopiado(false), 1800); } catch { /* sem permissão */ } };
@@ -69,7 +70,7 @@ export function Orcamento() {
         </tbody>
       </table>
       <p>Cartão: {moeda(rCartao.total)} em até {rCartao.vezes}x de {moeda(rCartao.parcela)}.</p>
-      <p>PIX ou dinheiro: {moeda(rPix.total)} ({c.descontoPix}% de desconto).</p>
+      <p>PIX ou dinheiro: {moeda(rPix.total)}{c.descontoPix ? ` (${c.descontoPix}% de desconto)` : ' à vista'}.</p>
       <p className="fl-nota">Orçamento válido até {br(validade)}. Valores para atendimento particular.</p>
     </Folha>
   );
@@ -149,22 +150,26 @@ export function Orcamento() {
               <span className="radio" /><div><span>Cartão</span><b>{moeda(rCartao.total)}</b><small>em até {rCartao.vezes}x de {moeda(rCartao.parcela)}</small></div>
             </button>
             <button type="button" className={'forma' + (forma === 'pix' ? ' sel' : '')} onClick={() => setForma('pix')}>
-              <span className="radio" /><div><span>PIX ou dinheiro</span><b>{moeda(rPix.total)}</b><small className="verde">{c.descontoPix}% de desconto</small></div>
+              <span className="radio" /><div><span>PIX ou dinheiro</span><b>{moeda(rPix.total)}</b><small className={c.descontoPix ? 'verde' : ''}>{c.descontoPix ? `${c.descontoPix}% de desconto` : 'à vista'}</small></div>
             </button>
           </div>
           <div className="desc-extra">
-            <span>Desconto extra</span>
-            <input type="number" min={0} max={lim} value={extra} onChange={(e) => setExtra(Math.min(lim, Math.max(0, Number(e.target.value))))} aria-label="Desconto extra em porcentagem" />
-            <span>%</span><small className="mut">{lim >= 100 ? 'sem limite' : `até ${lim}%`}</small>
+            <span>Desconto</span>
+            <input type="number" min={0} max={lim} value={extra} disabled={!darDesc} onChange={(e) => setExtra(Math.min(lim, Math.max(0, Number(e.target.value))))} aria-label="Desconto em porcentagem" />
+            <span>%</span>
+            {!darDesc
+              ? <BotaoIcone icone="editar" titulo="Dar desconto (só se a Dra. autorizar)" cls="peq" onClick={() => setDarDesc(true)} />
+              : <BotaoIcone icone="x" titulo="Tirar o desconto" cls="peq" onClick={() => { setExtra(0); setDarDesc(false); }} />}
+            <small className="mut">{darDesc ? (lim >= 100 ? 'sem limite' : `até ${lim}%`) : 'sem desconto'}</small>
           </div>
           <div className="total-orc">
             <div><span>Total</span><b className="mono">{moeda(r.total)}</b></div>
-            <small>{vazio ? 'Adicione serviços para calcular' : forma === 'cartao' ? `em até ${r.vezes}x de ${moeda(r.parcela)}` : `à vista · economia de ${moeda(r.descPix + r.descExtra)}`}</small>
+            <small>{vazio ? 'Adicione serviços para calcular' : forma === 'cartao' ? `em até ${r.vezes}x de ${moeda(r.parcela)}` : (r.descPix + r.descExtra > 0 ? `à vista · desconto de ${moeda(r.descPix + r.descExtra)}` : 'à vista')}</small>
             <div className="valid"><Icone n="calendario" /> Válido por {c.validadeOrcamentoDias} dias · até {br(validade)}</div>
           </div>
           <div className="regra-pg">
             <b>Regra de pagamento da clínica</b>
-            <div>{c.parcelas.map((p, i) => <span key={i}>{p.ate === null ? `Acima de ${moeda(c.parcelas[i - 1]?.ate ?? 0)}` : i === 0 ? `Até ${moeda(p.ate)}` : `${moeda(c.parcelas[i - 1].ate ?? 0)} a ${moeda(p.ate)}`}: até {p.vezes}x</span>)}<span>PIX/dinheiro: {c.descontoPix}% off</span></div>
+            <div>{c.parcelas.map((p, i) => <span key={i}>{p.ate === null ? `Acima de ${moeda(c.parcelas[i - 1]?.ate ?? 0)}` : i === 0 ? `Até ${moeda(p.ate)}` : `${moeda(c.parcelas[i - 1].ate ?? 0)} a ${moeda(p.ate)}`}: até {p.vezes}x</span>)}<span>PIX/dinheiro: {c.descontoPix ? `${c.descontoPix}% off` : 'à vista, sem desconto automático'}</span></div>
             <small className="mut">Valores ilustrativos do mock — ajustar em dados/servicos.json e dados/clinica.json.</small>
           </div>
         </Bloco>

@@ -8,6 +8,7 @@ import { Bloco, BotaoIcone, Contador, FiltroAtivo, Modal, TagStatus, TituloPagin
 import { Icone } from '../componentes/Icone';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
+import { Receber } from '../componentes/Receber';
 import { aConfirmar, contagem, doDia, lembretesPendentes, proximoPaciente } from '../regras/agenda';
 import { blocosLivres, gradeDoDia, situacaoDia } from '../regras/disponibilidade';
 import { idadeTxt } from '../regras/paciente';
@@ -27,6 +28,7 @@ export function Hoje() {
   const [filtro, setFiltro] = useState<'confirmados' | 'atendidos' | 'areceber' | null>(null);
   const alterna = (f: typeof filtro) => setFiltro((x) => (x === f ? null : f));
   const [verLivres, setVerLivres] = useState(false);
+  const [receberAg, setReceberAg] = useState<string | null>(null);   // confirmar pagamento pendente
   const [diaAberto, setDiaAberto] = useState<string | null>(null);                      // próximo dia aberto numa janela                                   // janela dos horários livres
   const [novoEm, setNovoEm] = useState<{ data: string; hora?: string } | null>(null);  // agendar num horário livre
   const [remarcarAg, setRemarcarAg] = useState<{ id: string; pacienteId: string; servicoId: string } | null>(null);
@@ -170,7 +172,8 @@ export function Hoje() {
               {paraConfirmar.length > 6 && <li className="mut peq">+ {paraConfirmar.length - 6} na agenda</li>}
               {aReceber.length > 0 && <li className="t-cab">A receber hoje ({aReceber.length})</li>}
               {aReceber.map((a) => (
-                <li key={a.id}><span className="mono">{a.hora}</span><span className="tf-nome">{nomeP(a.pacienteId).nome}<small>{nomeS(a.servicoId).curto}</small></span><b className="mono">{moeda(a.pagamento!.valor)}</b></li>
+                <li key={a.id}><span className="mono">{a.hora}</span><span className="tf-nome">{nomeP(a.pacienteId).nome}<small>{nomeS(a.servicoId).curto}</small></span><b className="mono">{moeda(a.pagamento!.valor)}</b>
+                  <BotaoIcone icone="check" titulo="Confirmar pagamento" cls="peq verde" onClick={() => setReceberAg(a.id)} /></li>
               ))}
               {!paraConfirmar.length && !aReceber.length && !remarcar.length && <li className="mut">Tudo em dia.</li>}
             </ul>
@@ -178,6 +181,7 @@ export function Hoje() {
         </div>
       </div>
       {novo && <NovoAgendamento fechar={() => setNovo(false)} />}
+      {receberAg && (() => { const ag = base.agendamentos.find((x) => x.id === receberAg); return ag ? <Receber ag={ag} fechar={() => setReceberAg(null)} /> : null; })()}
       {novoEm && <NovoAgendamento data={novoEm.data} hora={novoEm.hora} fechar={() => setNovoEm(null)} />}
       {remarcarAg && <NovoAgendamento pacienteId={remarcarAg.pacienteId} servicoId={remarcarAg.servicoId} fechar={() => setRemarcarAg(null)}
         aoAgendar={() => { acoes.mudarStatus(remarcarAg.id, 'cancelado'); acoes.resolverRemarcar(remarcarAg.id); }} />}

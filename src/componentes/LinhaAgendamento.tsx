@@ -37,7 +37,7 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
   const medica = usuario!.perfil === 'medica';
   const passos = PROXIMOS[ag.status].filter((s) => (medica ? DA_MEDICA.includes(s) : !DA_MEDICA.includes(s)));
   const pend = ag.pagamento?.status === 'pendente';
-  const podeReceber = !medica && pend && ['chegou', 'em_atendimento', 'atendido'].includes(ag.status);
+  const podeReceber = pend && ['chegou', 'em_atendimento', 'atendido'].includes(ag.status);
   const pre = pac.situacao === 'pre';
   const anonimo = pac.situacao === 'removido';
   return (

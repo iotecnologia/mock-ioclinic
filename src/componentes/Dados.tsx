@@ -55,7 +55,12 @@ function gravar(b: BaseClinica) {
 export function apagarSalvo() { try { localStorage.removeItem(CHAVE_DEMO); } catch { /* sem armazenamento */ } }
 
 /** Junta o que foi salvo com a base nova do código (clínica, serviços, CIDs… sempre atualizados). */
-export const juntar = (nova: BaseClinica, salvo: Salvo): BaseClinica => ({ ...nova, ...(Object.fromEntries(PARTES.map((p) => [p, salvo[p]])) as Pick<BaseClinica, Parte>) });
+export const juntar = (nova: BaseClinica, salvo: Salvo): BaseClinica => {
+  const b = { ...nova, ...(Object.fromEntries(PARTES.map((p) => [p, salvo[p]])) as Pick<BaseClinica, Parte>) };
+  // categoria antiga "Aluguel e condomínio" (salva antes de 03/11) → Aluguel ou Condomínio (pagamentos e datas diferentes)
+  const antiga = 'Aluguel e condomínio' as string;
+  return { ...b, despesas: b.despesas.map((d) => (d.categoria as string) === antiga ? { ...d, categoria: /condom/i.test(d.descricao) ? 'Condomínio' : 'Aluguel' } : d) };
+};
 
 /** Número estável (0–99) a partir do id: decide falta/forma de pagamento sempre igual, sem sorteio. */
 const hash = (s: string) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 100; };

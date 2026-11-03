@@ -14,7 +14,7 @@
 .fl-marca { display: flex; align-items: center; gap: 12px; }
 .fl-medica { font-size: 15px; font-weight: 700; color: #0C3257; letter-spacing: .1em; line-height: 1.2; }
 .fl-esp { font-size: 9px; font-weight: 600; color: #547793; letter-spacing: .12em; margin-top: 2px; }
-.fl-crm { font-size: 9.5px; color: #64748b; margin-top: 2px; font-weight: 500; }
+.fl-crm { font-size: 10px; color: #0C3257; margin-top: 1px; font-weight: 600; letter-spacing: .04em; }
 .fl-tipo { text-align: right; }
 .fl-selo { display: inline-block; padding: 4px 10px; background: #DEE8F4; border: 1px solid #91AFC7; border-radius: 6px; font-size: 9.5px; font-weight: 800; color: #0C3257; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
 .fl-emissao { font-size: 9.5px; color: #547793; margin-top: 5px; font-weight: 500; }
@@ -39,6 +39,7 @@
 .fl-ass span { width: 230px; border-top: 1.5px solid #0C3257; margin-bottom: 5px; }
 .fl-ass b { color: #0C3257; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
 .fl-ass small { font-size: 10px; color: #547793; }
+.fl-ass .fl-ass-crm { color: #0C3257; font-weight: 600; font-size: 10.5px; }
 .area-impressao { display: none; }
 /* PDF: folha A4 em tamanho real (96 dpi), desenhada fora da tela só para virar imagem */
 .area-pdf { position: fixed; left: -10000px; top: 0; pointer-events: none; }

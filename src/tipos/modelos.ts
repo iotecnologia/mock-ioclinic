@@ -23,7 +23,7 @@ export interface Clinica {
   horarios: Record<string, { inicio: string; fim: string }[]>;
   /** Grade da agenda em minutos (todos os horários começam em múltiplos disso). */
   gradeMin: number;
-  /** Desconto (%) no PIX ou dinheiro. */
+  /** Desconto automático (%) no PIX ou dinheiro. 0 = sem desconto automático (decisão da Dra.): desconto só manual, quando ela optar. */
   descontoPix: number;
   /** Desconto extra máximo (%) que a recepção pode dar no orçamento. A médica não tem limite. */
   descontoMaxRecepcao: number;
@@ -113,7 +113,7 @@ export interface Medicamento { id: string; grupo: string; principio: string; com
 /** Exame do catálogo de busca do pedido de exames. */
 export interface ExameCatalogo { nome: string; grupo: string; preparo: string }
 
-export type CategoriaDespesa = 'Aluguel e condomínio' | 'Pessoal' | 'Contas de consumo' | 'Serviços' | 'Material e insumos' | 'Equipamentos' | 'Impostos' | 'Marketing' | 'Outros';
+export type CategoriaDespesa = 'Aluguel' | 'Condomínio' | 'Pessoal' | 'Contas de consumo' | 'Serviços' | 'Material e insumos' | 'Equipamentos' | 'Impostos' | 'Marketing' | 'Outros';
 /** Despesa da clínica. `data` é o vencimento; `pagaEm` quando foi paga. */
 export interface Despesa { id: string; data: string; descricao: string; categoria: CategoriaDespesa; valor: number; status: 'paga' | 'a_pagar'; pagaEm?: string }
 

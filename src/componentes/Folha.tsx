@@ -17,6 +17,8 @@ export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paci
 }) {
   const cidade = clinica.cidade.split('·')[0].trim();
   const nome = clinica.medica.toUpperCase();
+  // nome e CRM andam SEMPRE juntos (cabeçalho e assinatura)
+  const registro = [clinica.crm, clinica.rqe && `RQE ${clinica.rqe.replace(/^RQE\s*/i, '')}`].filter(Boolean).join(' · ');
   return (
     <div className={'folha' + (timbrado ? ' timbrado' : '')}>
       {!timbrado && <div className="fl-faixa" />}
@@ -27,8 +29,8 @@ export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paci
             <LogoDra tam={46} />
             <div>
               <div className="fl-medica">{nome}</div>
+              <div className="fl-crm">{registro}</div>
               <div className="fl-esp">{clinica.especialidade.toUpperCase().split('').join(' ')}</div>
-              <div className="fl-crm">{clinica.crm}{clinica.rqe ? ` · ${clinica.rqe}` : ''}</div>
             </div>
           </div>
           <div className="fl-tipo">
@@ -50,7 +52,8 @@ export function Folha({ clinica, titulo, data, timbrado, assinatura = true, paci
         <div className="fl-ass">
           <span />
           <b>{clinica.medica}</b>
-          <small>{clinica.crm} · {clinica.especialidade}</small>
+          <small className="fl-ass-crm">{registro}</small>
+          <small>{clinica.especialidade}</small>
           <small>Assinatura e carimbo</small>
         </div>
       )}

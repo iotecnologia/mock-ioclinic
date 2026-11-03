@@ -226,7 +226,7 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
             <div><span>Paciente</span><b>{paciente.nome}</b><small>{idadeTxt(paciente, hj)} · {paciente.telefone}</small></div>
             <div><span>Serviço</span><b>{servico.nome}</b><small>{servico.duracaoMin} min</small></div>
             <div><span>Quando</span><b>{br(dia)} · {hr}{encaixe && <span className="tag t-at">encaixe</span>}</b><small>{extenso(dia)}</small></div>
-            <div><span>Valor</span><b>{servico.valor ? moeda(servico.valor) : 'Sem custo'}</b><small>{servico.valor ? `PIX/dinheiro: ${moeda(servico.valor * (1 - base.clinica.descontoPix / 100))}` : 'retorno em até 30 dias'}</small></div>
+            <div><span>Valor</span><b>{servico.valor ? moeda(servico.valor) : 'Sem custo'}</b><small>{servico.valor ? 'PIX, dinheiro ou cartão' : 'retorno em até 30 dias'}</small></div>
           </div>
           {servico.preparo && <div className="preparo"><Icone n="info" /> <b>Preparo:</b> {servico.preparo}</div>}
           <div className="rodape-modal">

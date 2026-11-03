@@ -236,8 +236,8 @@ function gerarDespesas(s: ReturnType<typeof sorteador>, hojeIso: string, ags: Ag
       const paga = data < hojeIso;
       lista.push({ id: 'dp' + lista.length, data, descricao, categoria, valor: +valor.toFixed(2), status: paga ? 'paga' : 'a_pagar', pagaEm: paga ? data : undefined });
     };
-    add(5, 'Aluguel do consultório', 'Aluguel e condomínio', 4200);
-    add(5, 'Condomínio', 'Aluguel e condomínio', 780);
+    add(5, 'Aluguel do consultório', 'Aluguel', 4200);
+    add(10, 'Condomínio', 'Condomínio', 780);
     add(5, 'Salário e encargos — recepcionista', 'Pessoal', 3150);
     add(10, 'Honorários do contador', 'Serviços', 650);
     add(10, 'Licença IO Clinic', 'Serviços', 390);

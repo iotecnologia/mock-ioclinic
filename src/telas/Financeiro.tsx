@@ -7,7 +7,7 @@ import { useDados } from '../componentes/Dados';
 import { Bloco, BotaoIcone, Contador, FiltroAtivo, Modal, Rolagem, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { Proporcao } from '../componentes/Graficos';
-import { FORMAS } from '../componentes/Receber';
+import { FORMAS, Receber } from '../componentes/Receber';
 import { SeletorPeriodo, usePeriodo } from '../componentes/SeletorPeriodo';
 import { montarRelatorio, porForma, recebimentos, resumoPeriodo } from '../regras/financeiro';
 import { TabelaRelatorio } from '../componentes/TabelaRelatorio';
@@ -16,7 +16,7 @@ import { rotulo } from '../regras/periodo';
 import { br, hoje } from '../util/datas';
 import { moeda } from '../util/formato';
 
-export const CATEGORIAS: CategoriaDespesa[] = ['Aluguel e condomínio', 'Pessoal', 'Contas de consumo', 'Serviços', 'Material e insumos', 'Equipamentos', 'Impostos', 'Marketing', 'Outros'];
+export const CATEGORIAS: CategoriaDespesa[] = ['Aluguel', 'Condomínio', 'Pessoal', 'Contas de consumo', 'Serviços', 'Material e insumos', 'Equipamentos', 'Impostos', 'Marketing', 'Outros'];
 const LIMITE = 12;
 
 type Vista = 'tudo' | 'receitas' | 'despesas' | 'areceber' | 'fluxo';
@@ -25,6 +25,7 @@ const FORMA_IDS: FormaPagamento[] = ['pix', 'cartao_credito', 'cartao_debito', '
 export function Financeiro() {
   const { base, acoes } = useDados();
   const [agAberto, setAgAberto] = useState<string | null>(null);   // agendamento a receber aberto numa janela
+  const [receberAg, setReceberAg] = useState<string | null>(null); // confirmar pagamento pendente
   const hj = hoje();
   const [p] = usePeriodo();
   const [todasRec, setTodasRec] = useState(false);
@@ -72,10 +73,11 @@ export function Financeiro() {
               {pendentes.length === 0 ? <Vazio>Nenhum pagamento pendente no período.</Vazio> : (
                 <Rolagem>
                   <table className="tab">
-                    <thead><tr><th>Data</th><th>Paciente</th><th>Serviço</th><th>Situação</th><th className="dir">Valor</th></tr></thead>
+                    <thead><tr><th>Data</th><th>Paciente</th><th>Serviço</th><th>Situação</th><th className="dir">Valor</th><th /></tr></thead>
                     <tbody>
                       {pendentes.map((a) => (
-                        <tr key={a.id} className="clic" title="Ver o agendamento" onClick={() => setAgAberto(a.id)}><td className="mono">{dt(a.data)}</td><td>{nomeP(a.pacienteId)}</td><td>{nomeS(a.servicoId)}</td><td><TagStatus s={a.status} /></td><td className="dir mono">{moeda(a.pagamento!.valor)}</td></tr>
+                        <tr key={a.id} className="clic" title="Ver o agendamento" onClick={() => setAgAberto(a.id)}><td className="mono">{dt(a.data)}</td><td>{nomeP(a.pacienteId)}</td><td>{nomeS(a.servicoId)}</td><td><TagStatus s={a.status} /></td><td className="dir mono">{moeda(a.pagamento!.valor)}</td>
+                          <td className="acoes-linha" onClick={(e) => e.stopPropagation()}><BotaoIcone icone="check" titulo="Confirmar pagamento" cls="peq verde" onClick={() => setReceberAg(a.id)} /></td></tr>
                       ))}
                     </tbody>
                   </table>
@@ -150,6 +152,7 @@ export function Financeiro() {
           </Bloco>
         </div>
       </div>
+      {receberAg && (() => { const ag = base.agendamentos.find((x) => x.id === receberAg); return ag ? <Receber ag={ag} fechar={() => setReceberAg(null)} /> : null; })()}
       {agAberto && <DetalheAgendamento id={agAberto} fechar={() => setAgAberto(null)} />}
       {lancar && <LancarDespesa dataPadrao={de <= hj && hj <= ate ? hj : de} fechar={() => setLancar(false)} />}
     </>

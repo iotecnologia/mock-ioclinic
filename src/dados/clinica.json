@@ -68,7 +68,7 @@
     ]
   },
   "gradeMin": 30,
-  "descontoPix": 5,
+  "descontoPix": 0,
   "descontoMaxRecepcao": 10,
   "parcelas": [
     {
