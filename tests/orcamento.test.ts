@@ -16,22 +16,22 @@ describe('orçamento', () => {
   });
   it('cartão: sem desconto, parcelado', () => {
     const r = calcular([{ servicoId: 'consulta', qtd: 1 }, { servicoId: 'eco', qtd: 1 }], s, 'cartao', 0, c);
-    expect(r.subtotal).toBe(770);
-    expect(r.total).toBe(770);
+    expect(r.subtotal).toBe(900);
+    expect(r.total).toBe(900);
     expect(r.vezes).toBe(6);
-    expect(r.parcela).toBeCloseTo(128.33, 2);
+    expect(r.parcela).toBeCloseTo(150, 2);
   });
   it('Dra.: PIX SEM desconto automático (valor cheio)', () => {
     expect(c.descontoPix).toBe(0);
-    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, c).total).toBe(350);
+    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, c).total).toBe(600);
   });
   it('desconto só quando ela optar: 10% manual', () => {
     const r = calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 10, c);
-    expect(r.descExtra).toBe(35);
-    expect(r.total).toBe(315);
+    expect(r.descExtra).toBe(60);
+    expect(r.total).toBe(540);
   });
   it('se outra clínica configurar desconto automático no PIX, ele continua funcionando', () => {
-    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, { ...c, descontoPix: 5 }).total).toBe(332.5);
+    expect(calcular([{ servicoId: 'consulta', qtd: 1 }], s, 'pix', 0, { ...c, descontoPix: 5 }).total).toBe(570);
   });
   it('limite de desconto: recepção até o máximo da clínica, médica sem limite', () => {
     expect(limiteDesconto('recepcao', c)).toBe(10);
