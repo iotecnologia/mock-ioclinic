@@ -30,7 +30,9 @@ interface Acoes {
 }
 /** Aviso que aparece no canto da tela (ex.: resposta do paciente no WhatsApp). */
 export interface Aviso { id: string; texto: string; tipo: 'ok' | 'alerta'; link?: string; /** clicar no aviso abre o detalhe na mesma tela */ acao?: () => void; /** fica até fechar */ fixo?: boolean }
-interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void; avisar(a: Aviso): void }
+/** Aviso já mostrado, guardado para o sino (avisos recentes desta sessão). */
+export type AvisoHist = Aviso & { hora: string };
+interface Ctx { base: BaseClinica; acoes: Acoes; restaurar(): void; avisos: Aviso[]; fecharAviso(id: string): void; avisar(a: Aviso): void; historico: AvisoHist[] }
 
 /** Segundos até a resposta simulada do paciente chegar (demonstração). */
 const ESPERA_RESPOSTA = 6;
@@ -100,6 +102,7 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
   const [erro, setErro] = useState<string | null>(null);
   const [versao, setVersao] = useState(0);   // muda ao restaurar → recarrega
   const [avisos, setAvisos] = useState<Aviso[]>([]);
+  const [historico, setHistorico] = useState<AvisoHist[]>([]);
   const baseRef = useRef<BaseClinica | null>(null);
   baseRef.current = base;
   useEffect(() => {
@@ -242,8 +245,11 @@ export function DadosProvider({ repo, children, aoCarregar }: { repo: Repositori
   /** Apaga o que foi salvo e gera a clínica fictícia de novo (para a próxima apresentação). */
   const restaurar = () => { clearTimeout(timer.current); apagarSalvo(); setBase(null); setVersao((v) => v + 1); };
   const fecharAviso = (id: string) => setAvisos((l) => l.filter((x) => x.id !== id));
-  const avisar = (a: Aviso) => setAvisos((l) => [...l.filter((x) => x.id !== a.id), a].slice(-4));
-  return <C.Provider value={{ base, acoes, restaurar, avisos, fecharAviso, avisar }}>{children}</C.Provider>;
+  const avisar = (a: Aviso) => {
+    setAvisos((l) => [...l.filter((x) => x.id !== a.id), a].slice(-4));
+    setHistorico((h) => [{ ...a, hora: new Date().toTimeString().slice(0, 5) }, ...h.filter((x) => x.id !== a.id)].slice(0, 15));
+  };
+  return <C.Provider value={{ base, acoes, restaurar, avisos, fecharAviso, avisar, historico }}>{children}</C.Provider>;
 }
 
 export function useDados(): Ctx {

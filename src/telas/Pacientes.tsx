@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
-import { Avatar, BotaoIcone, Rolagem, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Avatar, Rolagem, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { buscarPacientes, cadastrados, idade, resumoPaciente } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
@@ -24,7 +24,7 @@ export function Pacientes() {
   return (
     <>
       <TituloPagina titulo="Pacientes" sub={`${cadastrados(base.pacientes).length} pacientes cadastrados`}>
-        <BotaoIcone icone="pacienteMais" titulo="Cadastrar paciente" pri onClick={() => nav('/pacientes/novo')} />
+        <button type="button" className="btn2 pri" onClick={() => nav('/pacientes/novo')}><Icone n="pacienteMais" /> Novo paciente</button>
       </TituloPagina>
       <div className="barra">
         <div className="f-busca"><Icone n="busca" /><input type="text" value={t} onChange={(e) => setT(e.target.value)} placeholder="Buscar por nome, CPF ou telefone" aria-label="Buscar paciente" /></div>

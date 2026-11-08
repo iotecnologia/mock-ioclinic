@@ -25,7 +25,7 @@ export function Hoje() {
   const nav = useNavigate();
   const [novo, setNovo] = useState(false);
   // filtro da "Agenda de hoje" ligado pelos cards
-  const [filtro, setFiltro] = useState<'confirmados' | 'atendidos' | 'areceber' | null>(null);
+  const [filtro, setFiltro] = useState<'confirmados' | 'areceber' | null>(null);
   const alterna = (f: typeof filtro) => setFiltro((x) => (x === f ? null : f));
   const [verLivres, setVerLivres] = useState(false);
   const [receberAg, setReceberAg] = useState<string | null>(null);   // confirmar pagamento pendente
@@ -58,18 +58,18 @@ export function Hoje() {
     .sort((x, y) => x.data.localeCompare(y.data) || x.hora.localeCompare(y.hora));
   const lemb = lembretesPendentes(base, hj, agoraMin());
   const horaLembrete = !auto && lemb.hora && lemb.lista.length > 0;
+  const nTarefas = remarcar.length + paraConfirmar.length + aReceber.length;   // número no título do "Para fazer"
   const confirmaramZap = amanha ? doDia(base, amanha).filter((a) => a.whats?.resposta === 'confirmou').length : 0;
 
   return (
     <>
       <TituloPagina titulo={`${saudacao()}, ${usuario!.nome}`} sub={extenso(hj)}>
-        <BotaoIcone icone="mais" titulo="Novo agendamento" pri onClick={() => setNovo(true)} />
+        <button type="button" className="btn2 pri" onClick={() => setNovo(true)}><Icone n="mais" /> Novo agendamento</button>
       </TituloPagina>
 
-      <div className="contadores">
+      <div className="contadores c4">
         <Contador icone="calendario" valor={c.total} rotulo="pacientes hoje" onClick={() => setFiltro(null)} titulo="Mostrar todos os pacientes de hoje" />
         <Contador icone="check" valor={c.confirmados} rotulo="confirmados" sel={filtro === 'confirmados'} onClick={() => alterna('confirmados')} titulo="Filtrar: só os confirmados" />
-        <Contador icone="estetoscopio" valor={c.atendidos} rotulo="atendidos" sel={filtro === 'atendidos'} onClick={() => alterna('atendidos')} titulo="Filtrar: só os atendidos" />
         <Contador icone="relogio" valor={livres} rotulo="horários livres" onClick={() => setVerLivres(true)} titulo="Ver os horários livres e agendar" />
         <Contador icone="carteira" valor={c.aReceber} rotulo="a receber" cls={c.aReceber ? 'alerta' : ''} sel={filtro === 'areceber'} onClick={() => alterna('areceber')} titulo="Filtrar: quem falta pagar" />
       </div>
@@ -105,39 +105,20 @@ export function Hoje() {
 
       <div className="grade2">
         <Bloco titulo={<><Icone n="dia" /> Agenda de hoje</>} extra={filtro
-          ? <FiltroAtivo nome={{ confirmados: 'confirmados', atendidos: 'atendidos', areceber: 'a receber' }[filtro]} limpar={() => setFiltro(null)} />
+          ? <FiltroAtivo nome={{ confirmados: 'confirmados', areceber: 'a receber' }[filtro]} limpar={() => setFiltro(null)} />
           : <button type="button" className="lk" onClick={() => nav('/agenda')}>abrir agenda completa</button>}>
           {!sit.aberto ? <Vazio>{sit.motivo}. Veja ao lado os próximos dias.</Vazio>
             : lista.length === 0 ? <Vazio>Nenhum paciente agendado para hoje.</Vazio>
             : (() => {
               const l = lista.filter((a) => !filtro
                 || (filtro === 'confirmados' && ['confirmado', 'chegou', 'em_atendimento', 'atendido'].includes(a.status))
-                || (filtro === 'atendidos' && a.status === 'atendido')
                 || (filtro === 'areceber' && a.pagamento?.status === 'pendente' && ['chegou', 'em_atendimento', 'atendido'].includes(a.status)));
               return l.length ? <div className="lista-ag">{l.map((a) => <LinhaAgendamento key={a.id} ag={a} />)}</div> : <Vazio>Nenhum paciente neste filtro.</Vazio>;
             })()}
         </Bloco>
 
         <div className="pilha">
-          <Bloco titulo={<><Icone n="semana" /> Próximos dias</>}>
-            <ul className="prox-dias">
-              {proximos.map((d) => {
-                const l = doDia(base, d);
-                const cons = l.filter((a) => nomeS(a.servicoId).tipo !== 'exame').length;
-                return (
-                  <li key={d}>
-                    <button type="button" onClick={() => setDiaAberto(d)} title="Ver os agendamentos deste dia">
-                      <span className="pd-data"><b>{nomeDiaCurto(d)}</b>{brCurto(d)}</span>
-                      <span className="pd-txt">{l.length ? <>{l.length} agendamento{l.length > 1 ? 's' : ''} <small>{cons} consulta{cons !== 1 ? 's' : ''} · {l.length - cons} exame{l.length - cons !== 1 ? 's' : ''}</small></> : <span className="mut">agenda livre</span>}</span>
-                      <span className="pd-hora mono">{l[0]?.hora ?? ''}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </Bloco>
-
-          <Bloco titulo={<><Icone n="lista" /> Para fazer</>}>
+          <Bloco titulo={<><Icone n="lista" /> Para fazer{nTarefas > 0 && <span className="bloco-num">{nTarefas}</span>}</>}>
             <ul className="tarefas">
               {horaLembrete && <li className="t-lembrete"><Icone n="zap" /><span><b>Hora de enviar os lembretes ({lemb.lista.length})</b><small>Clique no WhatsApp de cada paciente abaixo. Quando ele responder “1”, marque o ✓.</small></span></li>}
               {remarcar.length > 0 && <li className="t-cab alerta"><Icone n="alerta" /> Pediram para remarcar pelo WhatsApp ({remarcar.length})</li>}
@@ -178,6 +159,24 @@ export function Hoje() {
               {!paraConfirmar.length && !aReceber.length && !remarcar.length && <li className="mut">Tudo em dia.</li>}
             </ul>
           </Bloco>
+          <Bloco titulo={<><Icone n="semana" /> Próximos dias</>}>
+            <ul className="prox-dias">
+              {proximos.map((d) => {
+                const l = doDia(base, d);
+                const cons = l.filter((a) => nomeS(a.servicoId).tipo !== 'exame').length;
+                return (
+                  <li key={d}>
+                    <button type="button" onClick={() => setDiaAberto(d)} title="Ver os agendamentos deste dia">
+                      <span className="pd-data"><b>{nomeDiaCurto(d)}</b>{brCurto(d)}</span>
+                      <span className="pd-txt">{l.length ? <>{l.length} agendamento{l.length > 1 ? 's' : ''} <small>{cons} consulta{cons !== 1 ? 's' : ''} · {l.length - cons} exame{l.length - cons !== 1 ? 's' : ''}</small></> : <span className="mut">agenda livre</span>}</span>
+                      <span className="pd-hora mono">{l[0]?.hora ?? ''}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </Bloco>
+
         </div>
       </div>
       {novo && <NovoAgendamento fechar={() => setNovo(false)} />}

@@ -44,7 +44,7 @@ export function Agenda() {
           <button type="button" className={visao === 'dia' ? 'sel' : ''} onClick={() => ir(data, 'dia')} title="Visão do dia"><Icone n="dia" /> Dia</button>
           <button type="button" className={visao === 'semana' ? 'sel' : ''} onClick={() => ir(data, 'semana')} title="Visão da semana"><Icone n="semana" /> Semana</button>
         </div>
-        <BotaoIcone icone="mais" titulo="Novo agendamento" pri onClick={() => setNovo({ data })} />
+        <button type="button" className="btn2 pri" onClick={() => setNovo({ data })}><Icone n="mais" /> Novo agendamento</button>
       </TituloPagina>
 
       {visao === 'dia' ? (

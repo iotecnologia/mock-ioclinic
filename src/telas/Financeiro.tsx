@@ -55,7 +55,7 @@ export function Financeiro() {
     <>
       <TituloPagina titulo="Financeiro" sub={`Caixa · ${rotulo(p)}`}>
         <SeletorPeriodo />
-        <BotaoIcone icone="mais" titulo="Lançar despesa" pri onClick={() => setLancar(true)} />
+        <button type="button" className="btn2 pri" onClick={() => setLancar(true)}><Icone n="mais" /> Nova despesa</button>
       </TituloPagina>
 
       <div className="contadores c4">

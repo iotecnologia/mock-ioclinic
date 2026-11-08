@@ -7,11 +7,10 @@ import { CreditoIO, Marca, nomeCurto } from './Marca';
 import { LogoDra } from './LogoDra';
 import { useDados, type Aviso } from './Dados';
 import { WHATS_AUTOMATICO } from './WhatsAuto';
-import { aConfirmar, lembretesPendentes } from '../regras/agenda';
-import { msgLembrete } from '../regras/mensagens';
-import { linkWhats } from '../util/formato';
-import { BotaoIcone, Modal } from './Comuns';
+import { lembretesPendentes } from '../regras/agenda';
 import { agoraMin, brCurto, hoje, somaDias } from '../util/datas';
+import { ModalLembretes, Sino } from './Notificacoes';
+import { AlterarSenha } from './AlterarSenha';
 import { BuscaGeral } from './BuscaGeral';
 import { Avatar } from './Comuns';
 import { local } from '../util/formato';
@@ -35,6 +34,14 @@ export function Shell() {
   // volta para a página anterior; se abriu direto (sem histórico no sistema), vai para a Visão Geral
   const voltar = () => { if ((window.history.state?.idx ?? 0) > 0) nav(-1); else nav('/hoje'); };
   const trocarTema = () => { setClaro(!claro); local.gravar('tema-claro', !claro); };
+  const [menuUsu, setMenuUsu] = useState(false);
+  const [trocarSenha, setTrocarSenha] = useState(false);
+  useEffect(() => {
+    if (!menuUsu) return;
+    const fecha = (e: MouseEvent) => { if (!(e.target as HTMLElement).closest('.usuario-menu')) setMenuUsu(false); };
+    document.addEventListener('mousedown', fecha);
+    return () => document.removeEventListener('mousedown', fecha);
+  }, [menuUsu]);
   return (
     <div className={'app' + (claro ? ' tema-claro' : '')}>
       <aside className="lateral">
@@ -63,12 +70,23 @@ export function Shell() {
         <div className="topo-dir">
           {perfil === 'medica' && <button type="button" className="icone-btn" onClick={() => { if (confirm('Restaurar os dados de demonstração?\n\nTudo o que foi cadastrado ou alterado neste navegador será apagado e a clínica fictícia será gerada de novo.')) restaurar(); }} title="Restaurar dados de demonstração" aria-label="Restaurar dados de demonstração"><Icone n="limpar" /></button>}
           <button type="button" className="icone-btn" onClick={trocarTema} title="Tema claro/escuro" aria-label="Alternar tema claro ou escuro"><Icone n="tema" /></button>
-          <div className="usuario"><Avatar nome={s.usuario!.nome} /><div><b>{s.usuario!.nome}</b><small>{s.usuario!.cargo}</small></div></div>
+          <Sino />
+          <div className="usuario-menu">
+            <button type="button" className="usuario" onClick={() => setMenuUsu(!menuUsu)} title="Minha conta" aria-label="Minha conta" aria-expanded={menuUsu}><Avatar nome={s.usuario!.nome} /><div><b>{s.usuario!.nome}</b><small>{s.usuario!.cargo}</small></div></button>
+            {menuUsu && (
+              <div className="usu-pop" role="menu">
+                <div className="usu-pop-cab"><b>{s.usuario!.nome}</b><small>{s.usuario!.email}</small></div>
+                <button type="button" role="menuitem" onClick={() => { setMenuUsu(false); setTrocarSenha(true); }}><Icone n="chave" /> Alterar minha senha</button>
+                <button type="button" role="menuitem" onClick={s.sair}><Icone n="sair" /> Sair</button>
+              </div>
+            )}
+          </div>
           <button type="button" className="icone-btn" onClick={s.sair} title="Sair" aria-label="Sair"><Icone n="sair" /></button>
         </div>
       </header>
       <main className="conteudo"><Outlet /></main>
       <Avisos />
+      {trocarSenha && <AlterarSenha fechar={() => setTrocarSenha(false)} />}
       {perfil === 'recepcao' && !WHATS_AUTOMATICO && <AlertaLembretes />}
       <nav className="nav-celular" aria-label="Menu">
         {PAGINAS.filter((p) => p.perfis.includes(perfil)).map((p) => <NavLink key={p.id} to={p.rota} className={({ isActive }) => (isActive ? 'ativo' : '')}><Icone n={p.icone} />{p.nome}</NavLink>)}
@@ -99,7 +117,7 @@ function AvisoItem({ a, fechar }: { a: Aviso; fechar: () => void }) {
  * Confere a cada minuto. Depois de fechado, só volta se aparecer paciente novo para lembrar.
  */
 function AlertaLembretes() {
-  const { base, acoes, avisar, fecharAviso } = useDados();
+  const { base, avisar, fecharAviso } = useDados();
   const [agora, setAgora] = useState(agoraMin());
   const [aberto, setAberto] = useState(false);   // janela com os lembretes, aberta pelo aviso
   useEffect(() => { const t = setInterval(() => setAgora(agoraMin()), 60000); return () => clearInterval(t); }, []);
@@ -117,26 +135,5 @@ function AlertaLembretes() {
     avisar({ id, tipo: 'alerta', fixo: true, acao: () => setAberto(true), texto: `⏰ Hora de enviar os lembretes de ${quando} pelo WhatsApp · ${lista.length} paciente${lista.length > 1 ? 's' : ''}` });
   }, [id, tem]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!aberto || !dia) return null;
-  // mesma lista do "Para fazer", aqui mesmo: enviar pelo WhatsApp e marcar quem confirmou
-  const todos = aConfirmar(base, dia).filter((a) => a.whats?.resposta !== 'remarcar');
-  return (
-    <Modal titulo={`Lembretes de ${dia === somaDias(hj, 1) ? 'amanhã' : brCurto(dia)} · WhatsApp`} fechar={() => setAberto(false)}>
-      {todos.length === 0 ? <p className="mut">Todos já confirmaram.</p> : (
-        <ul className="tarefas">
-          {todos.map((a) => {
-            const p = base.pacientes.find((x) => x.id === a.pacienteId)!, s = base.servicos.find((x) => x.id === a.servicoId)!;
-            const enviado = !!a.whats?.lembreteEm;
-            return (
-              <li key={a.id}>
-                <span className="mono">{a.hora}</span><span className="tf-nome">{p.nome}<small>{s.curto}{enviado && <em className="zap-st ok"> · lembrete enviado ✓</em>}</small></span>
-                <a className={'btn2 peq ic zap' + (!enviado ? ' pulsa' : '')} href={linkWhats(p.telefone, msgLembrete(base.clinica, p, s, a))} target="_blank" rel="noreferrer" title="Enviar lembrete pelo WhatsApp" aria-label="Enviar lembrete pelo WhatsApp"
-                  onClick={() => acoes.registrarWhats(a.id, { modo: 'manual', lembreteEm: new Date().toISOString() })}><Icone n="zap" /></a>
-                <BotaoIcone icone="check" titulo="Marcar como confirmado" cls="peq verde" onClick={() => acoes.mudarStatus(a.id, 'confirmado')} />
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </Modal>
-  );
+  return <ModalLembretes dia={dia} fechar={() => setAberto(false)} />;
 }

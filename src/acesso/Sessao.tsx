@@ -7,12 +7,34 @@ import type { Usuario } from '../tipos/modelos';
 import usuarios from '../dados/usuarios.json';
 
 export type ResultadoLogin = { ok: true } | { ok: false; motivo: string };
-interface Sessao { usuario: Usuario | null; entrar(email: string, senha: string): Promise<ResultadoLogin>; sair(): void; ehMedica: boolean }
+interface Sessao {
+  usuario: Usuario | null; ehMedica: boolean;
+  entrar(email: string, senha: string): Promise<ResultadoLogin>; sair(): void;
+  /** "Esqueci minha senha": diz se o e-mail existe (a TELA não revela isso ao usuário). */
+  existeEmail(email: string): boolean;
+  /** Grava a nova senha (pelo link de recuperação). No mock vale só neste navegador. */
+  redefinirSenha(email: string, nova: string): Promise<void>;
+  /** Usuário logado troca a própria senha (confere a atual antes). */
+  alterarSenha(atual: string, nova: string): Promise<ResultadoLogin>;
+}
 const CHAVE = 'ioclinic:sessao';
 const Ctx = createContext<Sessao | null>(null);
 const lista = usuarios as (Usuario & { sal: string; hash: string })[];
 
 const VOLTAS = 100_000;
+// Senhas trocadas no mock (recuperação ou "alterar minha senha"): ficam neste navegador, também só como hash.
+const CHAVE_SENHAS = 'ioclinic:senhas';
+type Credencial = { sal: string; hash: string };
+function senhasTrocadas(): Record<string, Credencial> {
+  try { return JSON.parse(localStorage.getItem(CHAVE_SENHAS) ?? '{}'); } catch { return {}; }
+}
+const credencial = (u: { email: string; sal: string; hash: string }): Credencial => senhasTrocadas()[u.email.toLowerCase()] ?? u;
+async function gravarSenha(email: string, nova: string) {
+  const sal = Array.from(crypto.getRandomValues(new Uint8Array(16))).map((b) => b.toString(16).padStart(2, '0')).join('');
+  const t = senhasTrocadas();
+  t[email.toLowerCase()] = { sal, hash: await hashSenha(nova, sal) };
+  try { localStorage.setItem(CHAVE_SENHAS, JSON.stringify(t)); } catch { /* sem armazenamento */ }
+}
 const MAX_TENTATIVAS = 5;
 const ESPERA_MS = 30_000;
 
@@ -36,7 +58,8 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
       if (reg.ate > Date.now()) return { ok: false, motivo: `Muitas tentativas. Aguarde ${Math.ceil((reg.ate - Date.now()) / 1000)} s e tente de novo.` };
       const u = lista.find((x) => x.email.toLowerCase() === em);
       // mesma mensagem para e-mail ou senha errados: não revela quais e-mails existem
-      if (!u || (await hashSenha(senha, u.sal)) !== u.hash) {
+      const cred = u && credencial(u);
+      if (!u || !cred || (await hashSenha(senha, cred.sal)) !== cred.hash) {
         reg.n += 1;
         if (reg.n >= MAX_TENTATIVAS) { reg.n = 0; reg.ate = Date.now() + ESPERA_MS; erros.set(em, reg); return { ok: false, motivo: 'Muitas tentativas. Aguarde 30 s e tente de novo.' }; }
         erros.set(em, reg);
@@ -46,6 +69,17 @@ export function SessaoProvider({ children }: { children: ReactNode }) {
       erros.delete(em);
       setEmail(u.email);
       try { sessionStorage.setItem(CHAVE, u.email); } catch { /* sem armazenamento */ }
+      return { ok: true };
+    },
+    existeEmail: (e) => lista.some((x) => x.email.toLowerCase() === e.trim().toLowerCase()),
+    async redefinirSenha(e, nova) { erros.delete(e.trim().toLowerCase()); await gravarSenha(e.trim(), nova); },
+    async alterarSenha(atual, nova) {
+      const u = lista.find((x) => x.email === email);
+      if (!u) return { ok: false, motivo: 'Sessão encerrada. Entre de novo.' };
+      const cred = credencial(u);
+      if ((await hashSenha(atual, cred.sal)) !== cred.hash) return { ok: false, motivo: 'A senha atual não confere.' };
+      if (atual === nova) return { ok: false, motivo: 'A nova senha precisa ser diferente da atual.' };
+      await gravarSenha(u.email, nova);
       return { ok: true };
     },
     sair() { setEmail(null); try { sessionStorage.removeItem(CHAVE); } catch { /* sem armazenamento */ } },
