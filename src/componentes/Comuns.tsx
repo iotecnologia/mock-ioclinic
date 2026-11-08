@@ -9,7 +9,7 @@ import { Icone } from './Icone';
 export function TituloPagina({ titulo, sub, children }: { titulo: string; sub?: ReactNode; children?: ReactNode }) {
   return (
     <div className="tit-pagina">
-      <div><h1>{titulo}</h1>{sub && <p>{sub}</p>}</div>
+      <div className="tit-texto"><h1>{titulo}</h1>{sub && <p title={typeof sub === 'string' ? sub : undefined}>{sub}</p>}</div>
       {children && <div className="acoes-pagina">{children}</div>}
     </div>
   );

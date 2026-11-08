@@ -64,7 +64,8 @@ export function Shell() {
       </aside>
       <header className="topo">
         <div className="topo-marca"><LogoDra tam={30} /><b>{nomeCurto(base.clinica.medica)}</b></div>
-        {!naInicial && <button type="button" className="icone-btn voltar" onClick={voltar} title="Voltar para a página anterior" aria-label="Voltar para a página anterior"><Icone n="esq" /></button>}
+        {/* sempre no lugar (escondido na Visão Geral) para a busca não mudar de posição entre as páginas */}
+        <button type="button" className={'icone-btn voltar' + (naInicial ? ' oculto' : '')} onClick={voltar} title="Voltar para a página anterior" aria-label="Voltar para a página anterior" tabIndex={naInicial ? -1 : 0} aria-hidden={naInicial}><Icone n="esq" /></button>
         <div className="migalha">Início{atual && <> &nbsp;/&nbsp; {sub ? atual.nome : <b>{atual.nome}</b>}</>}{sub && <> &nbsp;/&nbsp; <b>{sub}</b></>}</div>
         <BuscaGeral />
         <div className="topo-dir">

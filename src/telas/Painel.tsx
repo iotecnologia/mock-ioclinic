@@ -56,7 +56,7 @@ export function Painel() {
 
   return (
     <>
-      <TituloPagina titulo="Painel" sub={`${rotulo(p)} · ${cmp.parcial ? 'variação até hoje × mesma parte do período anterior' : 'variação × período anterior'}`}>
+      <TituloPagina titulo="Painel" sub={`${rotulo(p)} · ${cmp.parcial ? 'comparado à mesma parte do período anterior' : 'comparado ao período anterior'}`}>
         <SeletorPeriodo />
       </TituloPagina>
 

@@ -284,3 +284,16 @@ button.usuario:hover { background: var(--gelo); }
 
 /* Número de pendências no título do bloco ("Para fazer") */
 .bloco-num { margin-left: 6px; background: var(--st-at-bg); color: var(--st-at-t); border-radius: 9px; padding: 1px 8px; font-size: 11px; font-weight: 800; }
+
+/* Cabeçalho de página IGUAL em todas as telas (título + subtítulo à esquerda, ações à direita, mesma altura):
+   trocar de página não pode mexer o botão principal de lugar. */
+.tit-pagina { min-height: 49px; }
+@media (min-width: 901px) {
+  .tit-pagina { flex-wrap: nowrap; }
+  .tit-pagina > .tit-texto { flex: 1 1 auto; min-width: 0; }
+  .tit-pagina > .tit-texto p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tit-pagina > .acoes-pagina { flex: none; align-items: flex-end; }
+}
+/* Topo igual em todas as páginas: voltar, caminho e busca sempre no mesmo lugar */
+.voltar.oculto { visibility: hidden; }
+@media (min-width: 761px) { .migalha { flex: 0 0 250px; overflow: hidden; text-overflow: ellipsis; } }

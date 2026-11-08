@@ -622,7 +622,7 @@ button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity
 @media (max-width: 760px) { .linha-limpa { grid-template-columns: 44px 3px minmax(0, 1fr) auto; } .linha-limpa .ll-serv { display: none; } }
 /* Agenda: o cabeçalho da grade ("Seg, 09/11") fica parado, alinhado com o calendário; só a lista rola */
 @media (min-width: 1001px) {
-  .agenda-grade { display: flex; flex-direction: column; height: calc(100vh - 60px - 28px - 48px - 58px); min-height: 360px; }
+  .agenda-grade { display: flex; flex-direction: column; height: calc(100vh - 60px - 28px - 48px - 69px); min-height: 360px; }
   .agenda-grade > .bloco-cab { flex: none; }
   .agenda-grade > .periodos, .agenda-grade > .faixa-fechado, .agenda-grade > .semana { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
   .agenda-grade > .faixa-fechado { flex: none; }

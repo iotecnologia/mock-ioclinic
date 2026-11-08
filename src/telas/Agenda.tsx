@@ -42,7 +42,7 @@ export function Agenda() {
 
   return (
     <>
-      <TituloPagina titulo="Agenda">
+      <TituloPagina titulo="Agenda" sub="Escolha o dia no calendário e clique num horário livre para agendar">
         <button type="button" className="btn2 pri" onClick={() => setNovo({ data })}><Icone n="mais" /> Novo agendamento</button>
       </TituloPagina>
 
