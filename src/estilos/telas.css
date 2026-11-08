@@ -622,9 +622,24 @@ button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity
 @media (max-width: 760px) { .linha-limpa { grid-template-columns: 44px 3px minmax(0, 1fr) auto; } .linha-limpa .ll-serv { display: none; } }
 /* Agenda: o cabeçalho da grade ("Seg, 09/11") fica parado, alinhado com o calendário; só a lista rola */
 @media (min-width: 1001px) {
-  .agenda-grade { display: flex; flex-direction: column; height: calc(100vh - 60px - 28px - 48px - 69px); min-height: 360px; }
+  /* calendário e grade com a MESMA altura, ocupando a tela até o rodapé (cada um rola por dentro se precisar) */
+  .conteudo:has(.agenda-lay) { padding-bottom: 12px; }
+  .agenda-lay { height: calc(100vh - 60px - 28px - 24px - 69px - 12px); min-height: 380px; align-items: stretch !important; }
+  .agenda-grade { display: flex; flex-direction: column; min-height: 0; }
+  .agenda-cal { position: static; overflow-y: auto; min-height: 0; }
+  .agenda-cal .cal { padding: 8px 12px 8px; }
+  .agenda-cal .cal-dia { height: 32px; }
+  .agenda-cal .cal-leg { margin-top: 6px; padding-top: 8px; }
+  .agenda-cal .cal-fech { padding: 8px 8px 6px; }
+  .agenda-cal .cal-fech button { padding: 4px 6px; font-size: 12px; }
   .agenda-grade > .bloco-cab { flex: none; }
   .agenda-grade > .periodos, .agenda-grade > .faixa-fechado, .agenda-grade > .semana { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
   .agenda-grade > .faixa-fechado { flex: none; }
-  .agenda-lay { align-items: start; }
 }
+/* Agenda em telas de notebook: nada quebra linha no cabeçalho da grade; nome do paciente tem prioridade */
+.agenda-grade > .bloco-cab h3 { white-space: nowrap; }
+.agenda-grade .chips-cab { flex-wrap: nowrap; }
+.agenda-grade .chips-cab .tag { white-space: nowrap; }
+.agenda-grade .segmentado { flex-wrap: nowrap; white-space: nowrap; }
+.linha-limpa { grid-template-columns: 46px 3px minmax(140px, 1.6fr) minmax(0, 1fr) auto; }
+.ll-serv { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
