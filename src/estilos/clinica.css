@@ -303,8 +303,9 @@ button.usuario:hover { background: var(--gelo); }
 .contadores b { font-size: 20px; }
 .lat-topo { height: 60px; }                       /* mesma linha do topo da página */
 .lat-nav { padding: 8px 10px 10px; }
-.lat-sec { padding: 12px 10px 4px; }
-.lat-item { font-size: 13px; padding: 8px 12px; border-radius: 10px; margin-bottom: 1px; }
+/* espaçamento acompanha a altura da tela: preenche o menu sem sobrar buraco e sem criar rolagem */
+.lat-sec { padding: clamp(12px, 2vh, 18px) 10px 5px; }
+.lat-item { font-size: 13px; padding: clamp(8px, calc(4px + .9vh), 11px) 12px; border-radius: 10px; margin-bottom: 2px; }
 .lat-item svg.i { width: 18px; height: 18px; }
 table.tab th { font-size: 11px; }
 table.tab td { font-size: 13px; }
