@@ -297,3 +297,15 @@ button.usuario:hover { background: var(--gelo); }
 /* Topo igual em todas as páginas: voltar, caminho e busca sempre no mesmo lugar */
 .voltar.oculto { visibility: hidden; }
 @media (min-width: 761px) { .migalha { flex: 0 0 250px; overflow: hidden; text-overflow: ellipsis; } }
+
+/* Padronização de fontes e menu lateral (08/11) */
+.tit-pagina h1 { font-size: 22px; }
+.contadores b { font-size: 20px; }
+.lat-topo { height: 60px; }                       /* mesma linha do topo da página */
+.lat-nav { padding: 8px 10px 10px; }
+.lat-sec { padding: 12px 10px 4px; }
+.lat-item { font-size: 13px; padding: 8px 12px; border-radius: 10px; margin-bottom: 1px; }
+.lat-item svg.i { width: 18px; height: 18px; }
+table.tab th { font-size: 11px; }
+table.tab td { font-size: 13px; }
+@media (max-width: 1399px) { .grade2.fin table.tab th { font-size: 10px; } .grade2.fin table.tab td { font-size: 12px; } }

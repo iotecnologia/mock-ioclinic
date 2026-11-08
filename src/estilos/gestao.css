@@ -88,7 +88,7 @@ table.tab td.acoes-linha { padding-top: 6px; padding-bottom: 6px; }
 /* ---------- Relatórios ---------- */
 .per { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--texto-suave); }
 .per input { height: 38px; width: 160px; font-size: 13px; color: var(--texto); }
-.rel-rolagem { max-height: calc(100vh - 360px); overflow: auto; }
+.rel-rolagem { max-height: calc(100vh - 369px); overflow: auto; }
 .rel-tab thead th { position: sticky; top: 0; z-index: 1; }
 .rel-tab tfoot td { background: var(--th-fundo); border-top: 2px solid var(--borda); font-weight: 700; position: sticky; bottom: 0; }
 
