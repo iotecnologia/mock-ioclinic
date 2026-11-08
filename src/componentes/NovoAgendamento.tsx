@@ -3,15 +3,17 @@
 // Paciente novo: PRÉ-CADASTRO aqui mesmo (nome digitado na busca + WhatsApp). O cadastro completo é feito
 // pela recepção quando ele chega; se faltar ou cancelar, o pré-cadastro é apagado (regras/paciente.ts).
 // Dia sem horário livre: ENCAIXE em qualquer horário da grade (fica marcado na agenda).
+// VÁRIOS SERVIÇOS de uma vez (ex.: Consulta + ECG + Eco): ficam em SEQUÊNCIA no mesmo dia; o sistema só mostra
+// horários em que todos cabem seguidos, e cria uma linha na agenda para cada serviço.
 import { useMemo, useState } from 'react';
-import type { Agendamento, Paciente } from '../tipos/modelos';
+import type { Agendamento, Paciente, Servico } from '../tipos/modelos';
 import { useDados } from './Dados';
 import { Modal } from './Comuns';
 import { Icone } from './Icone';
 import { CalendarioMes } from './CalendarioMes';
 import { buscarPacientes, idade, idadeTxt } from '../regras/paciente';
 import { blocosLivres, horariosEncaixe, horariosLivres, situacaoDia } from '../regras/disponibilidade';
-import { agoraMin, br, extenso, hoje, somaDias } from '../util/datas';
+import { agoraMin, br, extenso, hhmm, hoje, min, somaDias } from '../util/datas';
 import { digitos, linkWhats, mascaraTelefone, moeda } from '../util/formato';
 import { msgAgendamento } from '../regras/mensagens';
 import { useWhatsAuto } from './WhatsAuto';
@@ -19,23 +21,27 @@ import { useWhatsAuto } from './WhatsAuto';
 const PASSOS = ['Paciente', 'Serviço', 'Dia e horário', 'Confirmar'];
 const PRE = '__pre';   // paciente ainda não gravado: o pré-cadastro só é salvo ao confirmar o agendamento
 
-export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoAgendar }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string; aoAgendar?: (a: Agendamento) => void }) {
+export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, servicoIds, aoAgendar }: { fechar: () => void; pacienteId?: string; data?: string; hora?: string; servicoId?: string; servicoIds?: string[]; aoAgendar?: (a: Agendamento) => void }) {
   const { base, acoes } = useDados();
   const hj = hoje();
   const [auto] = useWhatsAuto();
-  const [passo, setPasso] = useState(pacienteId ? (servicoId ? 2 : 1) : 0);
+  const inicial = servicoIds?.length ? servicoIds : servicoId ? [servicoId] : [];
+  const [passo, setPasso] = useState(pacienteId ? (inicial.length ? 2 : 1) : 0);
   const [pac, setPac] = useState<string | undefined>(pacienteId);
-  const [serv, setServ] = useState<string | undefined>(servicoId);
+  const [servs, setServs] = useState<string[]>(inicial);   // serviços escolhidos, na ordem em que acontecem
+  const serv = servs.length ? servs.join('+') : undefined;
+  const durDe = (ids: string[]) => ids.reduce((t, id) => t + (base.servicos.find((x) => x.id === id)?.duracaoMin ?? 0), 0);
   const [dia, setDia] = useState<string>(() => {
     let d = data && data >= hj ? data : hj;
-    const s0 = base.servicos.find((x) => x.id === servicoId);
-    // retorno sugerido: vai para o primeiro dia (a partir da data sugerida) que tem horário
-    if (s0) for (let i = 0; i < 90 && !horariosLivres(d, s0.duracaoMin, base, { agoraMin: d === hj ? agoraMin() : undefined }).length; i++) d = somaDias(d, 1);
+    const dur0 = durDe(inicial);
+    // vai para o primeiro dia (a partir da data sugerida) em que todos os serviços cabem
+    if (dur0) for (let i = 0; i < 90 && !horariosLivres(d, dur0, base, { agoraMin: d === hj ? agoraMin() : undefined }).length; i++) d = somaDias(d, 1);
     return d;
   });
   const [hr, setHr] = useState<string | undefined>(hora);
   const [busca, setBusca] = useState('');
   const [feito, setFeito] = useState<Agendamento | null>(null);
+  const [feitos, setFeitos] = useState<Agendamento[]>([]);
   const [pre, setPre] = useState<{ nome: string; telefone: string; nascimento: string } | null>(null);   // formulário do pré-cadastro aberto
   const [preErro, setPreErro] = useState('');
   const [encaixe, setEncaixe] = useState(false);       // horário escolhido é encaixe
@@ -45,7 +51,18 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
     ? { id: PRE, nome: pre.nome.trim(), telefone: pre.telefone, cpf: '', nascimento: pre.nascimento, sexo: 'O', consentimentoLgpd: false, criadoEm: hj, situacao: 'pre' }
     : undefined;
   const paciente = preDados ?? base.pacientes.find((p) => p.id === pac);
-  const servico = base.servicos.find((s) => s.id === serv);
+  // os serviços escolhidos viram um "serviço combinado" (duração e valor somados) para achar o horário em sequência
+  const escolhidos = servs.map((id) => base.servicos.find((s) => s.id === id)!).filter(Boolean);
+  const servico: Servico | undefined = escolhidos.length <= 1 ? escolhidos[0] : {
+    ...escolhidos[0], id: serv!, nome: escolhidos.map((s) => s.nome).join(' + '), curto: escolhidos.map((s) => s.curto).join(' + '),
+    duracaoMin: durDe(servs), valor: escolhidos.reduce((t, s) => t + s.valor, 0),
+    preparo: escolhidos.filter((s) => s.preparo).map((s) => (escolhidos.length > 1 ? `${s.curto}: ${s.preparo}` : s.preparo)).join(' · ') || undefined,
+  };
+  /** Horário de cada serviço na sequência, a partir do horário escolhido. */
+  const sequencia = (inicio: string) => {
+    let t = min(inicio);
+    return escolhidos.map((s) => { const h = hhmm(t); t += s.duracaoMin; return { s, hora: h }; });
+  };
   const livres = useMemo(
     () => (servico ? horariosLivres(dia, servico.duracaoMin, base, { agoraMin: dia === hj ? agoraMin() : undefined }) : []),
     [servico, dia, base, hj],
@@ -79,13 +96,14 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
       const novo = acoes.salvarPaciente(dados);
       pacienteId = novo.id; setPac(novo.id); setPre(null);
     }
-    const a = acoes.agendar({
-      pacienteId, servicoId: serv!, data: dia, hora: hr!, duracaoMin: servico!.duracaoMin, ...(encaixe ? { encaixe: true } : {}),
+    // uma linha na agenda para cada serviço, em sequência
+    const criados = sequencia(hr!).map(({ s, hora: h }) => acoes.agendar({
+      pacienteId, servicoId: s.id, data: dia, hora: h, duracaoMin: s.duracaoMin, ...(encaixe ? { encaixe: true } : {}),
       // WhatsApp automático ligado: a confirmação "sai" junto com o agendamento (no mock, simulado)
       ...(auto ? { whats: { modo: 'auto' as const, confirmacaoEm: new Date().toISOString() } } : {}),
-    });
-    setFeito(a);
-    aoAgendar?.(a);
+    }));
+    setFeito(criados[0]); setFeitos(criados);
+    aoAgendar?.(criados[0]);
   };
 
   if (feito && paciente && servico) {
@@ -97,7 +115,9 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
         <div className="feito">
           <div className="feito-ok"><Icone n="check" /></div>
           <h3>{paciente.nome}</h3>
-          <p>{servico.nome}<br /><b>{extenso(feito.data)} · {feito.hora}</b></p>
+          {feitos.length > 1
+            ? <p><b>{extenso(feito.data)}</b><br />{feitos.map((f) => <span key={f.id} className="feito-seq"><b className="mono">{f.hora}</b> {base.servicos.find((s) => s.id === f.servicoId)?.nome}</span>)}</p>
+            : <p>{servico.nome}<br /><b>{extenso(feito.data)} · {feito.hora}</b></p>}
           {(feito.encaixe || paciente.situacao === 'pre') && <p className="feito-tags">{feito.encaixe && <span className="tag t-at">encaixe</span>}{paciente.situacao === 'pre' && <span className="tag t-in">pré-cadastro · completar na chegada</span>}</p>}
           {w?.modo === 'auto' ? (
             <div className="whats-env">
@@ -116,7 +136,7 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
             </>
           )}
           <div className="rodape-modal centro">
-            {w?.modo !== 'auto' && <a className="btn2 zap" href={linkWhats(paciente.telefone, msg)} target="_blank" rel="noreferrer" onClick={() => acoes.registrarWhats(feito.id, { modo: 'manual', confirmacaoEm: new Date().toISOString() })}><Icone n="zap" /> Enviar confirmação</a>}
+            {w?.modo !== 'auto' && <a className="btn2 zap" href={linkWhats(paciente.telefone, msg)} target="_blank" rel="noreferrer" onClick={() => feitos.forEach((f) => acoes.registrarWhats(f.id, { modo: 'manual', confirmacaoEm: new Date().toISOString() }))}><Icone n="zap" /> Enviar confirmação</a>}
             <button type="button" className="btn2" onClick={fechar}>Fechar</button>
           </div>
         </div>
@@ -174,24 +194,34 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
         <div className="etapa">
           {paciente && <div className="escolhido"><Icone n="medico" /> {paciente.nome}{paciente.situacao === 'pre' && <span className="tag t-in">pré-cadastro</span>}{consultaRecente && <span className="tag t-ok">consulta nos últimos 30 dias · retorno sem custo</span>}</div>}
           <div className="opcoes">
-            {base.servicos.map((s) => (
-              <button type="button" key={s.id} className={'opcao serv tipo-' + s.tipo + (serv === s.id ? ' sel' : '')} onClick={() => {
-                setServ(s.id);
-                const cabe = !!hora && horariosLivres(dia, s.duracaoMin, base, { agoraMin: dia === hj ? agoraMin() : undefined }).includes(hora);
-                setHr(cabe ? hora : undefined); setEncaixe(false); setVerEncaixe(false); setPasso(cabe ? 3 : 2);
-                if (!cabe) {
-                  // vai direto para o primeiro dia (a partir do escolhido) que tem horário para este serviço
-                  for (let i = 0, d = dia; i < 90; i++, d = somaDias(d, 1)) {
-                    if (horariosLivres(d, s.duracaoMin, base, { agoraMin: d === hj ? agoraMin() : undefined }).length) { setDia(d); break; }
-                  }
-                }
-              }}>
-                <span className="nm">{s.nome}</span>
-                <span className="det">{s.duracaoMin} min · {s.valor ? moeda(s.valor) : 'sem custo'}</span>
-              </button>
-            ))}
+            {base.servicos.map((s) => {
+              const ordem = servs.indexOf(s.id);
+              return (
+                <button type="button" key={s.id} className={'opcao serv tipo-' + s.tipo + (ordem >= 0 ? ' sel' : '')} aria-pressed={ordem >= 0}
+                  title={ordem >= 0 ? 'Tirar este serviço' : 'Adicionar este serviço'}
+                  onClick={() => { setServs((l) => (l.includes(s.id) ? l.filter((x) => x !== s.id) : [...l, s.id])); setHr(undefined); setEncaixe(false); setVerEncaixe(false); }}>
+                  {ordem >= 0 && <span className="ordem-serv">{ordem + 1}</span>}
+                  <span className="nm">{s.nome}</span>
+                  <span className="det">{s.duracaoMin} min · {s.valor ? moeda(s.valor) : 'sem custo'}</span>
+                </button>
+              );
+            })}
           </div>
-          {serv === 'retorno' && !consultaRecente && <div className="aviso"><Icone n="alerta" /> Este paciente não tem consulta nos últimos 30 dias. Confira se é mesmo retorno.</div>}
+          {servs.includes('retorno') && !consultaRecente && <div className="aviso"><Icone n="alerta" /> Este paciente não tem consulta nos últimos 30 dias. Confira se é mesmo retorno.</div>}
+          <div className="rodape-modal">
+            <span className="mut peq">{servico ? <>{servs.length} serviço{servs.length > 1 ? 's' : ''} · {servico.duracaoMin >= 60 ? `${Math.floor(servico.duracaoMin / 60)}h${servico.duracaoMin % 60 ? String(servico.duracaoMin % 60).padStart(2, '0') : ''}` : `${servico.duracaoMin} min`} · <b>{servico.valor ? moeda(servico.valor) : 'sem custo'}</b>{servs.length > 1 && ' · em sequência no mesmo dia'}</> : 'Escolha um ou mais serviços'}</span>
+            <button type="button" className="btn2 pri" disabled={!servs.length} onClick={() => {
+              const dur = durDe(servs);
+              const cabe = !!hora && horariosLivres(dia, dur, base, { agoraMin: dia === hj ? agoraMin() : undefined }).includes(hora);
+              setHr(cabe ? hora : undefined); setPasso(cabe ? 3 : 2);
+              if (!cabe) {
+                // vai direto para o primeiro dia (a partir do escolhido) em que todos os serviços cabem em sequência
+                for (let i = 0, d = dia; i < 90; i++, d = somaDias(d, 1)) {
+                  if (horariosLivres(d, dur, base, { agoraMin: d === hj ? agoraMin() : undefined }).length) { setDia(d); break; }
+                }
+              }
+            }}><Icone n="check" /> Continuar</button>
+          </div>
         </div>
       )}
 
@@ -227,8 +257,10 @@ export function NovoAgendamento({ fechar, pacienteId, data, hora, servicoId, aoA
         <div className="etapa">
           <div className="resumo-ag">
             <div><span>Paciente</span><b>{paciente.nome}</b><small>{idadeTxt(paciente, hj)} · {paciente.telefone}</small></div>
-            <div><span>Serviço</span><b>{servico.nome}</b><small>{servico.duracaoMin} min</small></div>
-            <div><span>Quando</span><b>{br(dia)} · {hr}{encaixe && <span className="tag t-at">encaixe</span>}</b><small>{extenso(dia)}</small></div>
+            {escolhidos.length > 1
+              ? <div><span>Serviços</span><b>{escolhidos.length} em sequência</b><small>{sequencia(hr).map((x) => `${x.hora} ${x.s.curto}`).join(' · ')}</small></div>
+              : <div><span>Serviço</span><b>{servico.nome}</b><small>{servico.duracaoMin} min</small></div>}
+            <div><span>Quando</span><b>{br(dia)} · {hr}{escolhidos.length > 1 && ` às ${hhmm(min(hr) + servico.duracaoMin)}`}{encaixe && <span className="tag t-at">encaixe</span>}</b><small>{extenso(dia)}</small></div>
             <div><span>Valor</span><b>{servico.valor ? moeda(servico.valor) : 'Sem custo'}</b><small>{servico.valor ? 'PIX, dinheiro ou cartão' : 'retorno em até 30 dias'}</small></div>
           </div>
           {servico.preparo && <div className="preparo"><Icone n="info" /> <b>Preparo:</b> {servico.preparo}</div>}

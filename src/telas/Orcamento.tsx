@@ -177,7 +177,7 @@ export function Orcamento() {
 
       {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
       {pdf && <BaixarPdf nome={nomeArquivo('orcamento', nome || undefined, hj)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
-      {agendar && pac && <NovoAgendamento pacienteId={pac.id} servicoId={itens[0]?.servicoId} fechar={() => setAgendar(false)} />}
+      {agendar && pac && <NovoAgendamento pacienteId={pac.id} servicoIds={itens.map((i) => i.servicoId)} fechar={() => setAgendar(false)} />}
     </>
   );
 }
