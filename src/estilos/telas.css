@@ -570,3 +570,25 @@ table.tab th.dir { text-align: right; }
 .opcao.serv { position: relative; }
 .ordem-serv { position: absolute; top: 8px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--destaque); color: var(--destaque-texto, #fff); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
 .feito-seq { display: block; margin-top: 2px; }
+
+/* Agenda limpa (09/11): um controle de data, grade em largura total, horário livre discreto */
+.escolher-data { position: relative; }
+.ed-btn { height: 32px; display: inline-flex; align-items: center; gap: 7px; padding: 0 12px; margin-left: 4px; border: 0; border-left: 1px solid var(--linha); border-radius: 0 10px 10px 0; background: none; color: var(--texto); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ed-btn:first-letter { text-transform: uppercase; }
+.ed-btn svg.i { width: 16px; height: 16px; color: var(--destaque-2); }
+.ed-btn:hover, .ed-btn.ativo { background: var(--gelo); }
+.ed-pop { position: absolute; top: calc(100% + 8px); right: 0; width: 320px; background: var(--painel); border: 1px solid var(--linha); border-radius: 14px; box-shadow: 0 12px 32px rgba(10,20,36,.18); z-index: 60; padding: 4px 0 8px; }
+.ed-fech { list-style: none; margin: 0; padding: 8px 16px 0; border-top: 1px solid var(--linha); display: grid; gap: 6px; font-size: 12px; }
+.ed-fech small { display: block; color: var(--texto-suave); font-size: 11px; }
+.grade-dia { gap: 4px; }
+.gd-livre { width: 100%; min-height: 34px; padding: 4px 12px; border: 1px dashed var(--linha); background: transparent; color: var(--texto-suave); font: inherit; font-size: 13px; font-weight: 500; border-radius: 10px; text-align: left; }
+button.gd-livre { cursor: pointer; }
+.gd-livre .mono { color: var(--livre); font-weight: 700; }
+.gd-livre .gd-mais { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; color: var(--livre); font-weight: 700; font-size: 12px; opacity: 0; transition: opacity .12s; }
+.gd-livre .gd-mais svg.i { width: 15px; height: 15px; }
+button.gd-livre:hover, button.gd-livre:focus-visible { border-color: var(--livre-borda); background: var(--livre-bg); color: var(--livre); }
+button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity: 1; }
+@media (hover: none) { .gd-livre .gd-mais { opacity: 1; } }
+.gd-livre.passou { min-height: 30px; opacity: .55; }
+.faixa-fechado { margin: 12px; padding: 12px 14px; border-radius: 10px; background: var(--st-at-bg); color: var(--st-at-t); font-weight: 600; display: flex; gap: 8px; align-items: center; }
+@media (max-width: 760px) { .ed-pop { right: auto; left: 0; } .ed-btn { max-width: 190px; overflow: hidden; text-overflow: ellipsis; } }

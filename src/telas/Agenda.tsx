@@ -1,10 +1,11 @@
-// Agenda: visão do DIA (horários livres e ocupados, com "+" no horário livre) e da SEMANA (grade seg–sáb).
-// Ao lado, o calendário do mês mostra quais dias ainda têm horário.
-import { useState } from 'react';
+// Agenda: visão do DIA (horários livres e ocupados) e da SEMANA (grade seg–sáb).
+// Padrão dos sistemas de agendamento: UM controle de data no topo (‹ Hoje › + a data, que abre o calendário do mês),
+// a grade ocupa a largura toda e o horário livre é uma linha discreta (o "+ Agendar" aparece ao passar o mouse).
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Agendamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
-import { Bloco, BotaoIcone, Modal, TituloPagina, Vazio } from '../componentes/Comuns';
+import { Bloco, Modal, TituloPagina } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { CalendarioMes } from '../componentes/CalendarioMes';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
@@ -29,16 +30,20 @@ export function Agenda() {
   const lista = doDia(base, data);
   const sit = situacaoDia(data, base);
   const livres = sit.aberto ? blocosLivres(data, base, data === hj ? agoraMin() : undefined) : 0;
+  const rotulo = visao === 'dia'
+    ? extenso(data).replace(/ de \d{4}$/, '')
+    : `${brCurto(inicioSemana(data))} a ${brCurto(somaDias(inicioSemana(data), 5))}`;
   const futuros = [...base.feriados.map((f) => ({ data: f.data, txt: f.nome, tipo: 'Feriado' })), ...base.bloqueios.map((b) => ({ data: b.data, txt: b.motivo, tipo: 'Bloqueio' }))]
-    .filter((x) => x.data >= hj).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 4);
+    .filter((x) => x.data >= hj).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 3);
 
   return (
     <>
-      <TituloPagina titulo="Agenda" sub={visao === 'dia' ? extenso(data) : `Semana de ${br(inicioSemana(data))} a ${br(somaDias(inicioSemana(data), 5))}`}>
+      <TituloPagina titulo="Agenda">
         <div className="nav-data">
           <button type="button" className="icone-btn" title={visao === 'dia' ? 'Dia anterior' : 'Semana anterior'} aria-label="Anterior" onClick={() => ir(somaDias(data, -passo))}><Icone n="esq" /></button>
           <button type="button" className="btn2 peq" onClick={() => ir(hj)} disabled={data === hj}>Hoje</button>
           <button type="button" className="icone-btn" title={visao === 'dia' ? 'Próximo dia' : 'Próxima semana'} aria-label="Próximo" onClick={() => ir(somaDias(data, passo))}><Icone n="dir" /></button>
+          <EscolherData rotulo={rotulo} data={data} ir={(d) => ir(d)} futuros={futuros} />
         </div>
         <div className="segmentado">
           <button type="button" className={visao === 'dia' ? 'sel' : ''} onClick={() => ir(data, 'dia')} title="Visão do dia"><Icone n="dia" /> Dia</button>
@@ -48,45 +53,32 @@ export function Agenda() {
       </TituloPagina>
 
       {visao === 'dia' ? (
-        <div className="grade2">
-          <Bloco
-            titulo={<><Icone n="dia" /> Horários de {nomeDiaCurto(data).toLowerCase()}, {brCurto(data)}</>}
-            extra={sit.aberto && <div className="chips-cab">
-              <button type="button" className={'tag t-ok' + (soVer === 'livres' ? ' sel' : '')} title={soVer === 'livres' ? 'Mostrar tudo' : 'Mostrar só os horários livres'} aria-pressed={soVer === 'livres'} onClick={() => setSoVer((x) => (x === 'livres' ? null : 'livres'))}>{livres} livres</button>
-              <button type="button" className={'tag t-in' + (soVer === 'agendados' ? ' sel' : '')} title={soVer === 'agendados' ? 'Mostrar tudo' : 'Mostrar só os agendados'} aria-pressed={soVer === 'agendados'} onClick={() => setSoVer((x) => (x === 'agendados' ? null : 'agendados'))}>{lista.length} agendados</button>
-            </div>}
-          >
-            {!sit.aberto ? <Vazio>{sit.motivo}</Vazio> : (
-              <div className="grade-dia">
-                {gradeDoDia(data, base).map((l) => {
-                  if (soVer && l.tipo === 'intervalo') return null;
-                  if (soVer === 'livres' && l.tipo === 'ocupado') return null;
-                  if (soVer === 'agendados' && l.tipo === 'livre') return null;
-                  if (l.tipo === 'intervalo') return <div key={'i' + l.hora} className="gd-intervalo mono">{l.hora} – {l.ate} · intervalo</div>;
-                  if (l.tipo === 'ocupado') return <LinhaAgendamento key={l.ag.id} ag={l.ag} />;
-                  const passou = data < hj || (data === hj && min(l.hora) <= agoraMin());
-                  return (
-                    <div key={'l' + l.hora} className={'gd-livre' + (passou ? ' passou' : '')}>
-                      <span className="mono">{l.hora}</span><span>{passou ? 'horário passado' : 'Horário livre'}</span>
-                      {!passou && <BotaoIcone icone="mais" titulo={`Agendar às ${l.hora}`} cls="peq livre" onClick={() => setNovo({ data, hora: l.hora })} />}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Bloco>
-          <div className="pilha">
-            <div className="bloco cal-bloco">
-              <CalendarioMes key={data.slice(0, 7)} selecionado={data} aoEscolher={(d) => ir(d)}
-                info={(d) => { const s = situacaoDia(d, base); return { ...s, livres: s.aberto && d >= hj ? blocosLivres(d, base, d === hj ? agoraMin() : undefined) : 0 }; }} />
+        <Bloco
+          titulo={<><Icone n="dia" /> {data === hj ? 'Hoje' : nomeDiaCurto(data)}, {brCurto(data)}</>}
+          extra={sit.aberto && <div className="chips-cab">
+            <button type="button" className={'tag t-in' + (soVer === 'agendados' ? ' sel' : '')} title={soVer === 'agendados' ? 'Mostrar tudo' : 'Mostrar só os agendados'} aria-pressed={soVer === 'agendados'} onClick={() => setSoVer((x) => (x === 'agendados' ? null : 'agendados'))}>{lista.length} agendados</button>
+            <button type="button" className={'tag t-ok' + (soVer === 'livres' ? ' sel' : '')} title={soVer === 'livres' ? 'Mostrar tudo' : 'Mostrar só os horários livres'} aria-pressed={soVer === 'livres'} onClick={() => setSoVer((x) => (x === 'livres' ? null : 'livres'))}>{livres} livres</button>
+          </div>}
+        >
+          {!sit.aberto ? <div className="faixa-fechado"><Icone n="alerta" /> {sit.motivo} · agenda fechada neste dia</div> : (
+            <div className="grade-dia">
+              {gradeDoDia(data, base).map((l) => {
+                if (soVer && l.tipo === 'intervalo') return null;
+                if (soVer === 'livres' && l.tipo === 'ocupado') return null;
+                if (soVer === 'agendados' && l.tipo === 'livre') return null;
+                if (l.tipo === 'intervalo') return <div key={'i' + l.hora} className="gd-intervalo mono">{l.hora} – {l.ate} · intervalo</div>;
+                if (l.tipo === 'ocupado') return <LinhaAgendamento key={l.ag.id} ag={l.ag} />;
+                const passou = data < hj || (data === hj && min(l.hora) <= agoraMin());
+                if (passou) return <div key={'l' + l.hora} className="gd-livre passou"><span className="mono">{l.hora}</span><span>horário passado</span></div>;
+                return (
+                  <button type="button" key={'l' + l.hora} className="gd-livre" title={`Agendar às ${l.hora}`} onClick={() => setNovo({ data, hora: l.hora })}>
+                    <span className="mono">{l.hora}</span><span className="gd-txt">livre</span><span className="gd-mais"><Icone n="mais" /> Agendar</span>
+                  </button>
+                );
+              })}
             </div>
-            <Bloco titulo={<><Icone n="alerta" /> Feriados e bloqueios</>}>
-              <ul className="feed">
-                {futuros.map((x) => <li key={x.data}><span className="dot"><Icone n="calendario" /></span><div><b>{br(x.data)}</b> · {x.txt}<small>{x.tipo} · agenda fechada</small></div></li>)}
-              </ul>
-            </Bloco>
-          </div>
-        </div>
+          )}
+        </Bloco>
       ) : (
         <Semana data={data} abrir={setDetalhe} irDia={(d) => ir(d, 'dia')} />
       )}
@@ -94,6 +86,39 @@ export function Agenda() {
       {novo && <NovoAgendamento data={novo.data} hora={novo.hora} fechar={() => setNovo(null)} />}
       {detalhe && <Modal titulo={`${br(detalhe.data)} · ${detalhe.hora}`} fechar={() => setDetalhe(null)}><DetalheAg id={detalhe.id} /></Modal>}
     </>
+  );
+}
+
+/** A data no topo: clicando, abre o calendário do mês (com os dias livres/lotados/fechados) e os próximos feriados e bloqueios. */
+function EscolherData({ rotulo, data, ir, futuros }: { rotulo: string; data: string; ir: (d: string) => void; futuros: { data: string; txt: string; tipo: string }[] }) {
+  const { base } = useDados();
+  const hj = hoje();
+  const [aberto, setAberto] = useState(false);
+  const caixa = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!aberto) return;
+    const fora = (e: MouseEvent) => { if (caixa.current && !caixa.current.contains(e.target as Node)) setAberto(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setAberto(false); };
+    document.addEventListener('mousedown', fora); window.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('mousedown', fora); window.removeEventListener('keydown', esc); };
+  }, [aberto]);
+  return (
+    <div className="escolher-data" ref={caixa}>
+      <button type="button" className={'ed-btn' + (aberto ? ' ativo' : '')} onClick={() => setAberto(!aberto)} title="Escolher a data no calendário" aria-expanded={aberto}>
+        <Icone n="calendario" /> {rotulo}
+      </button>
+      {aberto && (
+        <div className="ed-pop" role="dialog" aria-label="Calendário">
+          <CalendarioMes key={data.slice(0, 7)} selecionado={data} aoEscolher={(d) => { ir(d); setAberto(false); }}
+            info={(d) => { const s = situacaoDia(d, base); return { ...s, livres: s.aberto && d >= hj ? blocosLivres(d, base, d === hj ? agoraMin() : undefined) : 0 }; }} />
+          {futuros.length > 0 && (
+            <ul className="ed-fech">
+              {futuros.map((x) => <li key={x.data}><b>{br(x.data)}</b> {x.txt}<small>{x.tipo} · agenda fechada</small></li>)}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
