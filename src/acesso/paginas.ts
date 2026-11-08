@@ -10,6 +10,7 @@ export const PAGINAS: Pagina[] = [
   { id: 'agenda', rota: '/agenda', nome: 'Agenda', grupo: 'Atendimento', icone: 'calendario', perfis: TODOS },
   { id: 'pacientes', rota: '/pacientes', nome: 'Pacientes', grupo: 'Atendimento', icone: 'usuarios', perfis: TODOS },
   { id: 'prontuario', rota: '/prontuario', nome: 'Histórico', grupo: 'Atendimento', icone: 'relogio', perfis: MEDICA },
+  { id: 'whatsapp', rota: '/whatsapp', nome: 'WhatsApp', grupo: 'Atendimento', icone: 'zap', perfis: TODOS },
   { id: 'orcamento', rota: '/orcamento', nome: 'Orçamento', grupo: 'Atendimento', icone: 'orcamento', perfis: TODOS },
   { id: 'financeiro', rota: '/financeiro', nome: 'Financeiro', grupo: 'Gestão', icone: 'carteira', perfis: MEDICA },
   { id: 'relatorios', rota: '/relatorios', nome: 'Relatórios', grupo: 'Gestão', icone: 'arquivo', perfis: MEDICA },

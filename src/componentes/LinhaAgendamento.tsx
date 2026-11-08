@@ -49,6 +49,7 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
         <div className="la-sub">
           <span className={'tipo tipo-' + serv.tipo}>{serv.curto}</span>
           {ag.encaixe && <span className="tag t-at">encaixe</span>}
+          {ag.origem === 'whatsapp' && <span className="zap-tag ok" title="O próprio paciente agendou pelo WhatsApp">💬 via WhatsApp</span>}
           {ag.whats?.resposta === 'confirmou' && <span className="zap-tag ok" title="Confirmou pelo WhatsApp">💬 confirmou</span>}
           {ag.whats?.resposta === 'remarcar' && !ag.whats.resolvido && <span className="zap-tag no" title="Pediu para remarcar pelo WhatsApp">💬 pediu remarcar</span>}
           {ag.whats && !ag.whats.resposta && (ag.whats.confirmacaoEm || ag.whats.lembreteEm) && <span className="zap-tag" title={ag.whats.modo === 'auto' ? 'Mensagem enviada automaticamente' : 'Mensagem enviada pela recepção'}>💬 enviado</span>}

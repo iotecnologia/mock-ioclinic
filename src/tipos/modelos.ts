@@ -86,6 +86,8 @@ export interface Agendamento {
   obs?: string;
   /** Encaixe: marcado fora da grade livre (pode sobrepor outro horário). */
   encaixe?: boolean;
+  /** Onde foi marcado: 'whatsapp' = o próprio paciente agendou pelo robô do WhatsApp. */
+  origem?: 'whatsapp';
   /** Contato pelo WhatsApp: confirmação do agendamento, lembrete da véspera e resposta do paciente. */
   whats?: ContatoWhats;
   criadoEm: string;

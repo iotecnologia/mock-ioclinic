@@ -20,9 +20,10 @@ import { Orcamento } from './telas/Orcamento';
 import { Financeiro } from './telas/Financeiro';
 import { Relatorios } from './telas/Relatorios';
 import { Painel } from './telas/Painel';
+import { WhatsappDemo } from './telas/WhatsappDemo';
 
 const TELAS: Record<string, ReactNode> = { hoje: <Hoje />, agenda: <Agenda />, pacientes: <Pacientes />, prontuario: <Prontuario />, orcamento: <Orcamento />,
-  financeiro: <Financeiro />, relatorios: <Relatorios />, painel: <Painel /> };
+  financeiro: <Financeiro />, relatorios: <Relatorios />, painel: <Painel />, whatsapp: <WhatsappDemo /> };
 
 // Já estava logado quando a página abriu (recarregou)? Então a abertura é rápida. Depois do 1º uso, vale o login normal.
 let sessaoAoAbrir = (() => { try { return !!sessionStorage.getItem('ioclinic:sessao'); } catch { return false; } })();
