@@ -1,7 +1,7 @@
-// Agenda: visão do DIA (horários livres e ocupados) e da SEMANA (grade seg–sáb).
-// Padrão dos sistemas de agendamento: UM controle de data no topo (‹ Hoje › + a data, que abre o calendário do mês),
-// a grade ocupa a largura toda e o horário livre é uma linha discreta (o "+ Agendar" aparece ao passar o mouse).
-import { useEffect, useRef, useState } from 'react';
+// Agenda: um lugar só para escolher a data — o calendário fixo à esquerda (com "Hoje" no cabeçalho).
+// À direita, a grade do dia (ou da semana), com "Dia | Semana" no canto da própria grade.
+// Topo só com o título e o "Novo agendamento". Horário livre é uma linha discreta ("+ Agendar" ao passar o mouse).
+import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Agendamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
@@ -12,7 +12,7 @@ import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { blocosLivres, faixasDoDia, gradeDoDia, situacaoDia } from '../regras/disponibilidade';
 import { doDia } from '../regras/agenda';
-import { agoraMin, br, brCurto, extenso, hhmm, hoje, inicioSemana, min, nomeDiaCurto, somaDias } from '../util/datas';
+import { agoraMin, br, brCurto, hhmm, hoje, inicioSemana, min, nomeDiaCurto, somaDias } from '../util/datas';
 
 type Visao = 'dia' | 'semana';
 
@@ -26,39 +26,47 @@ export function Agenda() {
   const [novo, setNovo] = useState<{ data?: string; hora?: string } | null>(null);
   const [detalhe, setDetalhe] = useState<Agendamento | null>(null);
   const [soVer, setSoVer] = useState<'livres' | 'agendados' | null>(null);   // filtro dos chips do dia
-  const passo = visao === 'semana' ? 7 : 1;
   const lista = doDia(base, data);
   const sit = situacaoDia(data, base);
   const livres = sit.aberto ? blocosLivres(data, base, data === hj ? agoraMin() : undefined) : 0;
-  const rotulo = visao === 'dia'
-    ? extenso(data).replace(/ de \d{4}$/, '')
-    : `${brCurto(inicioSemana(data))} a ${brCurto(somaDias(inicioSemana(data), 5))}`;
-  const futuros = [...base.feriados.map((f) => ({ data: f.data, txt: f.nome, tipo: 'Feriado' })), ...base.bloqueios.map((b) => ({ data: b.data, txt: b.motivo, tipo: 'Bloqueio' }))]
-    .filter((x) => x.data >= hj).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 3);
+  // próximos feriados e bloqueios (embaixo do calendário; clicar abre o dia)
+  const fechados = [...base.feriados.map((f) => ({ data: f.data, txt: f.nome, tipo: 'Feriado' })), ...base.bloqueios.map((b) => ({ data: b.data, txt: b.motivo, tipo: 'Bloqueio' }))]
+    .filter((x) => x.data >= hj).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 4);
+  const info = (d: string) => { const x = situacaoDia(d, base); return { ...x, livres: x.aberto && d >= hj ? blocosLivres(d, base, d === hj ? agoraMin() : undefined) : 0 }; };
+  const trocaVisao = (
+    <div className="segmentado peq">
+      <button type="button" className={visao === 'dia' ? 'sel' : ''} onClick={() => ir(data, 'dia')} title="Ver o dia"><Icone n="dia" /> Dia</button>
+      <button type="button" className={visao === 'semana' ? 'sel' : ''} onClick={() => ir(data, 'semana')} title="Ver a semana"><Icone n="semana" /> Semana</button>
+    </div>
+  );
 
   return (
     <>
       <TituloPagina titulo="Agenda">
-        <div className="nav-data">
-          <button type="button" className="icone-btn" title={visao === 'dia' ? 'Dia anterior' : 'Semana anterior'} aria-label="Anterior" onClick={() => ir(somaDias(data, -passo))}><Icone n="esq" /></button>
-          <button type="button" className="btn2 peq" onClick={() => ir(hj)} disabled={data === hj}>Hoje</button>
-          <button type="button" className="icone-btn" title={visao === 'dia' ? 'Próximo dia' : 'Próxima semana'} aria-label="Próximo" onClick={() => ir(somaDias(data, passo))}><Icone n="dir" /></button>
-          <EscolherData rotulo={rotulo} data={data} ir={(d) => ir(d)} futuros={futuros} />
-        </div>
-        <div className="segmentado">
-          <button type="button" className={visao === 'dia' ? 'sel' : ''} onClick={() => ir(data, 'dia')} title="Visão do dia"><Icone n="dia" /> Dia</button>
-          <button type="button" className={visao === 'semana' ? 'sel' : ''} onClick={() => ir(data, 'semana')} title="Visão da semana"><Icone n="semana" /> Semana</button>
-        </div>
         <button type="button" className="btn2 pri" onClick={() => setNovo({ data })}><Icone n="mais" /> Novo agendamento</button>
       </TituloPagina>
 
+      <div className="agenda-lay">
+        <div className="bloco cal-bloco agenda-cal">
+          <CalendarioMes key={data.slice(0, 7)} selecionado={data} aoEscolher={(d) => ir(d)} irHoje={() => ir(hj)} info={info} />
+          {fechados.length > 0 && (
+            <div className="cal-fech">
+              <div className="cal-fech-tit"><Icone n="alerta" /> Feriados e bloqueios</div>
+              {fechados.map((x) => (
+                <button type="button" key={x.data} className={x.data === data ? 'sel' : ''} onClick={() => ir(x.data)} title={`${x.tipo} · agenda fechada · abrir o dia`}>
+                  <span className="mono">{brCurto(x.data)}</span><span className="cf-txt">{x.txt}</span><small>{x.tipo}</small>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       {visao === 'dia' ? (
         <Bloco
           titulo={<><Icone n="dia" /> {data === hj ? 'Hoje' : nomeDiaCurto(data)}, {brCurto(data)}</>}
-          extra={sit.aberto && <div className="chips-cab">
+          extra={<div className="chips-cab">{sit.aberto && <>
             <button type="button" className={'tag t-in' + (soVer === 'agendados' ? ' sel' : '')} title={soVer === 'agendados' ? 'Mostrar tudo' : 'Mostrar só os agendados'} aria-pressed={soVer === 'agendados'} onClick={() => setSoVer((x) => (x === 'agendados' ? null : 'agendados'))}>{lista.length} agendados</button>
             <button type="button" className={'tag t-ok' + (soVer === 'livres' ? ' sel' : '')} title={soVer === 'livres' ? 'Mostrar tudo' : 'Mostrar só os horários livres'} aria-pressed={soVer === 'livres'} onClick={() => setSoVer((x) => (x === 'livres' ? null : 'livres'))}>{livres} livres</button>
-          </div>}
+          </>}{trocaVisao}</div>}
         >
           {!sit.aberto ? <div className="faixa-fechado"><Icone n="alerta" /> {sit.motivo} · agenda fechada neste dia</div> : (
             <div className="grade-dia">
@@ -80,45 +88,13 @@ export function Agenda() {
           )}
         </Bloco>
       ) : (
-        <Semana data={data} abrir={setDetalhe} irDia={(d) => ir(d, 'dia')} />
+        <Semana data={data} abrir={setDetalhe} irDia={(d) => ir(d, 'dia')} troca={trocaVisao} />
       )}
+      </div>
 
       {novo && <NovoAgendamento data={novo.data} hora={novo.hora} fechar={() => setNovo(null)} />}
       {detalhe && <Modal titulo={`${br(detalhe.data)} · ${detalhe.hora}`} fechar={() => setDetalhe(null)}><DetalheAg id={detalhe.id} /></Modal>}
     </>
-  );
-}
-
-/** A data no topo: clicando, abre o calendário do mês (com os dias livres/lotados/fechados) e os próximos feriados e bloqueios. */
-function EscolherData({ rotulo, data, ir, futuros }: { rotulo: string; data: string; ir: (d: string) => void; futuros: { data: string; txt: string; tipo: string }[] }) {
-  const { base } = useDados();
-  const hj = hoje();
-  const [aberto, setAberto] = useState(false);
-  const caixa = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!aberto) return;
-    const fora = (e: MouseEvent) => { if (caixa.current && !caixa.current.contains(e.target as Node)) setAberto(false); };
-    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setAberto(false); };
-    document.addEventListener('mousedown', fora); window.addEventListener('keydown', esc);
-    return () => { document.removeEventListener('mousedown', fora); window.removeEventListener('keydown', esc); };
-  }, [aberto]);
-  return (
-    <div className="escolher-data" ref={caixa}>
-      <button type="button" className={'ed-btn' + (aberto ? ' ativo' : '')} onClick={() => setAberto(!aberto)} title="Escolher a data no calendário" aria-expanded={aberto}>
-        <Icone n="calendario" /> {rotulo}
-      </button>
-      {aberto && (
-        <div className="ed-pop" role="dialog" aria-label="Calendário">
-          <CalendarioMes key={data.slice(0, 7)} selecionado={data} aoEscolher={(d) => { ir(d); setAberto(false); }}
-            info={(d) => { const s = situacaoDia(d, base); return { ...s, livres: s.aberto && d >= hj ? blocosLivres(d, base, d === hj ? agoraMin() : undefined) : 0 }; }} />
-          {futuros.length > 0 && (
-            <ul className="ed-fech">
-              {futuros.map((x) => <li key={x.data}><b>{br(x.data)}</b> {x.txt}<small>{x.tipo} · agenda fechada</small></li>)}
-            </ul>
-          )}
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -130,7 +106,7 @@ function DetalheAg({ id }: { id: string }) {
 }
 
 const ALT = 34; // px por 30 min
-function Semana({ data, abrir, irDia }: { data: string; abrir: (a: Agendamento) => void; irDia: (d: string) => void }) {
+function Semana({ data, abrir, irDia, troca }: { data: string; abrir: (a: Agendamento) => void; irDia: (d: string) => void; troca: ReactNode }) {
   const { base } = useDados();
   const ini = inicioSemana(data);
   const dias = Array.from({ length: 6 }, (_, i) => somaDias(ini, i));
@@ -140,7 +116,8 @@ function Semana({ data, abrir, irDia }: { data: string; abrir: (a: Agendamento) 
   const linhas = Array.from({ length: (fecha - abre) / 30 }, (_, i) => abre + i * 30);
   const hj = hoje();
   return (
-    <div className="bloco semana">
+    <Bloco titulo={<><Icone n="semana" /> Semana de {brCurto(ini)} a {brCurto(somaDias(ini, 5))}</>} extra={<div className="chips-cab">{troca}</div>}>
+    <div className="semana">
       <div className="sem-cab">
         <span />
         {dias.map((d) => <button type="button" key={d} className={'sem-dia' + (d === hj ? ' hoje' : '')} onClick={() => irDia(d)} title="Abrir o dia"><b>{nomeDiaCurto(d)}</b>{brCurto(d)}</button>)}
@@ -169,5 +146,6 @@ function Semana({ data, abrir, irDia }: { data: string; abrir: (a: Agendamento) 
       </div>
       <div className="sem-leg"><span><i className="tipo-consulta" /> consulta</span><span><i className="tipo-retorno" /> retorno</span><span><i className="tipo-exame" /> exame</span></div>
     </div>
+    </Bloco>
   );
 }
