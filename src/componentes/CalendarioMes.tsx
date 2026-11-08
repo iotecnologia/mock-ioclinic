@@ -5,8 +5,10 @@ import { Icone } from './Icone';
 
 export interface InfoDia { aberto: boolean; livres: number; motivo?: string }
 
-export function CalendarioMes({ selecionado, aoEscolher, info, minimo }: {
+export function CalendarioMes({ selecionado, aoEscolher, info, minimo, irHoje }: {
   selecionado: string; aoEscolher: (d: string) => void; info: (d: string) => InfoDia; minimo?: string;
+  /** mostra o botão "Hoje" no cabeçalho do calendário (Agenda) */
+  irHoje?: () => void;
 }) {
   const [ref, setRef] = useState(() => { const d = deIso(selecionado); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const ano = ref.getFullYear(), mes = ref.getMonth();
@@ -19,6 +21,7 @@ export function CalendarioMes({ selecionado, aoEscolher, info, minimo }: {
       <div className="cal-cab">
         <b>{nomeMes(mes)[0].toUpperCase() + nomeMes(mes).slice(1)} {ano}</b>
         <div>
+          {irHoje && <button type="button" className="btn2 peq cal-hoje" onClick={irHoje} disabled={selecionado === iso(new Date())} title="Voltar para hoje">Hoje</button>}
           <button type="button" className="icone-btn" title="Mês anterior" aria-label="Mês anterior" onClick={() => setRef(new Date(ano, mes - 1, 1))}><Icone n="esq" /></button>
           <button type="button" className="icone-btn" title="Próximo mês" aria-label="Próximo mês" onClick={() => setRef(new Date(ano, mes + 1, 1))}><Icone n="dir" /></button>
         </div>
