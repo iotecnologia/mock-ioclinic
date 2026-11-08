@@ -80,7 +80,7 @@ export function Agenda() {
                     <div className="per-cab"><b>{nome}</b><span className="mono">{hhmm(f.inicio)}–{hhmm(f.fim)}</span><small>{ags.length} agendado{ags.length !== 1 ? 's' : ''} · {livresP.length} livre{livresP.length !== 1 ? 's' : ''}</small></div>
                     {soVer !== 'livres' && ags.map((ag) => <LinhaLimpa key={ag.id} ag={ag} abrir={() => setDetalhe(ag)} />)}
                     {soVer !== 'agendados' && (livresP.length > 0
-                      ? <div className="per-livres"><span>Livres</span>{livresP.map((h) => <button type="button" key={h} className="hora-livre mono" title={`Agendar às ${h}`} onClick={() => setNovo({ data, hora: h })}>{h}</button>)}</div>
+                      ? <div className="per-livres"><span><Icone n="relogio" /> {livresP.length} horário{livresP.length > 1 ? 's' : ''} livre{livresP.length > 1 ? 's' : ''}</span>{livresP.map((h) => <button type="button" key={h} className="hora-livre" title={`Agendar às ${h}`} onClick={() => setNovo({ data, hora: h })}><Icone n="mais" /><b className="mono">{h}</b></button>)}</div>
                       : <div className="per-livres mut">Sem horário livre neste período.</div>)}
                   </section>
                 );

@@ -643,3 +643,19 @@ button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity
 .agenda-grade .segmentado { flex-wrap: nowrap; white-space: nowrap; }
 .linha-limpa { grid-template-columns: 46px 3px minmax(140px, 1.6fr) minmax(0, 1fr) auto; }
 .ll-serv { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Agenda (08/11 noite): colunas fixas (tudo alinhado), período em destaque, livres visíveis */
+.linha-limpa { grid-template-columns: 46px 3px minmax(0, 1fr) 170px 112px; }
+.linha-limpa .tag { justify-self: start; }
+.per-cab { background: var(--gelo); border: 0; border-radius: 8px; padding: 7px 12px; margin: 0 0 4px; box-shadow: inset 3px 0 0 var(--destaque-2); }
+.per-cab b { font-size: 12.5px; font-weight: 800; color: var(--destaque-2); letter-spacing: .8px; }
+.per-cab .mono { color: var(--texto); font-weight: 600; }
+.per-cab small { color: var(--texto); }
+.periodos { gap: 18px; }
+.per-livres { margin-top: 6px; padding: 8px 10px; background: var(--livre-bg); border: 1px solid var(--livre-borda); border-radius: 10px; gap: 8px; }
+.per-livres > span { display: inline-flex; align-items: center; gap: 6px; color: var(--livre); font-size: 12.5px; font-weight: 700; margin-right: 6px; }
+.per-livres > span svg.i { width: 16px; height: 16px; }
+.hora-livre { height: 30px; padding: 0 12px 0 8px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--livre); background: var(--painel); color: var(--livre); border-radius: 8px; font: inherit; font-size: 13px; cursor: pointer; }
+.hora-livre svg.i { width: 15px; height: 15px; }
+.hora-livre:hover { background: var(--livre); color: #fff; filter: none; border-style: solid; }
+.per-livres.mut { background: none; border: 1px dashed var(--linha); color: var(--texto-suave); }
+@media (max-width: 760px) { .linha-limpa { grid-template-columns: 44px 3px minmax(0, 1fr) auto; } }
