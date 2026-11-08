@@ -29,6 +29,9 @@ export function Agenda() {
   const lista = doDia(base, data);
   const sit = situacaoDia(data, base);
   const livres = sit.aberto ? blocosLivres(data, base, data === hj ? agoraMin() : undefined) : 0;
+  // próximos feriados e bloqueios (embaixo do calendário; clicar abre o dia)
+  const fechados = [...base.feriados.map((f) => ({ data: f.data, txt: f.nome, tipo: 'Feriado' })), ...base.bloqueios.map((b) => ({ data: b.data, txt: b.motivo, tipo: 'Bloqueio' }))]
+    .filter((x) => x.data >= hj).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 4);
   const info = (d: string) => { const x = situacaoDia(d, base); return { ...x, livres: x.aberto && d >= hj ? blocosLivres(d, base, d === hj ? agoraMin() : undefined) : 0 }; };
   const trocaVisao = (
     <div className="segmentado peq">
@@ -46,6 +49,16 @@ export function Agenda() {
       <div className="agenda-lay">
         <div className="bloco cal-bloco agenda-cal">
           <CalendarioMes key={data.slice(0, 7)} selecionado={data} aoEscolher={(d) => ir(d)} irHoje={() => ir(hj)} info={info} />
+          {fechados.length > 0 && (
+            <div className="cal-fech">
+              <div className="cal-fech-tit"><Icone n="alerta" /> Feriados e bloqueios</div>
+              {fechados.map((x) => (
+                <button type="button" key={x.data} className={x.data === data ? 'sel' : ''} onClick={() => ir(x.data)} title={`${x.tipo} · agenda fechada · abrir o dia`}>
+                  <span className="mono">{brCurto(x.data)}</span><span className="cf-txt">{x.txt}</span><small>{x.tipo}</small>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       {visao === 'dia' ? (
         <Bloco
