@@ -597,3 +597,34 @@ button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity
 .cal-fech .mono { font-weight: 700; color: var(--texto-suave); }
 .cal-fech .cf-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cal-fech small { font-size: 10.5px; color: var(--texto-suave); }
+/* Agenda do dia em blocos (Manhã / Tarde), uma linha por paciente, livres como botões */
+.periodos { padding: 8px 12px 12px; display: grid; gap: 14px; }
+.periodo { display: grid; gap: 4px; }
+.per-cab { display: flex; align-items: baseline; gap: 10px; padding: 4px 4px 6px; border-bottom: 1px solid var(--linha); margin-bottom: 2px; }
+.per-cab b { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+.per-cab .mono { font-size: 12px; color: var(--texto-suave); }
+.per-cab small { margin-left: auto; font-size: 12px; color: var(--texto-suave); font-weight: 600; }
+.per-livres { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 4px 0; font-size: 12px; }
+.per-livres > span { font-weight: 700; color: var(--livre); margin-right: 4px; }
+.hora-livre { height: 28px; padding: 0 10px; border: 1px dashed var(--livre-borda); background: var(--livre-bg); color: var(--livre); border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.hora-livre:hover { border-style: solid; filter: brightness(.97); }
+/* Linha limpa (Agenda do dia): clicar abre o detalhe com as ações */
+.linha-limpa { display: grid; grid-template-columns: 46px 3px minmax(0, 1fr) 150px 120px; align-items: center; gap: 12px; width: 100%; min-height: 40px; padding: 4px 12px; border: 0; border-bottom: 1px solid var(--linha); background: none; font: inherit; font-size: 13.5px; color: var(--texto); text-align: left; cursor: pointer; border-radius: 0; }
+.linha-limpa:hover { background: var(--gelo); }
+.linha-limpa .mono { font-weight: 700; font-size: 13px; }
+.ll-barra { align-self: stretch; margin: 6px 0; border-radius: 3px; }
+.ll-barra.tipo-consulta { background: var(--tipo-consulta); } .ll-barra.tipo-exame { background: var(--tipo-exame); } .ll-barra.tipo-retorno { background: var(--tipo-retorno); }
+.ll-nome { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ll-serv { font-size: 12.5px; font-weight: 600; }
+.linha-limpa .tag { justify-self: end; }
+.linha-limpa.st-atendido, .linha-limpa.st-faltou, .linha-limpa.st-cancelado { opacity: .6; }
+.periodo { gap: 0; }
+@media (max-width: 760px) { .linha-limpa { grid-template-columns: 44px 3px minmax(0, 1fr) auto; } .linha-limpa .ll-serv { display: none; } }
+/* Agenda: o cabeçalho da grade ("Seg, 09/11") fica parado, alinhado com o calendário; só a lista rola */
+@media (min-width: 1001px) {
+  .agenda-grade { display: flex; flex-direction: column; height: calc(100vh - 60px - 28px - 48px - 58px); min-height: 360px; }
+  .agenda-grade > .bloco-cab { flex: none; }
+  .agenda-grade > .periodos, .agenda-grade > .faixa-fechado, .agenda-grade > .semana { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
+  .agenda-grade > .faixa-fechado { flex: none; }
+  .agenda-lay { align-items: start; }
+}

@@ -5,7 +5,7 @@ import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Agendamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
-import { Bloco, Modal, TituloPagina } from '../componentes/Comuns';
+import { Bloco, Modal, TagStatus, TituloPagina } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { CalendarioMes } from '../componentes/CalendarioMes';
 import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
@@ -61,7 +61,7 @@ export function Agenda() {
           )}
         </div>
       {visao === 'dia' ? (
-        <Bloco
+        <Bloco className="agenda-grade"
           titulo={<><Icone n="dia" /> {data === hj ? 'Hoje' : nomeDiaCurto(data)}, {brCurto(data)}</>}
           extra={<div className="chips-cab">{sit.aberto && <>
             <button type="button" className={'tag t-in' + (soVer === 'agendados' ? ' sel' : '')} title={soVer === 'agendados' ? 'Mostrar tudo' : 'Mostrar só os agendados'} aria-pressed={soVer === 'agendados'} onClick={() => setSoVer((x) => (x === 'agendados' ? null : 'agendados'))}>{lista.length} agendados</button>
@@ -69,19 +69,20 @@ export function Agenda() {
           </>}{trocaVisao}</div>}
         >
           {!sit.aberto ? <div className="faixa-fechado"><Icone n="alerta" /> {sit.motivo} · agenda fechada neste dia</div> : (
-            <div className="grade-dia">
-              {gradeDoDia(data, base).map((l) => {
-                if (soVer && l.tipo === 'intervalo') return null;
-                if (soVer === 'livres' && l.tipo === 'ocupado') return null;
-                if (soVer === 'agendados' && l.tipo === 'livre') return null;
-                if (l.tipo === 'intervalo') return <div key={'i' + l.hora} className="gd-intervalo mono">{l.hora} – {l.ate} · intervalo</div>;
-                if (l.tipo === 'ocupado') return <LinhaAgendamento key={l.ag.id} ag={l.ag} />;
-                const passou = data < hj || (data === hj && min(l.hora) <= agoraMin());
-                if (passou) return <div key={'l' + l.hora} className="gd-livre passou"><span className="mono">{l.hora}</span><span>horário passado</span></div>;
+            <div className="periodos">
+              {faixasDoDia(data, base).map((f) => {
+                const linhas = gradeDoDia(data, base).filter((l) => l.tipo !== 'intervalo' && min(l.hora) >= f.inicio && min(l.hora) < f.fim);
+                const ags = linhas.flatMap((l) => (l.tipo === 'ocupado' ? [l.ag] : []));
+                const livresP = linhas.filter((l) => l.tipo === 'livre' && !(data < hj || (data === hj && min(l.hora) <= agoraMin()))).map((l) => l.hora);
+                const nome = f.inicio < 12 * 60 ? 'Manhã' : f.inicio < 18 * 60 ? 'Tarde' : 'Noite';
                 return (
-                  <button type="button" key={'l' + l.hora} className="gd-livre" title={`Agendar às ${l.hora}`} onClick={() => setNovo({ data, hora: l.hora })}>
-                    <span className="mono">{l.hora}</span><span className="gd-txt">livre</span><span className="gd-mais"><Icone n="mais" /> Agendar</span>
-                  </button>
+                  <section key={f.inicio} className="periodo">
+                    <div className="per-cab"><b>{nome}</b><span className="mono">{hhmm(f.inicio)}–{hhmm(f.fim)}</span><small>{ags.length} agendado{ags.length !== 1 ? 's' : ''} · {livresP.length} livre{livresP.length !== 1 ? 's' : ''}</small></div>
+                    {soVer !== 'livres' && ags.map((ag) => <LinhaLimpa key={ag.id} ag={ag} abrir={() => setDetalhe(ag)} />)}
+                    {soVer !== 'agendados' && (livresP.length > 0
+                      ? <div className="per-livres"><span>Livres</span>{livresP.map((h) => <button type="button" key={h} className="hora-livre mono" title={`Agendar às ${h}`} onClick={() => setNovo({ data, hora: h })}>{h}</button>)}</div>
+                      : <div className="per-livres mut">Sem horário livre neste período.</div>)}
+                  </section>
                 );
               })}
             </div>
@@ -95,6 +96,22 @@ export function Agenda() {
       {novo && <NovoAgendamento data={novo.data} hora={novo.hora} fechar={() => setNovo(null)} />}
       {detalhe && <Modal titulo={`${br(detalhe.data)} · ${detalhe.hora}`} fechar={() => setDetalhe(null)}><DetalheAg id={detalhe.id} /></Modal>}
     </>
+  );
+}
+
+/** Linha limpa da Agenda do dia: só hora, paciente, serviço e situação. Clicar abre o detalhe com as ações. */
+function LinhaLimpa({ ag, abrir }: { ag: Agendamento; abrir: () => void }) {
+  const { base } = useDados();
+  const p = base.pacientes.find((x) => x.id === ag.pacienteId)!;
+  const s = base.servicos.find((x) => x.id === ag.servicoId)!;
+  return (
+    <button type="button" className={'linha-limpa st-' + ag.status} onClick={abrir} title="Abrir: confirmar, chegou, receber, cancelar…">
+      <span className="mono">{ag.hora}</span>
+      <i className={'ll-barra tipo-' + s.tipo} />
+      <span className="ll-nome">{p.nome}</span>
+      <span className={'ll-serv tipo tipo-' + s.tipo}>{s.curto}</span>
+      <TagStatus s={ag.status} />
+    </button>
   );
 }
 
@@ -116,7 +133,7 @@ function Semana({ data, abrir, irDia, troca }: { data: string; abrir: (a: Agenda
   const linhas = Array.from({ length: (fecha - abre) / 30 }, (_, i) => abre + i * 30);
   const hj = hoje();
   return (
-    <Bloco titulo={<><Icone n="semana" /> Semana de {brCurto(ini)} a {brCurto(somaDias(ini, 5))}</>} extra={<div className="chips-cab">{troca}</div>}>
+    <Bloco className="agenda-grade" titulo={<><Icone n="semana" /> Semana de {brCurto(ini)} a {brCurto(somaDias(ini, 5))}</>} extra={<div className="chips-cab">{troca}</div>}>
     <div className="semana">
       <div className="sem-cab">
         <span />
