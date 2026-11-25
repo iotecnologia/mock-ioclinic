@@ -684,3 +684,48 @@ th.ord .seta { font-size: 9px; color: var(--destaque-2); min-width: 9px; }
   .conteudo:has(.pac-lista) { padding-bottom: 12px; }
   .pac-lista { height: calc(100vh - 60px - 28px - 24px - 69px - 54px - 12px); min-height: 320px; }
 }
+/* Consultório (25/11): lista do dia sem rolar a página; atendimento com "Finalizar" sempre visível */
+.consult-tab { table-layout: fixed; }
+.consult-tab col.c-hora { width: 80px; } .consult-tab col.c-serv { width: 150px; } .consult-tab col.c-sit { width: 150px; }
+.consult-tab thead th { position: sticky; top: 0; z-index: 2; }
+.consult-tab td { padding-top: 10px; padding-bottom: 10px; white-space: nowrap; }
+.consult-pac { overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+.consult-pac .mut { margin-left: 6px; font-weight: 400; }
+.menu-doc { position: relative; }
+.menu-doc .seta-menu { font-size: 10px; color: var(--texto-suave); }
+.menu-doc .usu-pop { min-width: 250px; }
+@media (min-width: 1001px) {
+  .conteudo:has(.consult) { padding-bottom: 12px; }
+  .consult { height: calc(100vh - 60px - 28px - 24px - 69px - 12px); min-height: 360px; align-items: stretch; }
+  .consult > .bloco:first-child { display: flex; flex-direction: column; min-height: 0; }
+  .consult-rolagem { flex: 1 1 auto; min-height: 0; overflow: auto; }
+  /* atendimento: a coluna do registro ocupa a tela; o formulário rola por dentro e o rodapé (Finalizar) fica fixo */
+  .conteudo:has(.pront) { padding-bottom: 12px; }
+  .pront { height: calc(100vh - 60px - 28px - 24px - 94px - 14px - 12px); min-height: 360px; align-items: stretch; }
+  .pront > .bloco { display: flex; flex-direction: column; min-height: 0; }
+  .pront > .bloco > .form-atend, .pront > .bloco > .evol-lida { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+  .pront .form-atend > .rodape-modal { position: sticky; bottom: 0; margin-top: auto; background: var(--painel); padding-bottom: 14px; z-index: 2; }
+  .pront > .pilha { min-height: 0; overflow-y: auto; }
+}
+/* Ficha do paciente · histórico: retorno, exames pedidos e documentos em cima da linha do tempo */
+.hist-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 14px 18px 4px; }
+.hr-card { border: 1px solid var(--linha); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; font-size: 13px; }
+.hr-card p { margin: 0; }
+.hr-tit { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--texto-suave); }
+.hr-tit svg.i { width: 15px; height: 15px; }
+.hr-tit .tag { text-transform: none; letter-spacing: 0; margin-left: auto; }
+.hr-ok { color: var(--st-ok-t); font-weight: 600; }
+.hr-card .lk { justify-self: start; font-size: 12.5px; color: var(--destaque-2); font-weight: 700; background: none; border: 0; padding: 0; cursor: pointer; }
+.hr-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.hr-lista li { display: flex; justify-content: space-between; gap: 10px; padding: 3px 4px; border-radius: 6px; }
+.hr-lista li.clic { cursor: pointer; }
+.hr-lista li.clic:hover { background: var(--hover); }
+.hr-lista small { white-space: nowrap; color: var(--texto-suave); }
+.hr-lista small.hr-feito { color: var(--st-ok-t); }
+.hr-lista small.hr-pendente { color: var(--st-at-t); font-weight: 600; }
+.cab-atend { flex-wrap: nowrap; }
+.cab-atend .fc-info { flex: 1 1 auto; min-width: 0; }
+.cab-atend .fc-info h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cab-atend .fc-linha { flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
+.cab-atend .fc-acoes, .cab-atend .fc-num, .cab-atend > .tag { flex: none; }
+@media (max-width: 760px) { .cab-atend { flex-wrap: wrap; } }

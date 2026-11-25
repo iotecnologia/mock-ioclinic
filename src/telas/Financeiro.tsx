@@ -1,7 +1,8 @@
 // Financeiro (só a médica): caixa do período (dia, semana, mês, trimestre, ano ou personalizado — o mesmo do
 // Painel e dos Relatórios) — recebido, despesas, saldo e a receber;
 // tabelas de receitas e despesas; lançar despesa e marcar como paga; recebido por forma de pagamento.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { CategoriaDespesa, Despesa, FormaPagamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
 import { Bloco, BotaoIcone, Contador, FiltroAtivo, Modal, Rolagem, TagStatus, TituloPagina, Vazio } from '../componentes/Comuns';
@@ -30,6 +31,15 @@ export function Financeiro() {
   const [p] = usePeriodo();
   const [todasRec, setTodasRec] = useState(false);
   const [lancar, setLancar] = useState(false);
+  // vindo da busca global: ?vista=despesas|receitas|areceber|fluxo abre filtrado; ?nova=1 abre "Nova despesa"
+  const [params, setParams] = useSearchParams();
+  useEffect(() => {
+    const v = params.get('vista'), nova = params.get('nova');
+    if (!v && !nova) return;
+    if (v && ['receitas', 'despesas', 'areceber', 'fluxo'].includes(v)) { setVista(v as Vista); setForma(null); setCat(null); }
+    if (nova === '1') setLancar(true);
+    setParams({}, { replace: true });
+  }, [params]);
   // filtros ligados pelos cards, pelas formas de pagamento e pelas categorias
   const [vista, setVista] = useState<Vista>('tudo');
   const [forma, setForma] = useState<FormaPagamento | null>(null);

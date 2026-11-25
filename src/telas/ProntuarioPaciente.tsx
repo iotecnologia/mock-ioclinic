@@ -1,9 +1,10 @@
-// Histórico do paciente (só a médica). O prontuário clínico completo fica no sistema de prontuário da Dra. (Life Up);
-// aqui fica o REGISTRO CURTO de cada atendimento (CID, observação, exames pedidos e retorno), os documentos com o logo
-// da Dra. (atestado, receita, pedido de exames, comparecimento) e o resumo (alergias, medicamentos, antecedentes).
-import { useState } from 'react';
+// Consultório · atendimento do paciente (só a médica). O prontuário clínico completo fica no sistema da Dra. (Life Up);
+// aqui fica o REGISTRO CURTO do atendimento (CID, observação, exames pedidos e retorno), os documentos com o logo
+// da Dra. (atestado, receita, pedido de exames, comparecimento) e os atendimentos/documentos anteriores.
+// Alergias, medicamentos e antecedentes NÃO ficam aqui: são do prontuário (Life Up).
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import type { Atendimento, Cid, Documento, ResumoClinico, TipoDocumento } from '../tipos/modelos';
+import type { Atendimento, Cid, Documento, TipoDocumento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
 import { Avatar, Bloco, BotaoIcone, Modal, TagStatus, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
@@ -17,8 +18,36 @@ import { NOME_DOC } from '../regras/documentos';
 import { idade } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
 
-const ANTECEDENTES = ['Hipertensão', 'Diabetes tipo 2', 'Dislipidemia', 'Tabagismo', 'Ex-tabagista', 'Obesidade', 'Sedentarismo', 'IAM prévio', 'AVC prévio', 'História familiar de DAC', 'Hipotireoidismo', 'Doença renal crônica'];
 const RETORNOS = [0, 30, 60, 90, 180, 365];
+const DOCS: { tipo: TipoDocumento; nome: string; icone: string }[] = [
+  { tipo: 'receita', nome: 'Receita', icone: 'lista' },
+  { tipo: 'atestado', nome: 'Atestado', icone: 'imprimir' },
+  { tipo: 'comparecimento', nome: 'Declaração de comparecimento', icone: 'relogio' },
+  { tipo: 'pedido_exames', nome: 'Pedido de exames', icone: 'exame' },
+];
+
+/** Botão "Emitir documento ▾": abre a lista dos documentos com o nome escrito (no lugar de 4 ícones soltos). */
+function MenuDocumentos({ escolher }: { escolher: (t: TipoDocumento) => void }) {
+  const [aberto, setAberto] = useState(false);
+  const caixa = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!aberto) return;
+    const fora = (e: MouseEvent) => { if (caixa.current && !caixa.current.contains(e.target as Node)) setAberto(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setAberto(false); };
+    document.addEventListener('mousedown', fora); window.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('mousedown', fora); window.removeEventListener('keydown', esc); };
+  }, [aberto]);
+  return (
+    <div className="menu-doc" ref={caixa}>
+      <button type="button" className="btn2" onClick={() => setAberto(!aberto)} aria-expanded={aberto}><Icone n="arquivo" /> Emitir documento <span className="seta-menu">▾</span></button>
+      {aberto && (
+        <div className="usu-pop" role="menu">
+          {DOCS.map((d) => <button type="button" role="menuitem" key={d.tipo} onClick={() => { setAberto(false); escolher(d.tipo); }}><Icone n={d.icone} /> {d.nome}</button>)}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type Form = { cid?: Cid; obs: string; exames: string[]; retornoDias: number };
 
@@ -43,7 +72,6 @@ export function ProntuarioPaciente() {
   const [finalId, setFinalId] = useState<string | null>(null);
   if (!p) return <Vazio>Paciente não encontrado.</Vazio>;
 
-  const resumo = base.resumos.find((r) => r.pacienteId === p.id);
   const docs = base.documentos.filter((d) => d.pacienteId === p.id).sort((x, y) => y.data.localeCompare(x.data));
   const finalizado: Atendimento | undefined = salvo ?? base.atendimentos.find((a) => a.id === finalId);
   const muda = (x: Partial<Form>) => setF((o) => ({ ...o, ...x }));
@@ -62,31 +90,25 @@ export function ProntuarioPaciente() {
 
   return (
     <>
-      <div className="ficha-cab bloco">
+      <div className="ficha-cab bloco cab-atend">
         <Avatar nome={p.nome} grande />
         <div className="fc-info">
           <h1>{p.nome}</h1>
           <div className="fc-linha">
             <span>{idade(p.nascimento, hj)} anos · {p.sexo === 'F' ? 'feminino' : p.sexo === 'M' ? 'masculino' : 'outro'}</span>
-            {resumo && resumo.alergias && resumo.alergias !== 'Nenhuma conhecida'
-              ? <span className="tag t-no" title="Alergia registrada">alergia: {resumo.alergias}</span>
-              : <span className="tag t-fim">sem alergias conhecidas</span>}
-            {resumo?.antecedentes.map((a) => <span key={a} className="tag t-in">{a}</span>)}
+            {p.telefone && <span className="mono">{p.telefone}</span>}
           </div>
         </div>
         {ag && serv && <div className="fc-num"><b className="mono">{ag.hora}</b><span>{serv.curto} · hoje</span></div>}
         {ag && <TagStatus s={ag.status} />}
         <div className="fc-acoes">
-          <BotaoIcone icone="arquivo" titulo="Abrir ficha e histórico completo" onClick={() => nav('/pacientes/' + p.id)} />
-          <BotaoIcone icone="imprimir" titulo="Atestado" onClick={() => setDoc('atestado')} />
-          <BotaoIcone icone="lista" titulo="Receita" onClick={() => setDoc('receita')} />
-          <BotaoIcone icone="exame" titulo="Pedido de exames" onClick={() => setDoc('pedido_exames')} />
-          <BotaoIcone icone="relogio" titulo="Declaração de comparecimento" onClick={() => setDoc('comparecimento')} />
+          <BotaoIcone icone="usuarios" titulo="Abrir a ficha do paciente (histórico, dados cadastrais)" onClick={() => nav('/pacientes/' + p.id)} />
+          <MenuDocumentos escolher={setDoc} />
         </div>
       </div>
 
       <div className="grade2 pront">
-        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag ? `Atendimento de hoje · ${serv?.nome}` : 'Registro avulso (sem agendamento)'}</>}
+        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag ? `Atendimento de hoje · ${serv?.nome}` : 'Novo registro'}</>}
           extra={finalizado && <span className="tag t-ok">finalizado</span>}>
           {finalizado ? (
             <div className="evol-lida">
@@ -102,7 +124,7 @@ export function ProntuarioPaciente() {
                 {!!finalizado.examesSolicitados?.length && <button type="button" className="btn2" onClick={() => setDoc('pedido_exames')}><Icone n="exame" /> Pedido de exames</button>}
                 <button type="button" className="btn2" onClick={() => setDoc('atestado')}><Icone n="imprimir" /> Atestado</button>
                 {!!finalizado.retornoDias && <button type="button" className="btn2 pri" onClick={() => setRetorno(true)}><Icone n="calendario" /> Agendar retorno ({finalizado.retornoDias} dias)</button>}
-                <button type="button" className="btn2" onClick={() => nav('/hoje')}><Icone n="inicio" /> Voltar para Hoje</button>
+                <button type="button" className="btn2" onClick={() => nav('/prontuario')}><Icone n="esq" /> Voltar para o Consultório</button>
               </div>
             </div>
           ) : (
@@ -130,7 +152,6 @@ export function ProntuarioPaciente() {
         </Bloco>
 
         <div className="pilha">
-          <ResumoBloco key={p.id + (resumo?.atualizadoEm ?? '')} pacienteId={p.id} resumo={resumo} salvar={acoes.salvarResumo} />
           <Bloco titulo={<><Icone n="relogio" /> Atendimentos anteriores</>} extra={anteriores.length > 3 && <button type="button" className="lk" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'ver menos' : `ver todas (${anteriores.length})`}</button>}>
             {anteriores.length === 0 ? <Vazio>Primeiro atendimento do paciente.</Vazio> : (
               <ul className="evols">
@@ -226,31 +247,5 @@ export function Reimprimir({ d, fechar }: { d: Documento; fechar: () => void }) 
       {imp && <Imprimir aoTerminar={() => setImp(false)}>{folha}</Imprimir>}
       {pdf && <BaixarPdf nome={nomeArquivo(NOME_DOC[d.tipo], pac?.nome, d.data)} aoTerminar={() => setPdf(false)}>{folha}</BaixarPdf>}
     </Modal>
-  );
-}
-
-/** Resumo clínico: edição pelo lápis; Salvar/Descartar ficam visíveis e desabilitados até editar. */
-function ResumoBloco({ pacienteId, resumo, salvar }: { pacienteId: string; resumo?: ResumoClinico; salvar: (r: ResumoClinico) => void }) {
-  const ini = { alergias: resumo?.alergias ?? 'Nenhuma conhecida', meds: (resumo?.medicamentos ?? []).join('\n'), ant: resumo?.antecedentes ?? [] };
-  const [ed, setEd] = useState(false);
-  const [r, setR] = useState(ini);
-  const ok = () => { salvar({ pacienteId, alergias: r.alergias.trim() || 'Nenhuma conhecida', medicamentos: r.meds.split('\n').map((x) => x.trim()).filter(Boolean), antecedentes: r.ant, atualizadoEm: hoje() }); setEd(false); };
-  return (
-    <Bloco titulo={<><Icone n="coracao" /> Resumo clínico</>} extra={
-      <div className="acoes-pagina">
-        <BotaoIcone icone="editar" titulo="Editar resumo clínico" cls="peq" onClick={() => setEd(true)} disabled={ed} />
-        <BotaoIcone icone="descartar" titulo="Descartar" cls="peq" onClick={() => { setR(ini); setEd(false); }} disabled={!ed} />
-        <BotaoIcone icone="salvar" titulo="Salvar" cls="peq" pri onClick={ok} disabled={!ed} />
-      </div>}>
-      <div className="resumo-cl">
-        <label>Alergias<input disabled={!ed} value={r.alergias} onChange={(e) => setR({ ...r, alergias: e.target.value })} /></label>
-        <label>Medicamentos em uso <small className="mut">(um por linha)</small><textarea disabled={!ed} rows={Math.max(2, r.meds.split('\n').length)} value={r.meds} onChange={(e) => setR({ ...r, meds: e.target.value })} placeholder="Nenhum" /></label>
-        <div className="lbl">Antecedentes</div>
-        <div className="chips-sel">
-          {(ed ? ANTECEDENTES : r.ant).map((a) => <button type="button" key={a} disabled={!ed} className={r.ant.includes(a) ? 'sel' : ''} onClick={() => setR({ ...r, ant: r.ant.includes(a) ? r.ant.filter((x) => x !== a) : [...r.ant, a] })}>{a}</button>)}
-          {!ed && !r.ant.length && <span className="mut peq">Nenhum registrado</span>}
-        </div>
-      </div>
-    </Bloco>
   );
 }

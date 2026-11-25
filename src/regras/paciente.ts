@@ -1,6 +1,6 @@
 // Regras do paciente: idade, busca e histórico (linha do tempo).
 import type { Agendamento, BaseClinica, Paciente, Perfil } from '../tipos/modelos';
-import { deIso, min } from '../util/datas';
+import { deIso, min, somaDias } from '../util/datas';
 import { digitos, semAcento } from '../util/formato';
 import { STATUS } from './agenda';
 
@@ -108,3 +108,47 @@ export function resumoPaciente(pacienteId: string, b: Pick<BaseClinica, 'agendam
   const proximo = ags.filter((a) => a.data >= hojeIso && ['agendado', 'confirmado', 'chegou'].includes(a.status)).sort((x, y) => x.data.localeCompare(y.data) || min(x.hora) - min(y.hora))[0];
   return { ultima, proximo, total: ags.filter((a) => a.status === 'atendido').length };
 }
+
+/** Exame pedido pela Dra. e se já foi feito (na clínica, depois do pedido). Exame de fora da clínica fica "fora". */
+export interface ExamePedido { nome: string; pedidoEm: string; situacao: 'feito' | 'agendado' | 'pendente' | 'fora'; data?: string; agId?: string }
+
+/**
+ * Exames pedidos nos atendimentos do paciente, do pedido mais recente para o mais antigo.
+ * Cruza com os agendamentos de exame da clínica feitos (ou marcados) a partir da data do pedido.
+ */
+export function examesPedidos(pacienteId: string, b: Pick<BaseClinica, 'agendamentos' | 'servicos' | 'atendimentos'>): ExamePedido[] {
+  const out: ExamePedido[] = [];
+  const usados = new Set<string>();
+  const ats = b.atendimentos.filter((a) => a.pacienteId === pacienteId && a.examesSolicitados?.length).sort((x, y) => y.data.localeCompare(x.data));
+  for (const at of ats) {
+    for (const nome of at.examesSolicitados!) {
+      const serv = b.servicos.find((s) => s.tipo === 'exame' && semAcento(s.nome) === semAcento(nome));
+      if (!serv) { out.push({ nome, pedidoEm: at.data, situacao: 'fora' }); continue; }
+      const ag = b.agendamentos
+        .filter((a) => a.pacienteId === pacienteId && a.servicoId === serv.id && a.data >= at.data && !usados.has(a.id) && !['cancelado', 'faltou'].includes(a.status))
+        .sort((x, y) => x.data.localeCompare(y.data))[0];
+      if (ag) usados.add(ag.id);
+      out.push({ nome: serv.nome, pedidoEm: at.data, situacao: !ag ? 'pendente' : ag.status === 'atendido' ? 'feito' : 'agendado', data: ag?.data, agId: ag?.id });
+    }
+  }
+  return out;
+}
+
+/**
+ * Retorno do paciente: até quando o retorno é sem custo (30 dias da última consulta atendida),
+ * quando a Dra. indicou voltar (retornoDias do último registro) e se já está marcado.
+ */
+export function situacaoRetorno(pacienteId: string, b: Pick<BaseClinica, 'agendamentos' | 'servicos' | 'atendimentos'>, hojeIso: string) {
+  const consultas = b.agendamentos
+    .filter((a) => a.pacienteId === pacienteId && a.status === 'atendido' && b.servicos.find((s) => s.id === a.servicoId)?.tipo === 'consulta')
+    .sort((x, y) => y.data.localeCompare(x.data));
+  const ultima = consultas[0];
+  const gratisAte = ultima ? somaDias(ultima.data, 30) : undefined;
+  const reg = b.atendimentos.filter((a) => a.pacienteId === pacienteId && a.retornoDias).sort((x, y) => y.data.localeCompare(x.data))[0];
+  const indicado = reg ? somaDias(reg.data, reg.retornoDias!) : undefined;
+  const marcado = b.agendamentos
+    .filter((a) => a.pacienteId === pacienteId && a.data >= hojeIso && ['agendado', 'confirmado'].includes(a.status) && ['retorno', 'consulta'].includes(b.servicos.find((s) => s.id === a.servicoId)?.tipo ?? ''))
+    .sort((x, y) => x.data.localeCompare(y.data))[0];
+  return { ultimaConsulta: ultima?.data, gratisAte, dentroDoPrazo: !!gratisAte && hojeIso <= gratisAte, indicado, marcado };
+}
+

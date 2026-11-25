@@ -92,9 +92,9 @@ export function Hoje() {
                 {p.situacao === 'pre' ? <span className="tag t-in" title="A recepção completa o cadastro quando o paciente chegar">pré-cadastro · aguardando chegada</span> : <>
                 <BotaoIcone icone="arquivo" titulo="Ver histórico do paciente" onClick={() => nav('/pacientes/' + p.id)} />
                 {prox.status !== 'em_atendimento'
-                  ? <BotaoIcone icone="play" titulo="Chamar e abrir o histórico clínico" pri onClick={() => { acoes.mudarStatus(prox.id, 'em_atendimento'); if (s.tipo !== 'exame') nav(`/prontuario/${p.id}?ag=${prox.id}`); }} />
+                  ? <BotaoIcone icone="play" titulo="Chamar e atender no consultório" pri onClick={() => { acoes.mudarStatus(prox.id, 'em_atendimento'); if (s.tipo !== 'exame') nav(`/prontuario/${p.id}?ag=${prox.id}`); }} />
                   : s.tipo !== 'exame'
-                    ? <BotaoIcone icone="estetoscopio" titulo="Abrir histórico clínico" pri onClick={() => nav(`/prontuario/${p.id}?ag=${prox.id}`)} />
+                    ? <BotaoIcone icone="estetoscopio" titulo="Atender no consultório" pri onClick={() => nav(`/prontuario/${p.id}?ag=${prox.id}`)} />
                     : <BotaoIcone icone="check" titulo="Finalizar exame" pri onClick={() => acoes.mudarStatus(prox.id, 'atendido')} />}
                 </>}
               </div>

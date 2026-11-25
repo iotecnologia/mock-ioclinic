@@ -1,7 +1,7 @@
 // Agenda: um lugar só para escolher a data — o calendário fixo à esquerda (com "Hoje" no cabeçalho).
 // À direita, a grade do dia (ou da semana), com "Dia | Semana" no canto da própria grade.
 // Topo só com o título e o "Novo agendamento". Horário livre é uma linha discreta ("+ Agendar" ao passar o mouse).
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Agendamento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
@@ -22,6 +22,8 @@ export function Agenda() {
   const hj = hoje();
   const data = params.get('data') ?? hj;
   const visao: Visao = params.get('visao') === 'semana' ? 'semana' : 'dia';
+  // vindo da busca global ("Agenda › Novo agendamento"): abre a janela e limpa o parâmetro
+  useEffect(() => { if (params.get('novo') === '1') { setNovo({ data }); const n = new URLSearchParams(params); n.delete('novo'); setParams(n, { replace: true }); } }, [params]);
   const ir = (d: string, v: Visao = visao) => setParams({ data: d, visao: v }, { replace: true });
   const [novo, setNovo] = useState<{ data?: string; hora?: string } | null>(null);
   const [detalhe, setDetalhe] = useState<Agendamento | null>(null);

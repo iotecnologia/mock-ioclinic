@@ -21,10 +21,10 @@ export function Pacientes() {
   const [params] = useSearchParams();
   const hj = hoje();
   const [t, setT] = useState(params.get('q') ?? '');
-  const [f, setF] = useState<Filtro>('todos');
+  const [f, setF] = useState<Filtro>(((['agendados', 'recall', 'lgpd'] as string[]).includes(params.get('f') ?? '') ? params.get('f') : 'todos') as Filtro);
   const [ordem, setOrdem] = useState<{ col: Coluna; asc: boolean }>({ col: 'nome', asc: true });
   const [pag, setPag] = useState(1);
-  useEffect(() => { const q = params.get('q'); if (q !== null) setT(q); }, [params]);
+  useEffect(() => { const q = params.get('q'); if (q !== null) setT(q); const x = params.get('f'); if (x && ['agendados', 'recall', 'lgpd'].includes(x)) setF(x as Filtro); }, [params]);
   useEffect(() => setPag(1), [t, f, ordem]);          // mudou o filtro ou a ordem: volta para a 1ª página
 
   const linhas = buscarPacientes(cadastrados(base.pacientes), t).map((p) => ({ p, r: resumoPaciente(p.id, base, hj) }));

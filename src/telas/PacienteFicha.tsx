@@ -11,7 +11,8 @@ import { FormPaciente, validar } from '../componentes/FormPaciente';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { DetalheAgendamento } from '../componentes/DetalheAgendamento';
 import { DetalheEvolucao, Reimprimir } from './ProntuarioPaciente';
-import { historico, idade, resumoPaciente, type ItemHistorico } from '../regras/paciente';
+import { examesPedidos, historico, idade, resumoPaciente, situacaoRetorno, type ItemHistorico } from '../regras/paciente';
+import { NOME_DOC } from '../regras/documentos';
 import { FORMAS } from '../componentes/Receber';
 import { br, hoje, nomeMes } from '../util/datas';
 import { linkWhats } from '../util/formato';
@@ -39,6 +40,11 @@ export function PacienteFicha() {
   const hj = hoje();
   const r = resumoPaciente(p.id, base, hj);
   const itens = historico(p.id, base, usuario!.perfil).filter((i) => filtro === 'tudo' || i.tipo === filtro);
+  // resumo do histórico: retorno, exames pedidos x feitos e documentos emitidos
+  const ret = situacaoRetorno(p.id, base, hj);
+  const exames = examesPedidos(p.id, base);
+  const pendentes = exames.filter((e) => e.situacao === 'pendente').length;
+  const docs = base.documentos.filter((d) => d.pacienteId === p.id).sort((x, y) => y.data.localeCompare(x.data));
   const agendar = params.get('agendar') === '1';
   const fecharAgendar = () => { params.delete('agendar'); setParams(params, { replace: true }); };
 
@@ -82,7 +88,7 @@ export function PacienteFicha() {
         <div className="fc-num"><b>{r.proximo ? br(r.proximo.data) : '—'}</b><span>{r.proximo ? 'próximo · ' + r.proximo.hora : 'sem agendamento'}</span></div>
         <div className="fc-acoes">
           <a className="btn2 ic zap" href={linkWhats(p.telefone, `Olá, ${p.nome.split(' ')[0]}! Aqui é da clínica da ${base.clinica.medica}.`)} target="_blank" rel="noreferrer" title="Conversar no WhatsApp" aria-label="Conversar no WhatsApp"><Icone n="zap" /></a>
-          {medica && <BotaoIcone icone="estetoscopio" titulo="Abrir histórico clínico" onClick={() => nav('/prontuario/' + p.id)} />}
+          {medica && <BotaoIcone icone="estetoscopio" titulo="Atender no consultório" onClick={() => nav('/prontuario/' + p.id)} />}
           <BotaoIcone icone="calendario" titulo="Agendar para este paciente" pri onClick={() => setParams({ agendar: '1' })} />
         </div>
       </div>
@@ -100,6 +106,45 @@ export function PacienteFicha() {
             <button type="button" className={filtro === 'pagamento' ? 'sel' : ''} onClick={() => setFiltro('pagamento')}>Pagamentos</button>
             {medica && <button type="button" className={filtro === 'clinico' ? 'sel' : ''} onClick={() => setFiltro('clinico')}>Clínico</button>}
           </div>}>
+          <div className="hist-resumo">
+            <div className="hr-card">
+              <div className="hr-tit"><Icone n="calendario" /> Retorno</div>
+              {ret.marcado ? <p>Marcado para <b>{br(ret.marcado.data)}</b> às {ret.marcado.hora}</p>
+                : ret.indicado ? <p>Indicado para <b>{br(ret.indicado)}</b> · <span className="mut">ainda não marcado</span></p>
+                : <p className="mut">Nenhum retorno indicado.</p>}
+              {ret.gratisAte && <p className={ret.dentroDoPrazo ? 'hr-ok' : 'mut'}>{ret.dentroDoPrazo ? `Retorno sem custo até ${br(ret.gratisAte)}` : `Prazo do retorno sem custo terminou em ${br(ret.gratisAte)}`}</p>}
+              {!ret.marcado && <button type="button" className="lk" onClick={() => setParams({ agendar: '1' })}>Agendar retorno</button>}
+            </div>
+            <div className="hr-card">
+              <div className="hr-tit"><Icone n="exame" /> Exames pedidos {pendentes > 0 && <span className="tag t-at">{pendentes} pendente{pendentes > 1 ? 's' : ''}</span>}</div>
+              {exames.length === 0 ? <p className="mut">Nenhum exame pedido.</p> : (
+                <ul className="hr-lista">
+                  {exames.slice(0, 4).map((e, k) => (
+                    <li key={k} className={e.agId ? 'clic' : ''} onClick={() => e.agId && setAberto({ data: e.data!, tipo: 'agendamento', titulo: e.nome, agId: e.agId })}>
+                      <span>{e.nome}</span>
+                      <small className={'hr-' + e.situacao}>{e.situacao === 'feito' ? `feito ${br(e.data!).slice(0, 5)}` : e.situacao === 'agendado' ? `marcado ${br(e.data!).slice(0, 5)}` : e.situacao === 'fora' ? 'fora da clínica' : 'não feito'}</small>
+                    </li>
+                  ))}
+                  {exames.length > 4 && <li className="mut peq">+ {exames.length - 4} na linha do tempo</li>}
+                </ul>
+              )}
+            </div>
+            {medica && (
+              <div className="hr-card">
+                <div className="hr-tit"><Icone n="arquivo" /> Documentos emitidos</div>
+                {docs.length === 0 ? <p className="mut">Nenhum documento emitido.</p> : (
+                  <ul className="hr-lista">
+                    {docs.slice(0, 4).map((d) => (
+                      <li key={d.id} className="clic" title="Ver e reimprimir" onClick={() => setAberto({ data: d.data, tipo: 'documento', titulo: d.titulo, docId: d.id })}>
+                        <span>{NOME_DOC[d.tipo]}</span><small>{br(d.data).slice(0, 5)} · reimprimir</small>
+                      </li>
+                    ))}
+                    {docs.length > 4 && <li className="mut peq">+ {docs.length - 4} na linha do tempo</li>}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
           {!medica && <div className="aviso-lgpd"><Icone n="escudo" /> Conteúdo clínico (evolução, diagnóstico, conduta) visível só para a médica — LGPD, dado sensível de saúde.</div>}
           {grupos.length === 0 ? <Vazio>Nada para mostrar neste filtro.</Vazio> : (
             <div className="timeline">
