@@ -310,3 +310,23 @@ button.usuario:hover { background: var(--gelo); }
 table.tab th { font-size: 11px; }
 table.tab td { font-size: 13px; }
 @media (max-width: 1399px) { .grade2.fin table.tab th { font-size: 10px; } .grade2.fin table.tab td { font-size: 12px; } }
+
+/* Busca global do topo (25/11): seletor de onde buscar + resultado em tabela simples */
+.busca-geral { display: flex; align-items: center; max-width: 560px; }
+.busca-geral .bg-escopo { height: 38px; width: auto; flex: none; padding: 0 28px 0 12px; border: 1px solid var(--linha); border-right: 0; border-radius: 10px 0 0 10px; background-color: var(--gelo); font-size: 12.5px; font-weight: 600; color: var(--texto); cursor: pointer; }
+.busca-geral .bg-campo { position: relative; flex: 1; min-width: 0; }
+.busca-geral .bg-campo > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--texto-suave); width: 16px; height: 16px; }
+.busca-geral .bg-campo input { width: 100%; height: 38px; padding-left: 36px; border-color: var(--linha); border-radius: 0 10px 10px 0; }
+.busca-geral > svg { display: none; }
+.busca-res { min-width: 560px; }
+.bg-tab { width: 100%; border-collapse: collapse; font-size: 13px; }
+.bg-tab th { text-align: left; font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .4px; padding: 8px 12px; background: var(--th-fundo); border-bottom: 1px solid var(--linha); }
+.bg-tab td { padding: 8px 12px; border-bottom: 1px solid var(--linha); white-space: nowrap; cursor: pointer; }
+.bg-tab td.bg-nome { white-space: normal; font-weight: 600; }
+.bg-tab tr:last-child td { border-bottom: 0; }
+.bg-tab tr.sel td { background: var(--hover); }
+.busca-res .bg-todos { display: block; width: 100%; padding: 10px 12px; border: 0; border-top: 1px solid var(--linha); background: var(--painel); color: var(--destaque-2); font-weight: 700; font-size: 12.5px; text-align: left; cursor: pointer; }
+.busca-res .bg-todos:hover { background: var(--hover); }
+.busca-res .bg-mais { padding: 8px 12px; font-size: 12px; border-top: 1px solid var(--linha); }
+.busca-res .vazio { padding: 14px; font-size: 13px; color: var(--texto-suave); }
+@media (max-width: 900px) { .busca-res { min-width: 0; } .bg-tab th:nth-child(n+3), .bg-tab td:nth-child(n+3) { display: none; } }

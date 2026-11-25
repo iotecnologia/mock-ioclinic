@@ -659,3 +659,28 @@ button.gd-livre:hover .gd-mais, button.gd-livre:focus-visible .gd-mais { opacity
 .hora-livre:hover { background: var(--livre); color: #fff; filter: none; border-style: solid; }
 .per-livres.mut { background: none; border: 1px dashed var(--linha); color: var(--texto-suave); }
 @media (max-width: 760px) { .linha-limpa { grid-template-columns: 44px 3px minmax(0, 1fr) auto; } }
+/* Pacientes (25/11): 20 por página, ordenar pelo cabeçalho, cabeçalho fixo, nada quebra linha */
+.pac-lista { display: flex; flex-direction: column; overflow: hidden; }
+.pac-rolagem { overflow: auto; flex: 1 1 auto; min-height: 0; }
+.pac-tab { table-layout: fixed; min-width: 860px; }
+.pac-tab col.c-idade { width: 72px; } .pac-tab col.c-cel { width: 150px; } .pac-tab col.c-cpf { width: 130px; } .pac-tab col.c-data { width: 120px; } .pac-tab col.c-prox { width: 150px; }
+.pac-tab thead th { position: sticky; top: 0; z-index: 2; white-space: nowrap; }
+.pac-tab td.nw { white-space: nowrap; }
+.pac-tab .num { text-align: right; }
+.pac-tab td { padding-top: 9px; padding-bottom: 9px; }
+.pac-tab .cel-pac > div { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th.ord { padding: 0 !important; }
+th.ord button { width: 100%; display: flex; align-items: center; gap: 4px; padding: 11px 18px; border: 0; background: none; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; text-align: left; }
+th.ord.num button { justify-content: flex-end; }
+th.ord button:hover { color: var(--texto); }
+th.ord .seta { font-size: 9px; color: var(--destaque-2); min-width: 9px; }
+.paginacao { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; border-top: 1px solid var(--linha); font-size: 12.5px; flex: none; }
+.pg-nav { display: flex; align-items: center; gap: 2px; }
+.pg-item { display: inline-flex; align-items: center; gap: 2px; }
+.pg-num { min-width: 30px; height: 30px; padding: 0 6px; border: 1px solid transparent; border-radius: 8px; background: none; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--texto); cursor: pointer; }
+.pg-num:hover { background: var(--hover); }
+.pg-num.sel { border-color: var(--destaque-2); color: var(--destaque-2); background: var(--gelo); }
+@media (min-width: 1001px) {
+  .conteudo:has(.pac-lista) { padding-bottom: 12px; }
+  .pac-lista { height: calc(100vh - 60px - 28px - 24px - 69px - 54px - 12px); min-height: 320px; }
+}

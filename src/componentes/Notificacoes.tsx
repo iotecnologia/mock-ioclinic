@@ -120,12 +120,12 @@ export function ModalLembretes({ dia, fechar }: { dia: string; fechar: () => voi
 }
 
 /** Despesa vencida ou vencendo hoje: ver e confirmar o pagamento ali mesmo. */
-function ModalDespesa({ id, fechar }: { id: string; fechar: () => void }) {
+export function ModalDespesa({ id, fechar }: { id: string; fechar: () => void }) {
   const { base, acoes } = useDados();
   const d = base.despesas.find((x) => x.id === id);
   if (!d) return null;
   return (
-    <Modal titulo="Despesa a pagar" fechar={fechar}>
+    <Modal titulo={d.status === "paga" ? "Despesa paga" : "Despesa a pagar"} fechar={fechar}>
       <div className="resumo-ag">
         <div><span>Descrição</span>{d.descricao}</div>
         <div><span>Categoria</span>{d.categoria}</div>
