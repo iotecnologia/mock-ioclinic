@@ -60,6 +60,8 @@ export function buscarPacientes(lista: Paciente[], termo: string): Paciente[] {
     .sort((a, b) => a.nome.localeCompare(b.nome));
 }
 
+const FORMA_TXT: Record<string, string> = { pix: 'Pix', dinheiro: 'Dinheiro', cartao_credito: 'Cartão de crédito', cartao_debito: 'Cartão de débito' };
+
 export interface ItemHistorico {
   data: string; hora?: string;
   tipo: 'agendamento' | 'pagamento' | 'clinico' | 'documento' | 'cadastro';
@@ -79,10 +81,12 @@ export function historico(pacienteId: string, b: BaseHist, perfil: Perfil): Item
   const pac = b.pacientes.find((p) => p.id === pacienteId);
   for (const a of b.agendamentos.filter((x) => x.pacienteId === pacienteId)) {
     const s = b.servicos.find((x) => x.id === a.servicoId);
-    itens.push({ data: a.data, hora: a.hora, tipo: 'agendamento', titulo: s?.nome ?? a.servicoId, status: STATUS[a.status].nome, statusCls: STATUS[a.status].cls, agId: a.id });
-    if (a.pagamento?.status === 'pago') {
-      itens.push({ data: a.pagamento.pagoEm ?? a.data, hora: a.hora, tipo: 'pagamento', titulo: 'Pagamento recebido', detalhe: `${s?.curto ?? ''} · ${a.pagamento.forma ?? ''}`, status: 'pago', agId: a.id });
-    }
+    // o pagamento vai NA MESMA LINHA do atendimento (não vira um evento separado)
+    const pg = a.pagamento;
+    const pago = pg?.status === 'pago' ? `pago R$ ${pg.valor.toFixed(2).replace('.', ',')}${pg.forma ? ' · ' + (FORMA_TXT[pg.forma] ?? pg.forma) : ''}`
+      : pg?.status === 'pendente' && ['chegou', 'em_atendimento', 'atendido'].includes(a.status) ? `a receber R$ ${pg.valor.toFixed(2).replace('.', ',')}`
+      : pg?.status === 'isento' ? 'retorno sem custo' : undefined;
+    itens.push({ data: a.data, hora: a.hora, tipo: 'agendamento', titulo: s?.nome ?? a.servicoId, detalhe: pago, status: STATUS[a.status].nome, statusCls: STATUS[a.status].cls, agId: a.id });
     if (perfil === 'medica') {
       const at = b.atendimentos.find((x) => x.agendamentoId === a.id);
       if (at) {
@@ -98,6 +102,7 @@ export function historico(pacienteId: string, b: BaseHist, perfil: Perfil): Item
   }
   if (pac) itens.push({ data: pac.criadoEm, tipo: 'cadastro', titulo: 'Cadastro do paciente', detalhe: pac.consentimentoLgpd ? 'Termo LGPD aceito' : 'Termo LGPD pendente' });
   const ordemTipo = { clinico: 0, documento: 1, pagamento: 2, agendamento: 3, cadastro: 4 };
+
   return itens.sort((x, y) => y.data.localeCompare(x.data) || min(y.hora ?? '00:00') - min(x.hora ?? '00:00') || ordemTipo[x.tipo] - ordemTipo[y.tipo]);
 }
 

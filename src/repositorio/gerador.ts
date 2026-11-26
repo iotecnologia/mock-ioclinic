@@ -192,6 +192,10 @@ export function gerarBase(hojeIso: string, agoraMin: number, semente = 20261024)
             pa: `${s.ent(11, 16)}${s.um(['0', '5'])}/${s.ent(7, 10)}0`, fc: s.ent(58, 96),
             pesoKg: pesos[pac.id] + s.ent(-2, 2), alturaCm: alturas[pac.id], cid, cidDescricao, conduta: s.um(CONDUTAS),
           });
+          // a observação tem que bater com os exames pedidos (antes dizia "Solicitado Holter" sem exame na lista)
+          const at = atendimentos[atendimentos.length - 1];
+          if (at.examesSolicitados?.length) at.conduta = `Solicitado ${at.examesSolicitados.join(' e ')}.${at.retornoDias ? ' Retorno com resultado.' : ''}`;
+          else if (/solicitad/i.test(at.conduta)) at.conduta = at.retornoDias ? 'Mantida medicação. Retorno em 30 dias.' : 'Orientação de dieta e atividade física. Reavaliar em 6 meses.';
         }
         t = fimMin;
       }

@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDados } from '../componentes/Dados';
 import { Avatar, TituloPagina, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
+import { PacienteModal } from '../componentes/PacienteModal';
 import { buscarPacientes, cadastrados, idade, resumoPaciente } from '../regras/paciente';
 import { br, hoje, somaDias } from '../util/datas';
 import { cpfOculto } from '../util/formato';
@@ -18,14 +19,17 @@ const POR_PAGINA = 20;
 export function Pacientes() {
   const { base } = useDados();
   const nav = useNavigate();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
+  const [novo, setNovo] = useState(false);
   const hj = hoje();
   const [t, setT] = useState(params.get('q') ?? '');
   const [f, setF] = useState<Filtro>(((['agendados', 'recall', 'lgpd'] as string[]).includes(params.get('f') ?? '') ? params.get('f') : 'todos') as Filtro);
   const [ordem, setOrdem] = useState<{ col: Coluna; asc: boolean }>({ col: 'nome', asc: true });
   const [pag, setPag] = useState(1);
   useEffect(() => { const q = params.get('q'); if (q !== null) setT(q); const x = params.get('f'); if (x && ['agendados', 'recall', 'lgpd'].includes(x)) setF(x as Filtro); }, [params]);
-  useEffect(() => setPag(1), [t, f, ordem]);          // mudou o filtro ou a ordem: volta para a 1ª página
+  useEffect(() => setPag(1), [t, f, ordem]);
+  // vindo da busca global ou do endereço antigo /pacientes/novo: abre o pop-up de cadastro
+  useEffect(() => { if (params.get('novo') === '1') { setNovo(true); const n = new URLSearchParams(params); n.delete('novo'); setParams(n, { replace: true }); } }, [params]);          // mudou o filtro ou a ordem: volta para a 1ª página
 
   const linhas = buscarPacientes(cadastrados(base.pacientes), t).map((p) => ({ p, r: resumoPaciente(p.id, base, hj) }));
   const umAno = somaDias(hj, -365);
@@ -59,7 +63,7 @@ export function Pacientes() {
   return (
     <>
       <TituloPagina titulo="Pacientes" sub={`${cadastrados(base.pacientes).length} pacientes cadastrados`}>
-        <button type="button" className="btn2 pri" onClick={() => nav('/pacientes/novo')}><Icone n="pacienteMais" /> Novo paciente</button>
+        <button type="button" className="btn2 pri" onClick={() => setNovo(true)}><Icone n="pacienteMais" /> Novo paciente</button>
       </TituloPagina>
       <div className="barra">
         <div className="f-busca"><Icone n="busca" /><input type="text" value={t} onChange={(e) => setT(e.target.value)} placeholder="Filtrar a lista por nome, CPF ou telefone" aria-label="Filtrar pacientes" /></div>
@@ -112,6 +116,7 @@ export function Pacientes() {
           </>
         )}
       </div>
+      {novo && <PacienteModal fechar={() => setNovo(false)} />}
     </>
   );
 }

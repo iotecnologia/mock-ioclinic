@@ -14,7 +14,7 @@ export const DESTINOS: Destino[] = [
   { id: 'agenda-novo', caminho: ['Agenda', 'Novo agendamento'], rota: '/agenda?novo=1', desc: 'Marcar consulta, retorno ou exame', palavras: 'agendar marcar novo agendamento consulta exame retorno encaixe', perfis: T },
   { id: 'agenda-semana', caminho: ['Agenda', 'Semana'], rota: '/agenda?visao=semana', desc: 'Visão da semana inteira', palavras: 'semana semanal grade', perfis: T },
   { id: 'pacientes', caminho: ['Pacientes'], rota: '/pacientes', desc: 'Lista de pacientes cadastrados', palavras: 'pacientes cadastro lista clientes ficha', perfis: T },
-  { id: 'pacientes-novo', caminho: ['Pacientes', 'Novo paciente'], rota: '/pacientes/novo', desc: 'Cadastrar um paciente', palavras: 'novo paciente cadastrar cadastro incluir', perfis: T },
+  { id: 'pacientes-novo', caminho: ['Pacientes', 'Novo paciente'], rota: '/pacientes?novo=1', desc: 'Cadastrar um paciente', palavras: 'novo paciente cadastrar cadastro incluir', perfis: T },
   { id: 'pacientes-recall', caminho: ['Pacientes', 'Revisão anual'], rota: '/pacientes?f=recall', desc: 'Sem consulta há mais de 12 meses', palavras: 'revisao anual recall retorno chamar 12 meses', perfis: T },
   { id: 'pacientes-lgpd', caminho: ['Pacientes', 'Termo LGPD pendente'], rota: '/pacientes?f=lgpd', desc: 'Pacientes sem o termo aceito', palavras: 'lgpd termo consentimento pendente', perfis: T },
   { id: 'consultorio', caminho: ['Consultório'], rota: '/prontuario', desc: 'Pacientes de hoje: registrar, emitir documentos e finalizar', palavras: 'consultorio atender atendimento registro cid finalizar historico prontuario', perfis: M },

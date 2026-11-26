@@ -83,7 +83,7 @@ export function LinhaAgendamento({ ag, compacta }: { ag: Agendamento; compacta?:
 type Rascunho = Omit<Paciente, 'id' | 'criadoEm'> & { id?: string };
 
 /** Paciente pré-cadastrado chegou: a recepção completa o cadastro (CPF, nascimento, endereço, LGPD) e só então ele vira paciente. */
-function CompletarCadastro({ pac, agId, fechar }: { pac: Paciente; agId: string; fechar: () => void }) {
+export function CompletarCadastro({ pac, agId, fechar }: { pac: Paciente; agId: string; fechar: () => void }) {
   const { base, acoes } = useDados();
   const [r, setR] = useState<Rascunho>({ ...pac, sexo: 'F' });
   const [erros, setErros] = useState<Record<string, string>>({});

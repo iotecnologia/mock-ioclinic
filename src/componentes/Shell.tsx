@@ -18,7 +18,7 @@ import { useSessao } from '../acesso/Sessao';
 import { EM_BREVE, GRUPOS, PAGINAS } from '../acesso/paginas';
 
 const NOMES_ROTA: Record<string, string> = { novo: 'Novo paciente' };
-const SUB_PADRAO: Record<string, string> = { pacientes: 'Ficha do paciente', prontuario: 'Paciente' };
+const SUB_PADRAO: Record<string, string> = { pacientes: 'Ficha', prontuario: 'Atendimento' };
 
 export function Shell() {
   const s = useSessao();

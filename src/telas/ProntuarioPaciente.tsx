@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { Atendimento, Cid, Documento, TipoDocumento } from '../tipos/modelos';
 import { useDados } from '../componentes/Dados';
-import { Avatar, Bloco, BotaoIcone, Modal, TagStatus, Vazio } from '../componentes/Comuns';
+import { Avatar, Bloco, Modal, TagStatus, Vazio } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { CidBusca } from '../componentes/CidBusca';
 import { ExameBusca } from '../componentes/Buscas';
@@ -54,7 +54,7 @@ type Form = { cid?: Cid; obs: string; exames: string[]; retornoDias: number };
 export function ProntuarioPaciente() {
   const { id } = useParams();
   const [params] = useSearchParams();
-  const { base, acoes } = useDados();
+  const { base } = useDados();
   const nav = useNavigate();
   const hj = hoje();
   const p = base.pacientes.find((x) => x.id === id);
@@ -63,30 +63,18 @@ export function ProntuarioPaciente() {
   const serv = ag && base.servicos.find((s) => s.id === ag.servicoId);
   const anteriores = base.atendimentos.filter((a) => a.pacienteId === id && a.agendamentoId !== agId).sort((x, y) => y.data.localeCompare(x.data));
   const salvo = base.atendimentos.find((a) => agId && a.agendamentoId === agId);
-  const [f, setF] = useState<Form>(() => ({ obs: '', exames: [], retornoDias: 30 }));
   const [doc, setDoc] = useState<TipoDocumento | null>(null);
+  const [registrar, setRegistrar] = useState(false);
   const [retorno, setRetorno] = useState(false);
   const [verTodas, setVerTodas] = useState(false);
   const [reimp, setReimp] = useState<Documento | null>(null);
-  const [evol, setEvol] = useState<Atendimento | null>(null);   // evolução anterior aberta
+  const [evol, setEvol] = useState<Atendimento | null>(null);   // atendimento anterior aberto
   const [finalId, setFinalId] = useState<string | null>(null);
   if (!p) return <Vazio>Paciente não encontrado.</Vazio>;
 
   const docs = base.documentos.filter((d) => d.pacienteId === p.id).sort((x, y) => y.data.localeCompare(x.data));
   const finalizado: Atendimento | undefined = salvo ?? base.atendimentos.find((a) => a.id === finalId);
-  const muda = (x: Partial<Form>) => setF((o) => ({ ...o, ...x }));
-  const exClinica = base.servicos.filter((s) => s.tipo === 'exame').map((s) => s.nome);
-  const cidTxt = finalizado?.cid ? `${finalizado.cid} · ${finalizado.cidDescricao}` : f.cid ? `${f.cid.codigo} · ${f.cid.descricao}` : undefined;
-
-  // registro curto: nada é obrigatório (o clínico completo fica no prontuário da Dra.)
-  const finalizar = () => {
-    const novo = acoes.finalizarAtendimento({
-      agendamentoId: agId ?? 'avulso-' + Date.now(), pacienteId: p.id, data: hj,
-      queixa: '', cid: f.cid?.codigo, cidDescricao: f.cid?.descricao,
-      conduta: f.obs.trim(), examesSolicitados: f.exames, retornoDias: f.retornoDias || undefined,
-    });
-    setFinalId(novo.id);
-  };
+  const cidTxt = finalizado?.cid ? `${finalizado.cid} · ${finalizado.cidDescricao}` : undefined;
 
   return (
     <>
@@ -99,71 +87,46 @@ export function ProntuarioPaciente() {
             {p.telefone && <span className="mono">{p.telefone}</span>}
           </div>
         </div>
-        {ag && serv && <div className="fc-num"><b className="mono">{ag.hora}</b><span>{serv.curto} · hoje</span></div>}
+        {ag && serv && <div className="fc-num"><b className="mono">{ag.hora}</b><span>{serv.curto} · {ag.data === hj ? 'hoje' : br(ag.data)}</span></div>}
         {ag && <TagStatus s={ag.status} />}
         <div className="fc-acoes">
-          <BotaoIcone icone="usuarios" titulo="Abrir a ficha do paciente (histórico, dados cadastrais)" onClick={() => nav('/pacientes/' + p.id)} />
+          <button type="button" className="btn2" onClick={() => nav('/pacientes/' + p.id)}><Icone n="usuarios" /> Ficha</button>
           <MenuDocumentos escolher={setDoc} />
+          {!finalizado && <button type="button" className="btn2 pri" onClick={() => setRegistrar(true)}><Icone n="estetoscopio" /> Registrar atendimento</button>}
+          {finalizado?.retornoDias && <button type="button" className="btn2 pri" onClick={() => setRetorno(true)}><Icone n="calendario" /> Agendar retorno</button>}
         </div>
       </div>
 
       <div className="grade2 pront">
-        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag ? `Atendimento de hoje · ${serv?.nome}` : 'Novo registro'}</>}
-          extra={finalizado && <span className="tag t-ok">finalizado</span>}>
+        <Bloco titulo={<><Icone n="estetoscopio" /> {finalizado ? `Atendimento de ${br(finalizado.data)}` : ag && serv ? `Atendimento de hoje · ${serv.nome}` : 'Atendimento sem agendamento'}</>}
+          extra={finalizado ? <span className="tag t-ok">finalizado</span> : <span className="tag t-at">a registrar</span>}>
           {finalizado ? (
             <div className="evol-lida">
               <dl>
-                {finalizado.cid && <><dt>Hipótese diagnóstica</dt><dd><span className="mono">{finalizado.cid}</span> · {finalizado.cidDescricao}</dd></>}
-                {finalizado.conduta && <><dt>Observação</dt><dd>{finalizado.conduta}</dd></>}
-                {!!finalizado.examesSolicitados?.length && <><dt>Exames solicitados</dt><dd>{finalizado.examesSolicitados.join(' · ')}</dd></>}
-                {!!finalizado.retornoDias && <><dt>Retorno</dt><dd>em {finalizado.retornoDias} dias</dd></>}
+                <dt>Hipótese diagnóstica</dt><dd>{finalizado.cid ? <><span className="mono">{finalizado.cid}</span> · {finalizado.cidDescricao}</> : <span className="mut">—</span>}</dd>
+                <dt>Observação</dt><dd>{finalizado.conduta || <span className="mut">—</span>}</dd>
+                <dt>Exames solicitados</dt><dd>{finalizado.examesSolicitados?.length ? finalizado.examesSolicitados.join(' · ') : <span className="mut">nenhum</span>}</dd>
+                <dt>Retorno</dt><dd>{finalizado.retornoDias ? `em ${finalizado.retornoDias} dias (${br(somaDias(finalizado.data, finalizado.retornoDias))})` : <span className="mut">sem retorno marcado</span>}</dd>
               </dl>
-              <div className="pos-atend">
-                <span>Próximos passos:</span>
-                <button type="button" className="btn2" onClick={() => setDoc('receita')}><Icone n="lista" /> Receita</button>
-                {!!finalizado.examesSolicitados?.length && <button type="button" className="btn2" onClick={() => setDoc('pedido_exames')}><Icone n="exame" /> Pedido de exames</button>}
-                <button type="button" className="btn2" onClick={() => setDoc('atestado')}><Icone n="imprimir" /> Atestado</button>
-                {!!finalizado.retornoDias && <button type="button" className="btn2 pri" onClick={() => setRetorno(true)}><Icone n="calendario" /> Agendar retorno ({finalizado.retornoDias} dias)</button>}
-                <button type="button" className="btn2" onClick={() => nav('/prontuario')}><Icone n="esq" /> Voltar para o Consultório</button>
-              </div>
             </div>
           ) : (
-            <div className="form-pac form-atend">
-              <section>
-                <label>Hipótese diagnóstica (CID-10)<CidBusca valor={f.cid} aoEscolher={(c) => muda({ cid: c })} /></label>
-                <label>Observação<textarea rows={3} value={f.obs} onChange={(e) => muda({ obs: e.target.value })} placeholder="Resumo curto do atendimento (o registro clínico completo fica no prontuário)" /></label>
-              </section>
-              <section>
-                <h4>Exames solicitados</h4>
-                <div className="chips-sel">
-                  {exClinica.map((x) => <button type="button" key={x} className={f.exames.includes(x) ? 'sel' : ''} onClick={() => muda({ exames: f.exames.includes(x) ? f.exames.filter((y) => y !== x) : [...f.exames, x] })}>{x}</button>)}
-                </div>
-                <ExameBusca escolhidos={f.exames.filter((x) => !exClinica.includes(x))} mudar={(l) => muda({ exames: [...f.exames.filter((x) => exClinica.includes(x)), ...l] })} />
-                <div className="g g3 linha-ret">
-                  <label>Retorno<select value={f.retornoDias} onChange={(e) => muda({ retornoDias: Number(e.target.value) })}>{RETORNOS.map((d) => <option key={d} value={d}>{d === 0 ? 'Sem retorno marcado' : d === 365 ? 'Em 1 ano' : `Em ${d} dias`}</option>)}</select></label>
-                </div>
-              </section>
-              <div className="rodape-modal">
-                <span className="mut peq"><Icone n="escudo" /> Visível só para a médica · registro com data e autoria</span>
-                <button type="button" className="btn2 pri" onClick={finalizar}><Icone n="check" /> Finalizar atendimento</button>
-              </div>
+            <div className="a-registrar">
+              <p>O atendimento ainda não foi registrado.</p>
+              <p className="mut peq">Clique em <b>Registrar atendimento</b> para informar o CID, a observação, os exames pedidos e o retorno. O prontuário completo continua no sistema da Dra.</p>
             </div>
           )}
         </Bloco>
 
         <div className="pilha">
-          <Bloco titulo={<><Icone n="relogio" /> Atendimentos anteriores</>} extra={anteriores.length > 3 && <button type="button" className="lk" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'ver menos' : `ver todas (${anteriores.length})`}</button>}>
+          <Bloco titulo={<><Icone n="relogio" /> Atendimentos anteriores</>} extra={anteriores.length > 3 && <button type="button" className="lk" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'ver menos' : `ver todos (${anteriores.length})`}</button>}>
             {anteriores.length === 0 ? <Vazio>Primeiro atendimento do paciente.</Vazio> : (
               <ul className="evols">
-                {(verTodas ? anteriores : anteriores.slice(0, 3)).map((a) => {
-                  return (
-                    <li key={a.id} className="clic" role="button" tabIndex={0} title="Ver o atendimento" onClick={() => setEvol(a)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setEvol(a)}>
-                      <div className="ev-cab"><b className="mono">{br(a.data)}</b>{a.cid && <span>{a.cid} · {a.cidDescricao}</span>}</div>
-                      {a.conduta && <p>{a.conduta}</p>}
-                      {!!a.examesSolicitados?.length && <p className="mut">Exames: {a.examesSolicitados.join(' · ')}</p>}
-                    </li>
-                  );
-                })}
+                {(verTodas ? anteriores : anteriores.slice(0, 3)).map((a) => (
+                  <li key={a.id} className="clic" role="button" tabIndex={0} title="Ver o atendimento" onClick={() => setEvol(a)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setEvol(a)}>
+                    <div className="ev-cab"><b className="mono">{br(a.data)}</b>{a.cid && <span>{a.cid} · {a.cidDescricao}</span>}</div>
+                    {a.conduta && <p>{a.conduta}</p>}
+                  </li>
+                ))}
               </ul>
             )}
           </Bloco>
@@ -177,11 +140,52 @@ export function ProntuarioPaciente() {
         </div>
       </div>
 
-      {doc && <EmitirDocumento paciente={p} tipoInicial={doc} cid={cidTxt} exames={finalizado?.examesSolicitados ?? f.exames} hora={ag?.hora} fechar={() => setDoc(null)} />}
+      {registrar && <RegistrarAtendimento pacienteId={p.id} agId={agId} fechar={() => setRegistrar(false)} salvo={(novoId) => { setFinalId(novoId); setRegistrar(false); }} />}
+      {doc && <EmitirDocumento paciente={p} tipoInicial={doc} cid={cidTxt} exames={finalizado?.examesSolicitados ?? []} hora={ag?.hora} fechar={() => setDoc(null)} />}
       {retorno && finalizado?.retornoDias && <NovoAgendamento pacienteId={p.id} servicoId={finalizado.retornoDias <= 30 ? 'retorno' : 'consulta'} data={somaDias(hj, finalizado.retornoDias)} fechar={() => setRetorno(false)} />}
       {reimp && <Reimprimir d={reimp} fechar={() => setReimp(null)} />}
       {evol && !reimp && <DetalheEvolucao a={evol} docs={docs.filter((d) => d.data === evol.data)} abrirDoc={setReimp} fechar={() => setEvol(null)} />}
     </>
+  );
+}
+
+/** POP-UP "Registrar atendimento": CID, observação, exames pedidos e retorno. Nada é obrigatório (o clínico fica no Life Up). */
+function RegistrarAtendimento({ pacienteId, agId, fechar, salvo }: { pacienteId: string; agId?: string; fechar: () => void; salvo: (id: string) => void }) {
+  const { base, acoes } = useDados();
+  const [f, setF] = useState<Form>(() => ({ obs: '', exames: [], retornoDias: 30 }));
+  const muda = (x: Partial<Form>) => setF((o) => ({ ...o, ...x }));
+  const exClinica = base.servicos.filter((s) => s.tipo === 'exame').map((s) => s.nome);
+  const finalizar = () => {
+    const novo = acoes.finalizarAtendimento({
+      agendamentoId: agId ?? 'avulso-' + Date.now(), pacienteId, data: hoje(),
+      queixa: '', cid: f.cid?.codigo, cidDescricao: f.cid?.descricao,
+      conduta: f.obs.trim(), examesSolicitados: f.exames, retornoDias: f.retornoDias || undefined,
+    });
+    salvo(novo.id);
+  };
+  return (
+    <Modal titulo="Registrar atendimento" fechar={fechar} largo>
+      <div className="form-pac form-atend">
+        <section>
+          <label>Hipótese diagnóstica (CID-10)<CidBusca valor={f.cid} aoEscolher={(c) => muda({ cid: c })} /></label>
+          <label>Observação<textarea rows={3} value={f.obs} onChange={(e) => muda({ obs: e.target.value })} placeholder="Resumo curto do atendimento (o registro clínico completo fica no prontuário)" /></label>
+        </section>
+        <section>
+          <h4>Exames solicitados</h4>
+          <div className="chips-sel">
+            {exClinica.map((x) => <button type="button" key={x} className={f.exames.includes(x) ? 'sel' : ''} onClick={() => muda({ exames: f.exames.includes(x) ? f.exames.filter((y) => y !== x) : [...f.exames, x] })}>{x}</button>)}
+          </div>
+          <ExameBusca escolhidos={f.exames.filter((x) => !exClinica.includes(x))} mudar={(l) => muda({ exames: [...f.exames.filter((x) => exClinica.includes(x)), ...l] })} />
+          <div className="g g3 linha-ret">
+            <label>Retorno<select value={f.retornoDias} onChange={(e) => muda({ retornoDias: Number(e.target.value) })}>{RETORNOS.map((d) => <option key={d} value={d}>{d === 0 ? 'Sem retorno marcado' : d === 365 ? 'Em 1 ano' : `Em ${d} dias`}</option>)}</select></label>
+          </div>
+        </section>
+        <div className="rodape-modal">
+          <button type="button" className="btn2" onClick={fechar}>Cancelar</button>
+          <button type="button" className="btn2 pri" onClick={finalizar}><Icone n="check" /> Salvar e finalizar atendimento</button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 

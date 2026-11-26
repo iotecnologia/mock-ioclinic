@@ -699,13 +699,6 @@ th.ord .seta { font-size: 9px; color: var(--destaque-2); min-width: 9px; }
   .consult { height: calc(100vh - 60px - 28px - 24px - 69px - 12px); min-height: 360px; align-items: stretch; }
   .consult > .bloco:first-child { display: flex; flex-direction: column; min-height: 0; }
   .consult-rolagem { flex: 1 1 auto; min-height: 0; overflow: auto; }
-  /* atendimento: a coluna do registro ocupa a tela; o formulário rola por dentro e o rodapé (Finalizar) fica fixo */
-  .conteudo:has(.pront) { padding-bottom: 12px; }
-  .pront { height: calc(100vh - 60px - 28px - 24px - 94px - 14px - 12px); min-height: 360px; align-items: stretch; }
-  .pront > .bloco { display: flex; flex-direction: column; min-height: 0; }
-  .pront > .bloco > .form-atend, .pront > .bloco > .evol-lida { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
-  .pront .form-atend > .rodape-modal { position: sticky; bottom: 0; margin-top: auto; background: var(--painel); padding-bottom: 14px; z-index: 2; }
-  .pront > .pilha { min-height: 0; overflow-y: auto; }
 }
 /* Ficha do paciente · histórico: retorno, exames pedidos e documentos em cima da linha do tempo */
 .hist-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 14px 18px 4px; }
@@ -729,3 +722,24 @@ th.ord .seta { font-size: 9px; color: var(--destaque-2); min-width: 9px; }
 .cab-atend .fc-linha { flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
 .cab-atend .fc-acoes, .cab-atend .fc-num, .cab-atend > .tag { flex: none; }
 @media (max-width: 760px) { .cab-atend { flex-wrap: wrap; } }
+/* Consultório · atendimento (só consulta): estado "a registrar" */
+.a-registrar { padding: 22px 22px 24px; display: grid; gap: 8px; justify-items: start; }
+.a-registrar p { margin: 0; }
+.a-registrar .btn2 { margin-top: 6px; }
+.hist-resumo.fora { padding: 0; margin-bottom: 14px; }
+.hist-resumo.fora .hr-card { background: var(--painel); }
+/* Detalhe do agendamento (janela): dados em cima, ações com o nome escrito embaixo */
+.det-ag { display: grid; gap: 14px; min-width: min(520px, 80vw); }
+.det-pac { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.det-pac b { display: block; font-size: 16px; }
+.det-pac small { color: var(--texto-suave); font-size: 12.5px; }
+.det-dados { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; padding: 12px 0; border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); }
+.det-dados dt { font-size: 11px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+.det-dados dd { margin: 0; font-size: 13.5px; }
+.det-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.det-dados > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.det-acoes { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.det-sec, .det-pri { display: flex; gap: 8px; flex-wrap: wrap; }
+.det-pri { margin-left: auto; }
+.det-fim { margin: 0; }
+@media (max-width: 560px) { .det-dados { grid-template-columns: 1fr; } .det-acoes, .det-pri, .det-sec { width: 100%; } .det-acoes .btn2 { flex: 1; justify-content: center; } }

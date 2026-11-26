@@ -8,7 +8,7 @@ import { useDados } from '../componentes/Dados';
 import { Bloco, Modal, TagStatus, TituloPagina } from '../componentes/Comuns';
 import { Icone } from '../componentes/Icone';
 import { CalendarioMes } from '../componentes/CalendarioMes';
-import { LinhaAgendamento } from '../componentes/LinhaAgendamento';
+import { PainelAgendamento } from '../componentes/DetalheAgendamento';
 import { NovoAgendamento } from '../componentes/NovoAgendamento';
 import { blocosLivres, faixasDoDia, gradeDoDia, situacaoDia } from '../regras/disponibilidade';
 import { doDia } from '../regras/agenda';
@@ -96,7 +96,7 @@ export function Agenda() {
       </div>
 
       {novo && <NovoAgendamento data={novo.data} hora={novo.hora} fechar={() => setNovo(null)} />}
-      {detalhe && <Modal titulo={`${br(detalhe.data)} · ${detalhe.hora}`} fechar={() => setDetalhe(null)}><DetalheAg id={detalhe.id} /></Modal>}
+      {detalhe && <Modal titulo={`${nomeDiaCurto(detalhe.data)}, ${br(detalhe.data)} · ${detalhe.hora}`} fechar={() => setDetalhe(null)}><DetalheAg id={detalhe.id} /></Modal>}
     </>
   );
 }
@@ -119,9 +119,7 @@ function LinhaLimpa({ ag, abrir }: { ag: Agendamento; abrir: () => void }) {
 
 /** Mostra a linha sempre atualizada (o status muda dentro do modal). */
 function DetalheAg({ id }: { id: string }) {
-  const { base } = useDados();
-  const ag = base.agendamentos.find((a) => a.id === id)!;
-  return <div className="lista-ag"><LinhaAgendamento ag={ag} /></div>;
+  return <PainelAgendamento id={id} />;
 }
 
 const ALT = 34; // px por 30 min
